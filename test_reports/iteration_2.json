@@ -1,0 +1,41 @@
+{
+  "summary": "Comprehensive frontend UI flow testing for FinLingo Phase 1 against the public preview URL. Tested 15 critical flows end-to-end: landing→signup CTA, login (demo creds prefilled), header chips, dashboard hero+daily progress+3 course cards, enrollment (LOMA-280), course path concept-node interactions, full lesson player (intro→mcq→scenario→finish), result screen pills, return to path, leaderboard nav with 'You' marker, achievements unlock state for first_step, protected-route guard, signup with random user. 14/15 flows PASSED. The only failure is a logout UX race causing redirect to /login instead of landing /.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "AppShell btn-logout / AuthContext.logout",
+        "issue": "Logout race condition: AppShell calls `logout(); nav('/');` without awaiting the async logout. nav('/') fires before user state is cleared, so PublicOnly on Landing sees a truthy user and redirects to /dashboard, then Protected sees the now-cleared user and bounces to /login. Net effect: clicking logout lands the user on /login instead of the landing page '/'. Spec said: 'Logout via btn-logout — redirects to landing /'.",
+        "selector": "[data-testid=\"btn-logout\"]",
+        "priority": "MEDIUM",
+        "fix_suggestion": "In /app/frontend/src/components/AppShell.jsx change `onClick={() => { logout(); nav('/'); }}` to `onClick={async () => { await logout(); nav('/'); }}` OR move nav('/') inside the logout() function in AuthContext after setUser(false)."
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix logout race: await logout() before nav('/') in AppShell, so user lands on Landing page instead of /login.",
+    "(Informational, not a bug) Demo user already had concepts mastered from prior runs, so repeat completion correctly awarded 0 XP per the idempotency contract — header XP did not increase during retest. New signed-up users would see XP increase. Backend idempotency working as designed."
+  ],
+  "critical_code_review_comments": [
+    "AppShell logout handler does not await an async function — classic state/navigation race; same pattern should be audited elsewhere if present.",
+    "LessonPlayer goes back via `nav(-1)` from result screen — this depends on history; if user navigated directly to /concept/<id>, back may not return to /learn/<id>. Consider explicit nav(`/learn/${courseId}`).",
+    "AuthPage prefills `demo@finlingo.com / Demo@123` in production form state — fine for Phase 1 demo, but should be gated behind an env flag before launch.",
+    "401 console errors appear during auth init / unauthenticated /api/auth/me calls — expected behavior, but consider suppressing the noise in axios interceptor for the /auth/me bootstrap call."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (not tested this iteration)", "frontend": "93% (14/15 flows)"},
+  "test_credentials": "demo@finlingo.com / Demo@123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Created one signup user qauser_<random>@finlingo.com / Test@123 during signup flow validation; no cleanup performed.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 15 flows from the review request were exercised. The 14 passing flows are stable. Only the logout-to-landing redirect is broken (lands on /login). After main agent applies the await fix in AppShell, re-run only the logout flow to confirm landing-signup is visible at '/'. MCQ flow used brute-force option 0 selections (mastery may be partial, but progression and result screen worked). Demo user already mastered concepts, so XP idempotency masked the 'XP increases' assertion — use a fresh signup user if validating XP increments specifically.",
+  "rca of the issue": {
+    "bug": "Logout redirects to /login instead of '/'",
+    "root_cause": "AppShell.jsx line 52: `onClick={() => { logout(); nav('/'); }}` invokes async `logout()` but does not await it. The navigation to '/' executes before AuthContext.setUser(false) runs. PublicOnly guard at '/' still sees the stale user object and redirects to /dashboard; by the time /dashboard renders, logout() has completed, so Protected sees !user and redirects to /login.",
+    "reproduction": "1) Login as demo@finlingo.com  2) Click btn-logout  3) Observe URL becomes /login instead of /",
+    "mitigation": "Change to `onClick={async () => { await logout(); nav('/'); }}` in /app/frontend/src/components/AppShell.jsx, or perform the navigation inside the logout() function in AuthContext.jsx after setUser(false)."
+  }
+}

@@ -1,0 +1,319 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { api } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
+import Lumi from "@/components/Lumi";
+import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw } from "lucide-react";
+
+export default function LessonPlayer() {
+  const { conceptId } = useParams();
+  const nav = useNavigate();
+  const { refreshStats } = useAuth();
+  const [concept, setConcept] = useState(null);
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState({}); // step idx -> {correct}
+  const [done, setDone] = useState(null); // result payload
+
+  useEffect(() => {
+    api.get(`/concepts/${conceptId}`).then(({ data }) => setConcept(data));
+  }, [conceptId]);
+
+  const lessons = concept?.lessons || [];
+  const total = lessons.length;
+  const current = lessons[step];
+
+  const correctCount = useMemo(
+    () => Object.values(answers).filter((a) => a.correct).length,
+    [answers]
+  );
+  const totalScored = useMemo(
+    () => Object.keys(answers).length,
+    [answers]
+  );
+
+  const onAnswer = (correct) => {
+    setAnswers((a) => ({ ...a, [step]: { correct } }));
+  };
+
+  const goNext = async () => {
+    if (step < total - 1) {
+      setStep(step + 1);
+    } else {
+      // submit
+      const scoreable = lessons.filter((l) => l.type !== "intro" && l.type !== "flashcard").length || 1;
+      const score = Math.round((correctCount / Math.max(1, scoreable)) * 100);
+      const { data } = await api.post("/progress/complete-concept", {
+        concept_id: conceptId, score, duration_sec: 0,
+      });
+      setDone(data);
+      refreshStats();
+    }
+  };
+
+  if (!concept) return <div className="text-center py-20 text-zinc-500">Loading…</div>;
+  if (done) return <ResultScreen result={done} concept={concept} onAgain={() => { setDone(null); setStep(0); setAnswers({}); }} />;
+
+  const answered = answers[step]?.correct !== undefined;
+  const progressPct = ((step + 1) / total) * 100;
+
+  return (
+    <div className="max-w-3xl mx-auto pb-24">
+      <div className="flex items-center gap-3 mb-6">
+        <button onClick={() => nav(-1)} data-testid="lesson-exit" className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 grid place-items-center">
+          <ChevronLeft className="w-5 h-5"/>
+        </button>
+        <div className="flex-1 h-2.5 rounded-full bg-zinc-100 overflow-hidden">
+          <div data-testid="lesson-progress-bar"
+            className="h-full bg-gradient-to-r from-[#FF6B35] to-[#EC4899] transition-all duration-500"
+            style={{ width: `${progressPct}%` }}/>
+        </div>
+        <span className="text-sm font-bold tabular-nums text-zinc-500">{step+1}/{total}</span>
+      </div>
+
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-zinc-400">Concept</p>
+      <h1 className="font-[Outfit] font-black text-2xl md:text-3xl tracking-tight mb-6">{concept.title}</h1>
+
+      <div data-testid="lesson-card" className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 min-h-[320px]">
+        {current.type === "intro" && <IntroLesson l={current}/>}
+        {current.type === "mcq" && <McqLesson l={current} answered={answers[step]} onAnswer={onAnswer}/>}
+        {current.type === "flashcard" && <FlashLesson l={current} onShown={() => onAnswer(true)}/>}
+        {current.type === "match" && <MatchLesson l={current} answered={answers[step]} onAnswer={onAnswer}/>}
+        {current.type === "scenario" && <ScenarioLesson l={current} answered={answers[step]} onAnswer={onAnswer}/>}
+      </div>
+
+      <div className="mt-6 flex justify-end">
+        <button
+          data-testid="btn-next-lesson"
+          disabled={!answered && current.type !== "intro"}
+          onClick={goNext}
+          className="px-7 py-3 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold tracking-tight transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {step === total - 1 ? "Finish" : "Continue"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Lesson types ----------
+function IntroLesson({ l }) {
+  return (
+    <div className="text-center">
+      <div className="flex justify-center mb-5"><Lumi size={120} mood="happy"/></div>
+      <h2 className="font-[Outfit] font-black text-3xl tracking-tighter mb-3">{l.content.heading}</h2>
+      <p className="text-zinc-600 max-w-xl mx-auto text-lg leading-relaxed">{l.content.body}</p>
+    </div>
+  );
+}
+
+function McqLesson({ l, answered, onAnswer }) {
+  const [picked, setPicked] = useState(null);
+  const isAnswered = answered !== undefined;
+
+  const choose = (i) => {
+    if (isAnswered) return;
+    setPicked(i);
+    onAnswer(i === l.content.correct);
+  };
+
+  return (
+    <div>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#FF6B35] mb-2">Quick check</p>
+      <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-6">{l.content.question}</h2>
+      <div className="grid gap-3">
+        {l.content.options.map((opt, i) => {
+          const isCorrect = i === l.content.correct;
+          const isPicked = i === picked;
+          let cls = "border-zinc-200 hover:border-zinc-400 bg-white";
+          if (isAnswered && isCorrect) cls = "border-[#10B981] bg-[#10B981]/10";
+          else if (isAnswered && isPicked && !isCorrect) cls = "border-[#EF4444] bg-[#EF4444]/10";
+          return (
+            <button key={i} data-testid={`mcq-option-${i}`} onClick={() => choose(i)} disabled={isAnswered}
+              className={`text-left px-5 py-4 rounded-2xl border-2 font-semibold transition-all duration-200 flex items-center justify-between ${cls} ${!isAnswered && "active:scale-[0.98]"}`}>
+              <span>{opt}</span>
+              {isAnswered && isCorrect && <Check className="w-5 h-5 text-[#10B981]"/>}
+              {isAnswered && isPicked && !isCorrect && <X className="w-5 h-5 text-[#EF4444]"/>}
+            </button>
+          );
+        })}
+      </div>
+      {isAnswered && (
+        <div className={`mt-5 p-4 rounded-2xl ${answered.correct ? "bg-[#10B981]/10 text-[#065F46]" : "bg-[#EF4444]/10 text-[#7F1D1D]"}`} data-testid="mcq-feedback">
+          <strong className="font-[Outfit]">{answered.correct ? "Nailed it." : "Not quite."} </strong>
+          {l.content.explanation}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FlashLesson({ l, onShown }) {
+  const [flipped, setFlipped] = useState(false);
+  return (
+    <div>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">Flashcard</p>
+      <div
+        data-testid="flashcard"
+        onClick={() => { setFlipped(!flipped); if (!flipped) onShown(); }}
+        className="cursor-pointer bg-gradient-to-br from-zinc-50 to-white border-2 border-zinc-200 rounded-3xl p-10 min-h-[220px] grid place-items-center text-center hover:border-[#FF6B35] transition"
+      >
+        <div>
+          <p className="uppercase text-[10px] tracking-[0.3em] font-bold text-zinc-400 mb-3">
+            {flipped ? "Answer" : "Question · tap to reveal"}
+          </p>
+          <p className="font-[Outfit] font-bold text-xl md:text-2xl tracking-tight">
+            {flipped ? l.content.back : l.content.front}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MatchLesson({ l, answered, onAnswer }) {
+  const pairs = l.content.pairs;
+  const [shuffledRight] = useState(() => [...pairs].sort(() => Math.random() - 0.5));
+  const [selectedLeft, setSelectedLeft] = useState(null);
+  const [matches, setMatches] = useState({}); // leftIdx -> rightIdx
+  const isAnswered = answered !== undefined;
+
+  const pickLeft = (i) => { if (!isAnswered && !matches[i]) setSelectedLeft(i); };
+  const pickRight = (j) => {
+    if (selectedLeft === null) return;
+    const newMatches = { ...matches, [selectedLeft]: j };
+    setMatches(newMatches);
+    setSelectedLeft(null);
+    if (Object.keys(newMatches).length === pairs.length) {
+      const allCorrect = pairs.every((p, idx) => shuffledRight[newMatches[idx]].right === p.right);
+      onAnswer(allCorrect);
+    }
+  };
+  const usedRights = new Set(Object.values(matches));
+
+  return (
+    <div>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#8B5CF6] mb-2">Match the pairs</p>
+      <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-6">{l.content.instruction}</h2>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          {pairs.map((p, i) => {
+            const matched = matches[i] !== undefined;
+            const correct = matched && shuffledRight[matches[i]].right === p.right;
+            return (
+              <button key={i} data-testid={`match-left-${i}`} onClick={() => pickLeft(i)} disabled={matched || isAnswered}
+                className={`w-full px-4 py-3 rounded-xl border-2 text-left font-semibold transition
+                  ${selectedLeft === i ? "border-[#FF6B35] bg-[#FF6B35]/10" : matched ? (correct ? "border-[#10B981] bg-[#10B981]/10" : "border-[#EF4444] bg-[#EF4444]/10") : "border-zinc-200 hover:border-zinc-400"}`}>
+                {p.left}
+              </button>
+            );
+          })}
+        </div>
+        <div className="space-y-2">
+          {shuffledRight.map((p, j) => {
+            const isUsed = usedRights.has(j);
+            return (
+              <button key={j} data-testid={`match-right-${j}`} onClick={() => pickRight(j)} disabled={isUsed || isAnswered}
+                className={`w-full px-4 py-3 rounded-xl border-2 text-left font-semibold transition
+                  ${isUsed ? "opacity-50 border-zinc-200" : "border-zinc-200 hover:border-[#FF6B35]"}`}>
+                {p.right}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      {isAnswered && (
+        <p className={`mt-4 font-bold ${answered.correct ? "text-[#10B981]" : "text-[#EF4444]"}`} data-testid="match-feedback">
+          {answered.correct ? "All matched correctly!" : "Some pairs are off — review and continue."}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function ScenarioLesson({ l, answered, onAnswer }) {
+  const [picked, setPicked] = useState(null);
+  const isAnswered = answered !== undefined;
+  const pick = (i) => {
+    if (isAnswered) return;
+    setPicked(i);
+    onAnswer(l.content.choices[i].correct);
+  };
+  return (
+    <div>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#EC4899] mb-2">Scenario</p>
+      <div className="bg-zinc-50 border-l-4 border-[#EC4899] p-4 rounded-r-2xl mb-5">
+        <p className="text-zinc-700 italic">{l.content.scene}</p>
+      </div>
+      <h2 className="font-[Outfit] font-black text-xl tracking-tight mb-5">{l.content.question}</h2>
+      <div className="space-y-3">
+        {l.content.choices.map((c, i) => {
+          let cls = "border-zinc-200 hover:border-zinc-400";
+          if (isAnswered && i === picked) cls = c.correct ? "border-[#10B981] bg-[#10B981]/10" : "border-[#EF4444] bg-[#EF4444]/10";
+          else if (isAnswered && c.correct) cls = "border-[#10B981] bg-[#10B981]/5";
+          return (
+            <button key={i} data-testid={`scenario-choice-${i}`} onClick={() => pick(i)} disabled={isAnswered}
+              className={`w-full text-left px-5 py-4 rounded-2xl border-2 font-semibold transition ${cls}`}>
+              <span>{c.text}</span>
+              {isAnswered && i === picked && (
+                <p className="text-sm font-normal mt-2 text-zinc-600">{c.feedback}</p>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ---------- Result ----------
+function ResultScreen({ result, concept, onAgain }) {
+  const nav = useNavigate();
+  const isMastered = result.status === "mastered";
+  return (
+    <div className="max-w-xl mx-auto text-center pb-24">
+      <div className="mt-8 mb-4 flex justify-center">
+        <Lumi size={160} mood={isMastered ? "cheer" : "happy"}/>
+      </div>
+      <h1 className="font-[Outfit] font-black text-4xl tracking-tighter mb-2">
+        {isMastered ? "Concept mastered!" : result.status === "completed" ? "Nicely done!" : "Keep going!"}
+      </h1>
+      <p className="text-zinc-500 mb-8">{concept.title}</p>
+
+      <div className="grid grid-cols-3 gap-3 mb-8">
+        <Pill label="XP earned" value={`+${result.xp_earned}`} color="#FBBF24"/>
+        <Pill label="Coins" value={`+${result.coins_earned}`} color="#F59E0B"/>
+        <Pill label="Mastery" value={`${result.mastery}%`} color="#10B981"/>
+      </div>
+
+      {result.new_achievements?.length > 0 && (
+        <div className="mb-6 bg-gradient-to-br from-[#FBBF24]/15 to-[#FF6B35]/15 rounded-3xl p-5 border border-[#FBBF24]/40" data-testid="achievement-unlock">
+          <Trophy className="w-7 h-7 mx-auto text-[#FF6B35] mb-2"/>
+          <p className="font-[Outfit] font-black text-lg">Achievement unlocked!</p>
+          {result.new_achievements.map((a) => (
+            <p key={a.code} className="text-sm font-semibold text-zinc-700">🏆 {a.title}</p>
+          ))}
+        </div>
+      )}
+
+      <div className="flex gap-3 justify-center">
+        <button onClick={onAgain} data-testid="btn-redo"
+          className="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-400 font-bold inline-flex items-center gap-2">
+          <RotateCcw className="w-4 h-4"/> Practice again
+        </button>
+        <button onClick={() => nav(-1)} data-testid="btn-continue-path"
+          className="px-6 py-3 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold inline-flex items-center gap-2">
+          <Sparkles className="w-4 h-4"/> Continue path
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Pill({ label, value, color }) {
+  return (
+    <div className="bg-white border border-zinc-200 rounded-2xl p-4">
+      <p className="text-xs uppercase tracking-[0.2em] font-bold text-zinc-400">{label}</p>
+      <p className="font-[Outfit] font-black text-2xl tabular-nums" style={{ color }}>{value}</p>
+    </div>
+  );
+}
