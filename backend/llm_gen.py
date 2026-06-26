@@ -41,7 +41,20 @@ EXTRACTED CHAPTER TEXT (may be partial — supplement with curriculum knowledge)
 {chapter_text}
 \"\"\"
 
-Produce JSON with this exact schema (no comments, no trailing commas):
+Produce JSON. Lessons must appear in THIS EXACT ORDER per concept:
+  (1) intro     — hook & framing
+  (2) teach     — clear explanation of the core idea
+  (3) teach     — deeper detail / formula / mechanics with a worked example
+  (4) example   — vivid real-world scenario (not a quiz, just a story to anchor memory)
+  (5) flashcard — recall prompt
+  (6) mcq       — easy understanding check
+  (7) mcq       — application question
+  (8) mcq       — exam-style question with subtle distractors
+  (9) mcq       — calculation or scenario question
+  (10) mcq      — common-mistake trap question
+  (11) scenario — apply the concept in a real situation
+
+Schema (strict, no comments, no trailing commas):
 
 {{
   "modules": [
@@ -50,23 +63,29 @@ Produce JSON with this exact schema (no comments, no trailing commas):
       "concepts": [
         {{
           "title": "<specific concept title>",
-          "learning_objective": "<one sentence — what the learner can DO after this>",
-          "simple_explanation": "<3-5 sentences. Plain English. Include at least ONE real-life example with named characters, dollar amounts, or a concrete scenario.>",
+          "learning_objective": "<one sentence>",
+          "simple_explanation": "<3-5 sentences with a real-life example using named characters + dollar amounts>",
           "key_takeaways": ["<takeaway 1>", "<takeaway 2>", "<takeaway 3>", "<takeaway 4>"],
-          "common_mistakes": ["<exam-trap mistake 1>", "<mistake 2>", "<mistake 3>"],
-          "real_world_example": "<a 2-3 sentence vivid scenario showing the concept in action>",
-          "visual_hint": "<one of: chart, scale, flowchart, comparison, timeline, building, calculator, shield, briefcase, gauge>",
-          "xp_reward": 20,
+          "common_mistakes": ["<exam trap 1>", "<trap 2>", "<trap 3>"],
+          "real_world_example": "<2-3 sentence concrete scenario>",
+          "visual_hint": "<chart|scale|flowchart|comparison|timeline|building|shield|briefcase|gauge>",
+          "xp_reward": 25,
           "lessons": [
-            {{ "type": "intro", "content": {{ "heading": "<hook headline>", "body": "<2-3 sentence intro that makes the learner curious>" }} }},
-            {{ "type": "mcq", "content": {{ "question": "<exam-style question>", "options": ["<a>","<b>","<c>","<d>"], "correct": 0, "explanation": "<why correct, why others wrong>" }} }},
-            {{ "type": "mcq", "content": {{ "question": "<scenario-based question>", "options": ["<a>","<b>","<c>","<d>"], "correct": 2, "explanation": "<full reasoning>" }} }},
-            {{ "type": "scenario", "content": {{ "scene": "<realistic insurance/finance scenario, 2-3 sentences with names + dollar amounts>", "question": "<what should X do?>", "choices": [
+            {{ "type": "intro", "content": {{ "heading": "<hook>", "body": "<2-3 sentences making learner curious>" }} }},
+            {{ "type": "teach", "content": {{ "heading": "<plain-English headline>", "body": "<4-6 sentences explaining the concept clearly>", "bullets": ["<key point 1>", "<key point 2>", "<key point 3>"] }} }},
+            {{ "type": "teach", "content": {{ "heading": "<mechanics or formula>", "body": "<4-6 sentences explaining HOW it works, with a worked example>", "bullets": ["<sub-step 1>", "<sub-step 2>"] }} }},
+            {{ "type": "example", "content": {{ "heading": "<real-world story>", "scenario": "<5-7 sentence vivid scenario with names, dollar amounts, decisions>", "lesson": "<one-sentence moral / what the example demonstrates>" }} }},
+            {{ "type": "flashcard", "content": {{ "front": "<prompt>", "back": "<concise answer>" }} }},
+            {{ "type": "mcq", "content": {{ "question": "<easy question>", "options": ["a","b","c","d"], "correct": 0, "explanation": "<why>" }} }},
+            {{ "type": "mcq", "content": {{ "question": "<application>", "options": ["a","b","c","d"], "correct": 1, "explanation": "<why>" }} }},
+            {{ "type": "mcq", "content": {{ "question": "<exam-style>", "options": ["a","b","c","d"], "correct": 2, "explanation": "<full reasoning>" }} }},
+            {{ "type": "mcq", "content": {{ "question": "<calculation or scenario>", "options": ["a","b","c","d"], "correct": 3, "explanation": "<step-by-step>" }} }},
+            {{ "type": "mcq", "content": {{ "question": "<common-mistake trap>", "options": ["a","b","c","d"], "correct": 0, "explanation": "<the trap & truth>" }} }},
+            {{ "type": "scenario", "content": {{ "scene": "<realistic scenario with names + dollar amounts>", "question": "<what should X do?>", "choices": [
               {{ "text": "<option 1>", "correct": false, "feedback": "<why wrong>" }},
               {{ "text": "<option 2>", "correct": true, "feedback": "<why right + the lesson>" }},
               {{ "text": "<option 3>", "correct": false, "feedback": "<why wrong>" }}
-            ] }} }},
-            {{ "type": "flashcard", "content": {{ "front": "<recall prompt>", "back": "<concise answer the learner should commit to memory>" }} }}
+            ] }} }}
           ]
         }}
       ]
@@ -75,12 +94,10 @@ Produce JSON with this exact schema (no comments, no trailing commas):
 }}
 
 REQUIREMENTS:
-- Generate 3-4 modules for this chapter.
-- 3 concepts per module.
-- Each concept has 4 lessons (intro + 2 MCQs + 1 scenario OR flashcard).
-- Total concepts in this chapter: 9-12.
-- Each MCQ must have exactly 4 options. Vary the correct index across the chapter.
-- Make scenarios feel realistic — insurance professionals working through actual decisions.
+- 3 modules with 2-3 concepts each (total 6-8 concepts per chapter).
+- Each concept MUST have ALL 11 lessons in the exact order above.
+- Each MCQ has exactly 4 options; vary the correct index.
+- Keep teaching screens substantive — at least 4 sentences each.
 
 Return ONLY the JSON object."""
 

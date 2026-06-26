@@ -130,6 +130,8 @@ export default function LessonPlayer() {
 
       <div data-testid="lesson-card" className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 min-h-[320px]">
         {current.type === "intro" && <IntroLesson l={current} concept={concept}/>}
+        {current.type === "teach" && <TeachLesson l={current}/>}
+        {current.type === "example" && <ExampleLesson l={current}/>}
         {current.type === "mcq" && <McqLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
         {current.type === "flashcard" && <FlashLesson l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
         {current.type === "match" && <MatchLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
@@ -158,6 +160,46 @@ export default function LessonPlayer() {
 }
 
 // ---------- Lesson types ----------
+function TeachLesson({ l }) {
+  const c = l.content || {};
+  return (
+    <div className="fade-up">
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#10B981] mb-2">Learn</p>
+      <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-4">{c.heading}</h2>
+      <p className="text-zinc-700 leading-relaxed mb-4 text-[15px]">{c.body}</p>
+      {Array.isArray(c.bullets) && c.bullets.length > 0 && (
+        <ul className="space-y-2 mt-4 bg-zinc-50 rounded-2xl p-4">
+          {c.bullets.map((b, i) => (
+            <li key={i} className="flex gap-2 text-sm text-zinc-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B35] mt-2 shrink-0"/>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function ExampleLesson({ l }) {
+  const c = l.content || {};
+  return (
+    <div className="fade-up">
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">Real-world example</p>
+      <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-4">{c.heading}</h2>
+      <div className="bg-gradient-to-br from-[#2563EB]/5 to-[#EC4899]/5 border-l-4 border-[#2563EB] p-5 rounded-r-2xl mb-4">
+        <p className="text-zinc-700 leading-relaxed italic">{c.scenario}</p>
+      </div>
+      {c.lesson && (
+        <div className="bg-[#FBBF24]/15 border border-[#FBBF24]/30 rounded-2xl p-4">
+          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#92400E] mb-1">The lesson</p>
+          <p className="text-zinc-800 font-semibold">{c.lesson}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function IntroLesson({ l, concept }) {
   return (
     <div className="text-center fade-up">
