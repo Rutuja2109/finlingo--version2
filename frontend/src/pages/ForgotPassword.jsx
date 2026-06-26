@@ -16,15 +16,17 @@ export default function ForgotPassword() {
     setBusy(true); setErr("");
     try {
       const { data } = await api.post("/auth/forgot-password", { email });
-      setResult(data);
+      // Build the full reset URL on the frontend so it matches our public origin.
+      const reset_url = data.reset_path ? window.location.origin + data.reset_path : null;
+      setResult({ ...data, reset_url });
     } catch (e) {
       setErr(formatApiError(e));
     } finally { setBusy(false); }
   };
 
   const copy = () => {
-    if (!result?.dev_reset_url) return;
-    navigator.clipboard.writeText(result.dev_reset_url);
+    if (!result?.reset_url) return;
+    navigator.clipboard.writeText(result.reset_url);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -57,27 +59,27 @@ export default function ForgotPassword() {
               <Mail className="w-5 h-5 text-[#10B981] mt-0.5 shrink-0"/>
               <div>
                 <p className="font-bold text-sm">{result.message}</p>
-                {result.dev_reset_url && (
+                {result.reset_url && (
                   <p className="text-xs text-zinc-500 mt-1">
                     Dev mode: copy the link below to reset your password.
                   </p>
                 )}
               </div>
             </div>
-            {result.dev_reset_url && (
+            {result.reset_url && (
               <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-3 mb-4 flex items-center gap-2">
-                <code data-testid="dev-reset-url" className="text-xs text-zinc-700 truncate flex-1 font-mono">{result.dev_reset_url}</code>
+                <code data-testid="dev-reset-url" className="text-xs text-zinc-700 truncate flex-1 font-mono">{result.reset_url}</code>
                 <button onClick={copy} data-testid="btn-copy-reset"
                   className="shrink-0 px-3 py-1.5 rounded-lg bg-zinc-900 text-white text-xs font-bold inline-flex items-center gap-1">
                   {copied ? <><Check className="w-3 h-3"/> Copied</> : <><Copy className="w-3 h-3"/> Copy</>}
                 </button>
               </div>
             )}
-            {result.dev_reset_url && (
-              <a href={result.dev_reset_url.replace(window.location.origin, "")} data-testid="link-reset"
+            {result.reset_path && (
+              <Link to={result.reset_path} data-testid="link-reset"
                 className="block w-full text-center py-3 rounded-xl bg-zinc-900 text-white font-[Outfit] font-bold">
                 Open reset link →
-              </a>
+              </Link>
             )}
           </div>
         )}

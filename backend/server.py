@@ -295,15 +295,15 @@ async def refresh_token(request: Request, response: Response):
 
 
 @api.post("/auth/forgot-password")
-async def forgot_password(payload: ForgotPasswordIn, request: Request):
+async def forgot_password(payload: ForgotPasswordIn):
     """Generate a 1-hour reset token. In dev-mode (no email service wired),
-    we return the reset URL inline so the user can use it directly.
+    we return the token + path so the frontend can build a same-origin reset link.
     Always returns 200 to avoid revealing whether an email exists.
     """
     email = payload.email.lower()
     user = await db.users.find_one({"email": email})
     if not user:
-        return {"ok": True, "dev_reset_url": None,
+        return {"ok": True, "reset_token": None, "reset_path": None,
                 "message": "If this email exists, a reset link has been generated."}
 
     token = str(uuid.uuid4()).replace("-", "") + str(uuid.uuid4()).replace("-", "")
@@ -313,14 +313,10 @@ async def forgot_password(payload: ForgotPasswordIn, request: Request):
         "token": token, "expires_at": expires_at, "used": False,
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
-    # Build the frontend reset URL from the request Origin (works in any env)
-    origin = request.headers.get("origin") or request.headers.get("referer", "").rstrip("/")
-    if origin and "/api" in origin:
-        origin = origin.split("/api")[0]
-    reset_url = f"{origin}/reset-password?token={token}" if origin else f"/reset-password?token={token}"
     return {
         "ok": True,
-        "dev_reset_url": reset_url,
+        "reset_token": token,
+        "reset_path": f"/reset-password?token={token}",
         "message": "Reset link generated. In production this would be emailed to you.",
     }
 
