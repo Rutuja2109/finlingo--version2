@@ -1,59 +1,108 @@
-import React, { useEffect, useMemo, useState } from "react";import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
-import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw } from "lucide-react";
+import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw, Repeat } from "lucide-react";
+
+// ----------------------------------------------------------------------
+// Duolingo-style lesson player
+// - Lessons are processed via a QUEUE (array of lesson indices).
+// - Wrong MCQ/scenario answers are appended back to the queue.
+// - User MUST keep going until queue is empty (every question answered correctly at least once).
+// - Continue button is ALWAYS enabled after the learner has answered (correct or wrong).
+// - Score = (questions answered correctly on first try) / total scoreable questions.
+// ----------------------------------------------------------------------
 
 export default function LessonPlayer() {
   const { conceptId } = useParams();
   const nav = useNavigate();
   const { refreshStats } = useAuth();
   const [concept, setConcept] = useState(null);
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState({}); // step idx -> {correct}
-  const [done, setDone] = useState(null); // result payload
+  const [queue, setQueue] = useState([]);                 // array of lesson indices
+  const [wrongFirstTry, setWrongFirstTry] = useState(new Set()); // indices the learner got wrong at least once
+  const [picked, setPicked] = useState(null);             // chosen option on current lesson
+  const [answered, setAnswered] = useState(null);         // {correct: bool} for the current attempt
+  const [done, setDone] = useState(null);
+  const [totalAttempted, setTotalAttempted] = useState(0);
 
   useEffect(() => {
-    api.get(`/concepts/${conceptId}`).then(({ data }) => setConcept(data));
+    api.get(`/concepts/${conceptId}`).then(({ data }) => {
+      setConcept(data);
+      // Initialize queue with all lesson indices in order
+      setQueue((data.lessons || []).map((_, i) => i));
+    });
   }, [conceptId]);
 
-  const lessons = concept?.lessons || [];
-  const total = lessons.length;
-  const current = lessons[step];
-
-  const correctCount = useMemo(
-    () => Object.values(answers).filter((a) => a.correct).length,
-    [answers]
-  );
-  const totalScored = useMemo(
-    () => Object.keys(answers).length,
-    [answers]
-  );
-
-  const onAnswer = (correct) => {
-    setAnswers((a) => ({ ...a, [step]: { correct } }));
-  };
-
-  const goNext = async () => {
-    if (step < total - 1) {
-      setStep(step + 1);
-    } else {
-      // submit
-      const scoreable = lessons.filter((l) => l.type !== "intro" && l.type !== "flashcard").length || 1;
-      const score = Math.round((correctCount / Math.max(1, scoreable)) * 100);
-      const { data } = await api.post("/progress/complete-concept", {
-        concept_id: conceptId, score, duration_sec: 0,
-      });
-      setDone(data);
-      refreshStats();
-    }
-  };
-
   if (!concept) return <div className="text-center py-20 text-zinc-500">Loading…</div>;
-  if (done) return <ResultScreen result={done} concept={concept} onAgain={() => { setDone(null); setStep(0); setAnswers({}); }} />;
+  if (done) {
+    return <ResultScreen result={done} concept={concept} onAgain={() => {
+      setDone(null);
+      setQueue(concept.lessons.map((_, i) => i));
+      setWrongFirstTry(new Set());
+      setPicked(null); setAnswered(null);
+      setTotalAttempted(0);
+    }} />;
+  }
 
-  const answered = answers[step]?.correct !== undefined;
-  const progressPct = ((step + 1) / total) * 100;
+  const lessons = concept.lessons || [];
+  const total = lessons.length;
+  const currentIdx = queue[0];
+  const current = lessons[currentIdx];
+
+  // Progress = remaining queue length vs original total (counts re-queues)
+  const initialQueueLen = total;
+  const progressPct = Math.max(0, Math.min(100, ((initialQueueLen - queue.length + (answered ? 1 : 0)) / initialQueueLen) * 100));
+
+  const scoreable = (lessons || []).filter((l) => l.type === "mcq" || l.type === "scenario").length || 1;
+
+  // --- Answer handlers ---
+  const handleAnswer = (isCorrect) => {
+    setPicked(true);
+    setAnswered({ correct: isCorrect });
+    if (!isCorrect) {
+      // Mark this lesson as wrong-on-first-try (only counted once even if asked again)
+      setWrongFirstTry((prev) => {
+        const n = new Set(prev); n.add(currentIdx); return n;
+      });
+    }
+    setTotalAttempted((t) => t + 1);
+  };
+
+  // For intro / flashcard, advance without an answer step
+  const advance = async () => {
+    let newQueue = queue.slice(1);
+    if (answered && answered.correct === false) {
+      // Re-queue the wrong question at the end
+      newQueue = [...newQueue, currentIdx];
+    }
+    setPicked(null);
+    setAnswered(null);
+
+    if (newQueue.length === 0) {
+      // Done — submit progress
+      const correctFirstTry = scoreable - Array.from(wrongFirstTry).filter((i) =>
+        lessons[i] && (lessons[i].type === "mcq" || lessons[i].type === "scenario")
+      ).length;
+      const score = Math.round((correctFirstTry / scoreable) * 100);
+      try {
+        const { data } = await api.post("/progress/complete-concept", {
+          concept_id: conceptId, score, duration_sec: 0,
+        });
+        setDone(data);
+        refreshStats();
+      } catch (e) {
+        setDone({ status: "completed", mastery: score, xp_earned: 0, coins_earned: 0, new_achievements: [] });
+      }
+      return;
+    }
+    setQueue(newQueue);
+  };
+
+  // ---- Render ----
+  const needsAnswer = current.type === "mcq" || current.type === "scenario";
+  const continueEnabled = !needsAnswer || answered !== null;
+  const isFinalShift = queue.length === 1 && (!needsAnswer || (answered && answered.correct === true));
 
   return (
     <div className="max-w-3xl mx-auto pb-24">
@@ -66,28 +115,42 @@ export default function LessonPlayer() {
             className="h-full bg-gradient-to-r from-[#FF6B35] to-[#EC4899] transition-all duration-500"
             style={{ width: `${progressPct}%` }}/>
         </div>
-        <span className="text-sm font-bold tabular-nums text-zinc-500">{step+1}/{total}</span>
+        <span className="text-sm font-bold tabular-nums text-zinc-500">{Math.max(1, initialQueueLen - queue.length + 1)}/{initialQueueLen}{queue.length > initialQueueLen ? "+" : ""}</span>
       </div>
 
       <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-zinc-400">Concept</p>
       <h1 className="font-[Outfit] font-black text-2xl md:text-3xl tracking-tight mb-6">{concept.title}</h1>
 
+      {/* Re-queue indicator: shown when user is on a repeat question */}
+      {answered === null && wrongFirstTry.has(currentIdx) && (
+        <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FBBF24]/15 text-[#92400E] text-xs font-bold uppercase tracking-wider" data-testid="repeat-banner">
+          <Repeat className="w-3.5 h-3.5"/> One more shot — you'll nail it this time
+        </div>
+      )}
+
       <div data-testid="lesson-card" className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 min-h-[320px]">
-        {current.type === "intro" && <IntroLesson l={current}/>}
-        {current.type === "mcq" && <McqLesson l={current} answered={answers[step]} onAnswer={onAnswer}/>}
-        {current.type === "flashcard" && <FlashLesson l={current} onShown={() => onAnswer(true)}/>}
-        {current.type === "match" && <MatchLesson l={current} answered={answers[step]} onAnswer={onAnswer}/>}
-        {current.type === "scenario" && <ScenarioLesson l={current} answered={answers[step]} onAnswer={onAnswer}/>}
+        {current.type === "intro" && <IntroLesson l={current} concept={concept}/>}
+        {current.type === "mcq" && <McqLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
+        {current.type === "flashcard" && <FlashLesson l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
+        {current.type === "match" && <MatchLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
+        {current.type === "scenario" && <ScenarioLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
       </div>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex justify-between items-center">
+        <span className="text-xs text-zinc-400">
+          {wrongFirstTry.size > 0 && `${wrongFirstTry.size} question${wrongFirstTry.size>1?"s":""} to revisit`}
+        </span>
         <button
           data-testid="btn-next-lesson"
-          disabled={!(current.type === "intro" || current.type === "flashcard" || (answered && answered.correct === true))}
-          onClick={goNext}
-          className="px-7 py-3 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold tracking-tight transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!continueEnabled}
+          onClick={advance}
+          className={`px-7 py-3 rounded-2xl font-[Outfit] font-bold tracking-tight transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed ${
+            answered && !answered.correct
+              ? "bg-zinc-900 hover:bg-zinc-800 text-white"
+              : "bg-[#FF6B35] hover:bg-[#FF5618] text-white"
+          }`}
         >
-          {step === total - 1 ? "Finish" : "Continue"}
+          {isFinalShift && queue.length === 1 ? "Finish" : (answered && !answered.correct ? "Got it — try later" : "Continue")}
         </button>
       </div>
     </div>
@@ -133,28 +196,18 @@ function IntroLesson({ l, concept }) {
   );
 }
 
-function McqLesson({ l, answered, onAnswer }) {
-  const [picked, setPicked] = useState(null);
-  const [attempts, setAttempts] = useState(0);
-  const isAnswered = answered !== undefined && answered.correct === true;
+function McqLesson({ l, picked, answered, onAnswer }) {
+  const [pickedIdx, setPickedIdx] = useState(null);
+
+  // Reset local pickedIdx when the parent clears answered (i.e., on advance)
+  useEffect(() => {
+    if (answered === null) setPickedIdx(null);
+  }, [answered]);
 
   const choose = (i) => {
-    if (isAnswered) return;
-    setPicked(i);
-    setAttempts((a) => a + 1);
-    const correct = i === l.content.correct;
-    if (correct) {
-      onAnswer(true);
-    } else {
-      // wrong — let them retry (don't lock answer)
-      onAnswer(false);
-    }
-  };
-
-  const tryAgain = () => {
-    setPicked(null);
-    // Reset 'correct' flag so they can answer again
-    onAnswer(undefined);
+    if (answered !== null) return;
+    setPickedIdx(i);
+    onAnswer(i === l.content.correct);
   };
 
   return (
@@ -164,31 +217,29 @@ function McqLesson({ l, answered, onAnswer }) {
       <div className="grid gap-3">
         {l.content.options.map((opt, i) => {
           const isCorrect = i === l.content.correct;
-          const isPicked = i === picked;
-          const showResult = picked !== null;
+          const isPicked = i === pickedIdx;
+          const showResult = pickedIdx !== null;
           let cls = "border-zinc-200 hover:border-zinc-400 bg-white";
-          if (showResult && isAnswered && isCorrect) cls = "border-[#10B981] bg-[#10B981]/10";
+          if (showResult && isPicked && isCorrect) cls = "border-[#10B981] bg-[#10B981]/10";
           else if (showResult && isPicked && !isCorrect) cls = "border-[#EF4444] bg-[#EF4444]/10 shake";
-          else if (showResult && isCorrect && answered?.correct === true) cls = "border-[#10B981] bg-[#10B981]/10";
+          else if (showResult && isCorrect) cls = "border-[#10B981] bg-[#10B981]/5";
           return (
-            <button key={i} data-testid={`mcq-option-${i}`} onClick={() => choose(i)} disabled={isAnswered}
-              className={`text-left px-5 py-4 rounded-2xl border-2 font-semibold transition-all duration-200 flex items-center justify-between ${cls} ${!isAnswered && "active:scale-[0.98]"}`}>
+            <button key={i} data-testid={`mcq-option-${i}`} onClick={() => choose(i)} disabled={answered !== null}
+              className={`text-left px-5 py-4 rounded-2xl border-2 font-semibold transition-all duration-200 flex items-center justify-between ${cls} ${!showResult && "active:scale-[0.98]"}`}>
               <span>{opt}</span>
-              {showResult && isAnswered && isCorrect && <Check className="w-5 h-5 text-[#10B981] pulse-glow"/>}
+              {showResult && isPicked && isCorrect && <Check className="w-5 h-5 text-[#10B981]"/>}
               {showResult && isPicked && !isCorrect && <X className="w-5 h-5 text-[#EF4444]"/>}
+              {showResult && !isPicked && isCorrect && <Check className="w-5 h-5 text-[#10B981]/60"/>}
             </button>
           );
         })}
       </div>
-      {picked !== null && (
-        <div className={`mt-5 p-4 rounded-2xl fade-up ${answered?.correct ? "bg-[#10B981]/10 text-[#065F46]" : "bg-[#EF4444]/10 text-[#7F1D1D]"}`} data-testid="mcq-feedback">
-          <strong className="font-[Outfit]">{answered?.correct ? "Nailed it! " : `Not quite${attempts > 1 ? ` (attempt ${attempts})` : ""}. `}</strong>
+      {answered !== null && (
+        <div className={`mt-5 p-4 rounded-2xl fade-up ${answered.correct ? "bg-[#10B981]/10 text-[#065F46]" : "bg-[#EF4444]/10 text-[#7F1D1D]"}`} data-testid="mcq-feedback">
+          <strong className="font-[Outfit]">{answered.correct ? "Nailed it! " : "Not quite. "}</strong>
           {l.content.explanation}
-          {!answered?.correct && (
-            <button onClick={tryAgain} data-testid="btn-try-again"
-              className="ml-2 inline-flex items-center gap-1 text-[#EF4444] underline font-bold text-sm hover:no-underline">
-              Try again →
-            </button>
+          {!answered.correct && (
+            <p className="mt-2 text-xs font-semibold opacity-80">↻ We'll ask this again later in the lesson.</p>
           )}
         </div>
       )}
@@ -199,7 +250,7 @@ function McqLesson({ l, answered, onAnswer }) {
 function FlashLesson({ l, onShown }) {
   const [flipped, setFlipped] = useState(false);
   return (
-    <div>
+    <div className="fade-up">
       <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">Flashcard</p>
       <div
         data-testid="flashcard"
@@ -220,11 +271,11 @@ function FlashLesson({ l, onShown }) {
 }
 
 function MatchLesson({ l, answered, onAnswer }) {
-  const pairs = l.content.pairs;
+  const pairs = l.content.pairs || [];
   const [shuffledRight] = useState(() => [...pairs].sort(() => Math.random() - 0.5));
   const [selectedLeft, setSelectedLeft] = useState(null);
-  const [matches, setMatches] = useState({}); // leftIdx -> rightIdx
-  const isAnswered = answered !== undefined;
+  const [matches, setMatches] = useState({});
+  const isAnswered = answered !== null;
 
   const pickLeft = (i) => { if (!isAnswered && !matches[i]) setSelectedLeft(i); };
   const pickRight = (j) => {
@@ -240,7 +291,7 @@ function MatchLesson({ l, answered, onAnswer }) {
   const usedRights = new Set(Object.values(matches));
 
   return (
-    <div>
+    <div className="fade-up">
       <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#8B5CF6] mb-2">Match the pairs</p>
       <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-6">{l.content.instruction}</h2>
       <div className="grid grid-cols-2 gap-4">
@@ -272,7 +323,7 @@ function MatchLesson({ l, answered, onAnswer }) {
       </div>
       {isAnswered && (
         <p className={`mt-4 font-bold ${answered.correct ? "text-[#10B981]" : "text-[#EF4444]"}`} data-testid="match-feedback">
-          {answered.correct ? "All matched correctly!" : "Some pairs are off — review and continue."}
+          {answered.correct ? "All matched correctly!" : "Some pairs are off — we'll ask again later."}
         </p>
       )}
     </div>
@@ -280,17 +331,15 @@ function MatchLesson({ l, answered, onAnswer }) {
 }
 
 function ScenarioLesson({ l, answered, onAnswer }) {
-  const [picked, setPicked] = useState(null);
-  const [attempts, setAttempts] = useState(0);
-  const isAnswered = answered !== undefined && answered.correct === true;
+  const [pickedIdx, setPickedIdx] = useState(null);
+
+  useEffect(() => { if (answered === null) setPickedIdx(null); }, [answered]);
 
   const pick = (i) => {
-    if (isAnswered) return;
-    setPicked(i);
-    setAttempts((a) => a + 1);
+    if (answered !== null) return;
+    setPickedIdx(i);
     onAnswer(l.content.choices[i].correct);
   };
-  const tryAgain = () => { setPicked(null); onAnswer(undefined); };
 
   return (
     <div className="fade-up">
@@ -300,28 +349,25 @@ function ScenarioLesson({ l, answered, onAnswer }) {
       </div>
       <h2 className="font-[Outfit] font-black text-xl tracking-tight mb-5">{l.content.question}</h2>
       <div className="space-y-3">
-        {l.content.choices.map((c, i) => {
-          const showResult = picked !== null;
+        {(l.content.choices || []).map((c, i) => {
+          const showResult = pickedIdx !== null;
           let cls = "border-zinc-200 hover:border-zinc-400";
-          if (showResult && i === picked && c.correct) cls = "border-[#10B981] bg-[#10B981]/10";
-          else if (showResult && i === picked && !c.correct) cls = "border-[#EF4444] bg-[#EF4444]/10 shake";
-          else if (showResult && isAnswered && c.correct) cls = "border-[#10B981] bg-[#10B981]/5";
+          if (showResult && i === pickedIdx && c.correct) cls = "border-[#10B981] bg-[#10B981]/10";
+          else if (showResult && i === pickedIdx && !c.correct) cls = "border-[#EF4444] bg-[#EF4444]/10 shake";
+          else if (showResult && c.correct) cls = "border-[#10B981] bg-[#10B981]/5";
           return (
-            <button key={i} data-testid={`scenario-choice-${i}`} onClick={() => pick(i)} disabled={isAnswered}
+            <button key={i} data-testid={`scenario-choice-${i}`} onClick={() => pick(i)} disabled={answered !== null}
               className={`w-full text-left px-5 py-4 rounded-2xl border-2 font-semibold transition ${cls}`}>
               <span>{c.text}</span>
-              {showResult && i === picked && (
+              {showResult && i === pickedIdx && (
                 <p className="text-sm font-normal mt-2 text-zinc-600">{c.feedback}</p>
               )}
             </button>
           );
         })}
       </div>
-      {picked !== null && !answered?.correct && (
-        <button onClick={tryAgain} data-testid="btn-try-again-scenario"
-          className="mt-4 inline-flex items-center gap-1 text-[#EF4444] underline font-bold text-sm hover:no-underline">
-          Try again (attempt {attempts}) →
-        </button>
+      {answered !== null && !answered.correct && (
+        <p className="mt-3 text-xs font-semibold text-[#7F1D1D] opacity-80">↻ We'll ask this scenario again later in the lesson.</p>
       )}
     </div>
   );
@@ -333,7 +379,6 @@ function ResultScreen({ result, concept, onAgain }) {
   const isMastered = result.status === "mastered";
 
   useEffect(() => {
-    // Confetti burst on mastery
     if (!isMastered) return;
     const colors = ["#FF6B35", "#EC4899", "#FBBF24", "#10B981", "#2563EB"];
     const pieces = [];
