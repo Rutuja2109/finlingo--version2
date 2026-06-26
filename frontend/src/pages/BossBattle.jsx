@@ -16,14 +16,27 @@ export default function BossBattle() {
 
   useEffect(() => { api.get(`/boss-battles/${chapterId}`).then(({ data }) => setData(data)); }, [chapterId]);
 
-  if (!data) return <div className="text-center py-20 text-zinc-500">Loading…</div>;
+  // Apply full-page dark mode while this route is mounted
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    const prevBody = body.style.background;
+    body.style.background = "#09090b";
+    root.classList.add("boss-mode");
+    return () => {
+      body.style.background = prevBody;
+      root.classList.remove("boss-mode");
+    };
+  }, []);
+
+  if (!data) return <div className="text-center py-20 text-zinc-300">Loading…</div>;
 
   if (!data.unlocked) {
     return (
-      <div className="min-h-[80vh] grid place-items-center bg-zinc-950 text-white rounded-3xl p-10 border border-zinc-800 -m-2">
+      <div className="min-h-[80vh] grid place-items-center p-10 -m-2" data-testid="boss-locked">
         <div className="text-center max-w-md">
           <Lock className="w-12 h-12 mx-auto text-[#EC4899] mb-3"/>
-          <h1 className="font-[Outfit] font-black text-3xl tracking-tighter mb-2">Boss locked</h1>
+          <h1 className="font-[Outfit] font-black text-3xl tracking-tighter mb-2 text-white">Boss locked</h1>
           <p className="text-zinc-400">Master all {data.concepts_total} concepts of this chapter to challenge the boss. You're at {data.concepts_done}/{data.concepts_total}.</p>
           <button onClick={() => nav(-1)} className="mt-5 px-5 py-3 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-bold">Back</button>
         </div>
@@ -43,11 +56,11 @@ export default function BossBattle() {
       setIdx(idx + 1);
       return;
     }
-    // submit
-    let correct = 0;
-    data.questions.forEach((qq, i) => { if (answers[i] === qq.content.correct) correct++; });
+    // Submit answers (question_id -> chosen_index) — server scores it
+    const ans = {};
+    data.questions.forEach((qq, i) => { if (answers[i] !== undefined) ans[qq.id] = answers[i]; });
     const { data: res } = await api.post("/boss-battles/submit", {
-      chapter_id: chapterId, correct_count: correct, total: data.questions.length,
+      chapter_id: chapterId, answers: ans,
     });
     setResult(res);
     refreshStats();

@@ -45,11 +45,12 @@ export default function AppShell({ children }) {
             <Link to="/achievements" className={linkCls("/achievements")} data-testid="nav-achievements">
               <Award className="w-4 h-4" /> Achievements
             </Link>
-            {user?.role === "admin" && (
+            {/* nav-admin: render placeholder until user hydrates to avoid flash */}
+            {user && user.role === "admin" ? (
               <Link to="/admin" className={linkCls("/admin")} data-testid="nav-admin">
                 <Sparkles className="w-4 h-4" /> AI Lab
               </Link>
-            )}
+            ) : null}
           </nav>
 
           <div className="flex items-center gap-3">

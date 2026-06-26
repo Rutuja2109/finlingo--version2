@@ -148,8 +148,7 @@ class RevisionGradeIn(BaseModel):
 
 class BossBattleSubmitIn(BaseModel):
     chapter_id: str
-    correct_count: int = Field(ge=0)
-    total: int = Field(ge=1)
+    answers: Dict[str, int]  # {question_id: chosen_option_index}
 
 
 # Where uploaded PDFs are stored (ephemeral container disk)
@@ -782,7 +781,21 @@ async def boss_battle(chapter_id: str, user: dict = Depends(get_current_user)):
 
 @api.post("/boss-battles/submit")
 async def boss_battle_submit(payload: BossBattleSubmitIn, user: dict = Depends(get_current_user)):
-    score = int(round(100 * payload.correct_count / max(1, payload.total)))
+    # Server-side scoring: look up each question id and grade against stored correct answer
+    if not payload.answers:
+        raise HTTPException(status_code=400, detail="No answers submitted")
+    lesson_docs = await db.lessons.find(
+        {"id": {"$in": list(payload.answers.keys())}, "type": "mcq"}, {"_id": 0}
+    ).to_list(200)
+    if not lesson_docs:
+        raise HTTPException(status_code=400, detail="No valid questions found")
+    correct = 0
+    for l in lesson_docs:
+        truth = l.get("content", {}).get("correct")
+        if truth is not None and payload.answers.get(l["id"]) == truth:
+            correct += 1
+    total = len(lesson_docs)
+    score = int(round(100 * correct / max(1, total)))
     passed = score >= 70
     xp_award = 50 if passed else 10
     coins_award = 15 if passed else 3
@@ -812,6 +825,7 @@ async def boss_battle_submit(payload: BossBattleSubmitIn, user: dict = Depends(g
         "score": score, "passed": passed, "xp_earned": xp_award,
         "coins_earned": coins_award, "new_xp": new_xp, "new_level": new_level,
         "new_achievements": unlocked,
+        "correct_count": correct, "total": total,
     }
 
 

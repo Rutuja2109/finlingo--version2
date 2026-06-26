@@ -62,6 +62,20 @@ body {
 }
 .fade-up { animation: fade-up 0.4s ease-out both; }
 
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+/* Boss Battle full-page dark mode */
+html.boss-mode body {
+    background: #09090b !important;
+    color: #f4f4f5;
+}
+html.boss-mode header {
+    background: rgba(9, 9, 11, 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+html.boss-mode header * { color: #f4f4f5; }
+html.boss-mode header [data-testid^="stat-"] {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+html.boss-mode header [data-testid="btn-logout"] {
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: #f4f4f5 !important;
 }

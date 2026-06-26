@@ -38,7 +38,7 @@ export default function Revision() {
 
   if (items.length === 0) {
     return (
-      <div className="pb-24 max-w-2xl">
+      <div className="pb-24 max-w-2xl" data-testid="revision-empty">
         <Header/>
         <div className="bg-white border border-zinc-200 rounded-3xl p-10 text-center">
           <Lumi size={120} mood="happy" className="mx-auto mb-3"/>
