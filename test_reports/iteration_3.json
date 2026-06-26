@@ -1,0 +1,71 @@
+{
+  "summary": "FinLingo Phase 2 testing — backend pytest (21/21 PASS) covering admin jobs/PDFs, admin-only auth (403), AI-generated course /full nested fetch, revisions SM-2 (grade=2 → +5 XP & interval up, grade=0 → resets to 1, unknown concept → 404), boss-battles shape/locked/unlocked/submit (passing=50XP + boss_slayer, failing=10XP), Phase 1 regressions (health, auth/me, leaderboard, stats). Frontend Playwright: admin login → nav-admin visible (after settle) → /admin AI Lab loads with pdf-uploader, 1 PDF (loma.pdf 70MB), 2 generation jobs including LOMA 281 v2 status 'Done'. Demo user does NOT see nav-admin, sees nav-revise, header chips (xp/coins/streak) render. Revise page loads with mascot empty-state ('Nothing due yet') for demo. Dashboard shows AI-generated 'LOMA 281 v2' course alongside seeded. /learn/<ai-course> renders 13 concept-node cards and two boss-cta buttons in disabled state because the chapter isn't complete. Direct nav to /boss/<chapter_id> shows 'Boss locked' lock screen with '1/7 mastered' messaging. Phase 1 regression flows verified working in prior iteration.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "AppShell nav-admin (post-login render)",
+        "issue": "Immediately after admin login redirect, `[data-testid=\"nav-admin\"]` count was 0 on first probe; navigating away and back made it appear. AuthContext likely settles the role asynchronously, so the AppShell renders once with stale/no user before the role-gated link mounts. Not a functional blocker (link works once user object hydrates), but causes a perceptible flash where admin nav is missing.",
+        "selector": "[data-testid=\"nav-admin\"]",
+        "priority": "LOW"
+      },
+      {
+        "component": "Revision page empty-state",
+        "issue": "Spec mentions `revise-cta` and `revision-done` testids; empty 'Nothing due yet' card has no testid attribute. Only `revision-card` (which is not rendered in empty state) is documented. Adding `data-testid=\"revision-empty\"` (or `revision-done`) would make tests deterministic.",
+        "selector": "(missing)",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Boss Battle (/boss/<chapter_id>) locked state",
+        "issues": [
+          "Spec asks for full-page zinc-950 dark mode background. Only the inner BossBattle card area is dark; the surrounding page chrome (body + AppShell header area) remains light (rgb(250,250,250)). Consider applying `bg-zinc-950 text-zinc-100` on the root wrapper (or `<body>` via effect) so the whole route is dark, not just the card."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase2.py",
+    "/app/test_reports/pytest/phase2_results.xml"
+  ],
+  "action_items": [
+    "Optional polish: apply dark-mode (`bg-zinc-950`) to the whole BossBattle page wrapper, not just the inner card, to match spec.",
+    "Optional polish: gate nav-admin render on `auth-loaded` state so it doesn't flash absent right after login.",
+    "Optional polish: add `data-testid=\"revision-empty\"` to the Revise empty-state card for cleaner E2E selectors."
+  ],
+  "critical_code_review_comments": [
+    "server.py is now ~850 lines. Phase 2 added admin/revisions/boss-battles inline — consider splitting into routers/admin.py, routers/revisions.py, routers/boss.py.",
+    "`_run_generation_job` uses module-level `logger` defined at the bottom of the file; if a generation runs before module logger is initialized it would NameError. Today it's fine because logger is set during import, but moving it to top would be safer.",
+    "/api/boss-battles/{chapter_id} samples MCQs with `random.sample` on every call — score depends on which 8 questions were sampled but the submit endpoint trusts client-supplied correct_count/total. That means a malicious client can POST {correct_count:10,total:10} for any chapter and unlock boss_slayer + 50 XP without ever answering. Recommend server-side scoring: send question ids+correct answers map and validate or accept answer payload and grade on server.",
+    "Course/{id}/full unlock logic mutates `concept['progress']['status']` in place — fine, but doc this — the persisted progress doc still says 'active' while server-side returned 'locked' which can drift if cached on the client."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase2.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (21/21 pytest)",
+    "frontend": "~93% (11/12 spec-tested flows; one minor flake on nav-admin first probe; dark-mode partial)"
+  },
+  "test_credentials": "admin@finlingo.com / Admin@123  ·  demo@finlingo.com / Demo@123 (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "Backend tests POSTed /progress/complete-concept and /boss-battles/submit on the demo user, awarding XP and unlocking the boss_slayer achievement. No fresh users were created.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All Phase 2 backend endpoints are real and behave per spec. Boss battle scoring is client-trusted — flag if hardening is in scope. The AI-generated course id 36fa5852-7597-46e1-8f55-5054486721b3 already exists with 2 chapters, 13 concepts, real MCQ lessons; do not regenerate (expensive). Demo user now has boss_slayer achievement + extra XP (~110) from test runs; if testing 'no achievements yet', use a fresh signup.",
+  "rca of the issue": {
+    "issue_1_nav_admin_flash": {
+      "description": "Brief absence of nav-admin link right after admin login.",
+      "likely_cause": "AppShell renders before AuthContext finishes the post-login state update; `user?.role === 'admin'` is false in the first paint. Once the context settles (next render) the link appears.",
+      "mitigation": "Show a small loader / hold render until `user` is non-null after a successful login transition, or persist last-known role from localStorage and hydrate immediately."
+    },
+    "issue_2_boss_dark_mode_partial": {
+      "description": "Boss Battle page only applies dark bg to inner card; page chrome stays light.",
+      "likely_cause": "BossBattle component sets `bg-zinc-950` on its container div instead of wrapping the route (or applying via body effect).",
+      "mitigation": "In BossBattle.jsx wrap with `<div className=\"min-h-screen bg-zinc-950 text-zinc-100\">…</div>` at the outermost return, or `useEffect(() => { document.body.classList.add('bg-zinc-950'); return () => document.body.classList.remove('bg-zinc-950'); }, [])`."
+    }
+  }
+}

@@ -12,6 +12,9 @@ import CoursePath from "@/pages/CoursePath";
 import LessonPlayer from "@/pages/LessonPlayer";
 import Leaderboard from "@/pages/Leaderboard";
 import Achievements from "@/pages/Achievements";
+import Admin from "@/pages/Admin";
+import Revision from "@/pages/Revision";
+import BossBattle from "@/pages/BossBattle";
 
 function Protected({ children }) {
   const { user } = useAuth();
@@ -42,6 +45,9 @@ export default function App() {
           <Route path="/concept/:conceptId" element={<Protected><LessonPlayer/></Protected>}/>
           <Route path="/leaderboard" element={<Protected><Leaderboard/></Protected>}/>
           <Route path="/achievements" element={<Protected><Achievements/></Protected>}/>
+          <Route path="/admin" element={<Protected><Admin/></Protected>}/>
+          <Route path="/revise" element={<Protected><Revision/></Protected>}/>
+          <Route path="/boss/:chapterId" element={<Protected><BossBattle/></Protected>}/>
           <Route path="*" element={<Navigate to="/" replace/>}/>
         </Routes>
       </AuthProvider>

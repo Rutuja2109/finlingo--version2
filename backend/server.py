@@ -7,18 +7,23 @@ load_dotenv(ROOT_DIR / ".env")
 
 import os
 import uuid
+import asyncio
 import logging
+import shutil
 import bcrypt
 import jwt
 from datetime import datetime, timezone, timedelta
+from pathlib import Path as P
 from typing import List, Optional, Any, Dict
 
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Response, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Response, UploadFile, File, Form, BackgroundTasks, status
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, EmailStr, Field
 
 from seed_data import seed_courses
+from pdf_ingest import extract_chapters
+from llm_gen import generate_chapter_lessons
 
 # ---------- Mongo ----------
 mongo_url = os.environ["MONGO_URL"]
@@ -124,6 +129,32 @@ class CompleteConceptIn(BaseModel):
 
 class EnrollIn(BaseModel):
     course_id: str
+
+
+class GenerateCourseIn(BaseModel):
+    name: str = Field(min_length=1, max_length=60)
+    title: str = Field(min_length=1, max_length=120)
+    certification: str = Field(min_length=1, max_length=40)
+    description: str = Field(default="", max_length=400)
+    color: str = Field(default="#FF6B35")
+    icon: str = Field(default="BookOpen")
+    max_chapters: int = Field(default=3, ge=1, le=12)  # cap for cost
+
+
+class RevisionGradeIn(BaseModel):
+    concept_id: str
+    quality: int = Field(ge=0, le=3)  # 0=again, 1=hard, 2=good, 3=easy
+
+
+class BossBattleSubmitIn(BaseModel):
+    chapter_id: str
+    correct_count: int = Field(ge=0)
+    total: int = Field(ge=1)
+
+
+# Where uploaded PDFs are stored (ephemeral container disk)
+UPLOAD_DIR = P("/app/data/uploads")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ---------- App ----------
@@ -359,13 +390,18 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
         coins_earned = 0
 
     now = datetime.now(timezone.utc).isoformat()
+    # Schedule first review 1 day out if newly completed
+    set_doc = {
+        "user_id": user["id"], "concept_id": payload.concept_id,
+        "status": status_, "mastery": max(mastery, (existing or {}).get("mastery", 0)),
+        "last_completed_at": now,
+    }
+    if status_ in ("completed", "mastered") and not (existing and existing.get("next_review_at")):
+        set_doc["next_review_at"] = (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
+        set_doc["review_interval_days"] = 1
     await db.user_progress.update_one(
         {"user_id": user["id"], "concept_id": payload.concept_id},
-        {"$set": {
-            "user_id": user["id"], "concept_id": payload.concept_id,
-            "status": status_, "mastery": max(mastery, (existing or {}).get("mastery", 0)),
-            "last_completed_at": now,
-        }, "$inc": {"attempts": 1, "xp_earned": xp_earned}},
+        {"$set": set_doc, "$inc": {"attempts": 1, "xp_earned": xp_earned}},
         upsert=True,
     )
 
@@ -494,6 +530,289 @@ async def leaderboard(user: dict = Depends(get_current_user)):
         r["rank"] = i + 1
         r["is_me"] = r["user_id"] == user["id"]
     return rows
+
+
+# ---------- ADMIN: PDF -> COURSE ----------
+async def _require_admin(user: dict = Depends(get_current_user)) -> dict:
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    return user
+
+
+@api.post("/admin/pdf/upload")
+async def upload_pdf(file: UploadFile = File(...), admin: dict = Depends(_require_admin)):
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only .pdf files accepted")
+    pdf_id = str(uuid.uuid4())
+    dest = UPLOAD_DIR / f"{pdf_id}.pdf"
+    with dest.open("wb") as f:
+        shutil.copyfileobj(file.file, f)
+    size = dest.stat().st_size
+    doc = {
+        "id": pdf_id, "original_name": file.filename, "path": str(dest),
+        "size_bytes": size, "uploaded_by": admin["id"],
+        "uploaded_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.pdf_uploads.insert_one({**doc})
+    return {"pdf_id": pdf_id, "filename": file.filename, "size_bytes": size}
+
+
+@api.get("/admin/pdf/list")
+async def list_pdfs(admin: dict = Depends(_require_admin)):
+    rows = await db.pdf_uploads.find({}, {"_id": 0}).sort("uploaded_at", -1).to_list(100)
+    return rows
+
+
+@api.get("/admin/jobs")
+async def list_jobs(admin: dict = Depends(_require_admin)):
+    rows = await db.generation_jobs.find({}, {"_id": 0}).sort("created_at", -1).to_list(50)
+    return rows
+
+
+@api.get("/admin/jobs/{job_id}")
+async def get_job(job_id: str, admin: dict = Depends(_require_admin)):
+    row = await db.generation_jobs.find_one({"id": job_id}, {"_id": 0})
+    if not row:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return row
+
+
+async def _run_generation_job(job_id: str, pdf_path: str, course_meta: dict, max_chapters: int):
+    """Background task: parse PDF -> per chapter LLM call -> persist course."""
+    try:
+        await db.generation_jobs.update_one(
+            {"id": job_id}, {"$set": {"status": "extracting", "progress": 5}}
+        )
+
+        # 1. Extract chapters from PDF (synchronous, CPU-bound, run in thread)
+        chapters = await asyncio.to_thread(extract_chapters, pdf_path, None, 12000, max_chapters)
+        chapters = chapters[:max_chapters]
+        if not chapters:
+            raise RuntimeError("No chapters detected in PDF — try a different document or pattern.")
+
+        await db.generation_jobs.update_one(
+            {"id": job_id},
+            {"$set": {"status": "generating", "progress": 15,
+                      "chapters_detected": len(chapters)}}
+        )
+
+        # 2. Create course shell
+        course_id = str(uuid.uuid4())
+        slug_base = course_meta["name"].lower().replace(" ", "-")
+        slug = f"{slug_base}-{course_id[:6]}"
+        course_doc = {
+            "id": course_id, "slug": slug,
+            "name": course_meta["name"], "title": course_meta["title"],
+            "certification": course_meta["certification"],
+            "description": course_meta["description"],
+            "color": course_meta["color"], "icon": course_meta["icon"],
+            "order": 99, "ai_generated": True,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.courses.insert_one(course_doc)
+
+        # 3. For each chapter, call LLM and persist
+        for idx, ch in enumerate(chapters):
+            pct = 15 + int(80 * (idx / max(1, len(chapters))))
+            await db.generation_jobs.update_one(
+                {"id": job_id},
+                {"$set": {"progress": pct, "current_chapter": ch.title}}
+            )
+            try:
+                data = await generate_chapter_lessons(
+                    certification=course_meta["certification"],
+                    chapter_title=ch.title,
+                    chapter_text=ch.body_text,
+                )
+            except Exception as e:
+                logger.warning("LLM failed for ch %s: %s — skipping", ch.title, e)
+                continue
+
+            chapter_id = str(uuid.uuid4())
+            await db.chapters.insert_one({
+                "id": chapter_id, "course_id": course_id,
+                "order": idx + 1, "title": ch.title,
+                "description": f"Chapter {ch.chapter_no} of {course_meta['name']}",
+                "source_pages": [ch.start_page, ch.end_page],
+            })
+
+            for m_i, m in enumerate(data.get("modules", [])):
+                module_id = str(uuid.uuid4())
+                await db.modules.insert_one({
+                    "id": module_id, "chapter_id": chapter_id,
+                    "order": m_i + 1, "title": m.get("title", f"Module {m_i+1}"),
+                })
+                for c_i, c in enumerate(m.get("concepts", [])):
+                    concept_id = str(uuid.uuid4())
+                    await db.concepts.insert_one({
+                        "id": concept_id, "module_id": module_id,
+                        "order": c_i + 1,
+                        "title": c.get("title", "Untitled concept"),
+                        "learning_objective": c.get("learning_objective", ""),
+                        "simple_explanation": c.get("simple_explanation", ""),
+                        "key_takeaways": c.get("key_takeaways", []),
+                        "common_mistakes": c.get("common_mistakes", []),
+                        "xp_reward": int(c.get("xp_reward", 15)),
+                    })
+                    for l_i, lesson in enumerate(c.get("lessons", [])):
+                        await db.lessons.insert_one({
+                            "id": str(uuid.uuid4()), "concept_id": concept_id,
+                            "order": l_i + 1, "type": lesson.get("type", "intro"),
+                            "content": lesson.get("content", {}),
+                        })
+
+        await db.generation_jobs.update_one(
+            {"id": job_id},
+            {"$set": {"status": "completed", "progress": 100, "course_id": course_id,
+                      "completed_at": datetime.now(timezone.utc).isoformat()}}
+        )
+    except Exception as e:
+        logger.exception("Generation job %s failed", job_id)
+        await db.generation_jobs.update_one(
+            {"id": job_id},
+            {"$set": {"status": "failed", "error": str(e),
+                      "failed_at": datetime.now(timezone.utc).isoformat()}}
+        )
+
+
+@api.post("/admin/pdf/{pdf_id}/generate")
+async def generate_course_from_pdf(pdf_id: str, payload: GenerateCourseIn,
+                                   bg: BackgroundTasks,
+                                   admin: dict = Depends(_require_admin)):
+    pdf = await db.pdf_uploads.find_one({"id": pdf_id}, {"_id": 0})
+    if not pdf:
+        raise HTTPException(status_code=404, detail="PDF not found")
+
+    job_id = str(uuid.uuid4())
+    await db.generation_jobs.insert_one({
+        "id": job_id, "pdf_id": pdf_id, "status": "queued", "progress": 0,
+        "course_meta": payload.model_dump(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_by": admin["id"],
+    })
+    bg.add_task(_run_generation_job, job_id, pdf["path"],
+                payload.model_dump(), payload.max_chapters)
+    return {"job_id": job_id, "status": "queued"}
+
+
+# ---------- REVISION (Spaced Repetition, SM-2 lite) ----------
+def _next_review_interval(prev_interval_days: int, quality: int) -> int:
+    """SM-2-lite: quality 0=again, 1=hard, 2=good, 3=easy."""
+    if quality == 0:
+        return 1
+    if quality == 1:
+        return max(1, prev_interval_days)
+    if quality == 2:
+        return max(2, int(prev_interval_days * 2.0)) if prev_interval_days else 2
+    # easy
+    return max(4, int(prev_interval_days * 2.7)) if prev_interval_days else 4
+
+
+@api.get("/revisions/due")
+async def revisions_due(user: dict = Depends(get_current_user)):
+    """Return concepts that are due for review (mastered/completed + next_review_at <= now)."""
+    now_iso = datetime.now(timezone.utc).isoformat()
+    rows = await db.user_progress.find(
+        {"user_id": user["id"],
+         "status": {"$in": ["completed", "mastered"]},
+         "$or": [{"next_review_at": {"$lte": now_iso}}, {"next_review_at": {"$exists": False}}]},
+        {"_id": 0},
+    ).limit(20).to_list(20)
+    concept_ids = [r["concept_id"] for r in rows]
+    concepts = await db.concepts.find({"id": {"$in": concept_ids}}, {"_id": 0}).to_list(50)
+    by_id = {c["id"]: c for c in concepts}
+    return [{"progress": r, "concept": by_id.get(r["concept_id"])} for r in rows if by_id.get(r["concept_id"])]
+
+
+@api.post("/revisions/grade")
+async def revisions_grade(payload: RevisionGradeIn, user: dict = Depends(get_current_user)):
+    prog = await db.user_progress.find_one(
+        {"user_id": user["id"], "concept_id": payload.concept_id}, {"_id": 0}
+    )
+    if not prog:
+        raise HTTPException(status_code=404, detail="No progress for concept")
+    prev = int(prog.get("review_interval_days", 0))
+    nxt = _next_review_interval(prev, payload.quality)
+    next_at = (datetime.now(timezone.utc) + timedelta(days=nxt)).isoformat()
+    xp_bonus = [0, 2, 5, 8][payload.quality]
+    await db.user_progress.update_one(
+        {"user_id": user["id"], "concept_id": payload.concept_id},
+        {"$set": {"review_interval_days": nxt, "next_review_at": next_at,
+                  "last_reviewed_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True,
+    )
+    if xp_bonus:
+        await db.user_stats.update_one(
+            {"user_id": user["id"]}, {"$inc": {"total_xp": xp_bonus, "coins": xp_bonus // 2}}
+        )
+    return {"next_review_in_days": nxt, "xp_bonus": xp_bonus}
+
+
+# ---------- BOSS BATTLE ----------
+@api.get("/boss-battles/{chapter_id}")
+async def boss_battle(chapter_id: str, user: dict = Depends(get_current_user)):
+    """Return chapter info + a mixed quiz of MCQs sampled from that chapter's concepts."""
+    chapter = await db.chapters.find_one({"id": chapter_id}, {"_id": 0})
+    if not chapter:
+        raise HTTPException(status_code=404, detail="Chapter not found")
+    modules = await db.modules.find({"chapter_id": chapter_id}, {"_id": 0}).to_list(50)
+    module_ids = [m["id"] for m in modules]
+    concepts = await db.concepts.find({"module_id": {"$in": module_ids}}, {"_id": 0}).to_list(200)
+    concept_ids = [c["id"] for c in concepts]
+
+    # Require all concepts completed
+    prog = await db.user_progress.find(
+        {"user_id": user["id"], "concept_id": {"$in": concept_ids}}, {"_id": 0}
+    ).to_list(500)
+    done_ids = {p["concept_id"] for p in prog if p.get("status") in ("completed", "mastered")}
+    unlocked = len(done_ids) >= max(1, len(concept_ids))
+
+    # Pull MCQs from lessons of those concepts
+    lessons = await db.lessons.find(
+        {"concept_id": {"$in": concept_ids}, "type": "mcq"}, {"_id": 0}
+    ).to_list(500)
+    import random as _r
+    questions = _r.sample(lessons, min(8, len(lessons))) if lessons else []
+    return {
+        "chapter": chapter, "unlocked": unlocked,
+        "concepts_total": len(concept_ids), "concepts_done": len(done_ids),
+        "questions": [{"id": q["id"], "content": q["content"]} for q in questions],
+    }
+
+
+@api.post("/boss-battles/submit")
+async def boss_battle_submit(payload: BossBattleSubmitIn, user: dict = Depends(get_current_user)):
+    score = int(round(100 * payload.correct_count / max(1, payload.total)))
+    passed = score >= 70
+    xp_award = 50 if passed else 10
+    coins_award = 15 if passed else 3
+    # Stats update
+    stats = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0}) or {}
+    new_xp = stats.get("total_xp", 0) + xp_award
+    new_coins = stats.get("coins", 0) + coins_award
+    new_level = 1 + new_xp // 100
+    achievements = stats.get("achievements", [])
+    unlocked = []
+    if passed and "boss_slayer" not in achievements:
+        achievements.append("boss_slayer")
+        unlocked.append({"code": "boss_slayer", "title": "Boss Slayer", "icon": "Crown"})
+    await db.user_stats.update_one(
+        {"user_id": user["id"]},
+        {"$set": {"total_xp": new_xp, "level": new_level, "coins": new_coins,
+                  "achievements": achievements}},
+        upsert=True,
+    )
+    # Record battle
+    await db.boss_battles.insert_one({
+        "id": str(uuid.uuid4()), "user_id": user["id"], "chapter_id": payload.chapter_id,
+        "score": score, "passed": passed,
+        "completed_at": datetime.now(timezone.utc).isoformat(),
+    })
+    return {
+        "score": score, "passed": passed, "xp_earned": xp_award,
+        "coins_earned": coins_award, "new_xp": new_xp, "new_level": new_level,
+        "new_achievements": unlocked,
+    }
 
 
 # ---------- HEALTH ----------

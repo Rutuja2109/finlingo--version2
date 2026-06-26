@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
-import { Lock, Check, Sparkles, ChevronLeft } from "lucide-react";
+import { Lock, Check, Sparkles, ChevronLeft, Skull } from "lucide-react";
 import Lumi from "@/components/Lumi";
 
 export default function CoursePath() {
@@ -30,13 +30,18 @@ export default function CoursePath() {
         </div>
       </div>
 
-      {course.chapters.map((ch, ci) => (
+      {course.chapters.map((ch, ci) => {
+        const allConcepts = ch.modules.flatMap((m) => m.concepts);
+        const doneCount = allConcepts.filter((c) => ["completed","mastered"].includes(c.progress?.status)).length;
+        const bossReady = doneCount === allConcepts.length && allConcepts.length > 0;
+        return (
         <section key={ch.id} className="mb-10" data-testid={`chapter-${ci+1}`}>
           <div className="flex items-baseline justify-between mb-3">
             <div>
               <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-zinc-400">Chapter {ci+1}</p>
               <h2 className="font-[Outfit] font-black text-2xl tracking-tight">{ch.title}</h2>
             </div>
+            <span className="text-xs font-bold text-zinc-500">{doneCount}/{allConcepts.length} done</span>
           </div>
           <p className="text-zinc-500 mb-6 max-w-2xl">{ch.description}</p>
 
@@ -57,8 +62,29 @@ export default function CoursePath() {
               </div>
             </div>
           ))}
+
+          {/* Boss Battle CTA */}
+          <button
+            data-testid={`boss-cta-${ch.id}`}
+            disabled={!bossReady}
+            onClick={() => nav(`/boss/${ch.id}`)}
+            className={`mt-2 w-full md:w-auto flex items-center gap-4 px-6 py-5 rounded-3xl text-left transition group ${
+              bossReady
+                ? "bg-gradient-to-r from-zinc-950 via-zinc-900 to-[#1a0a2e] text-white hover:scale-[1.01] hover:shadow-2xl"
+                : "bg-zinc-100 text-zinc-400 cursor-not-allowed"
+            }`}>
+            <div className={`w-14 h-14 rounded-2xl grid place-items-center ${bossReady ? "bg-[#EC4899]/30 text-[#EC4899]" : "bg-zinc-200 text-zinc-400"}`}>
+              {bossReady ? <Skull className="w-7 h-7"/> : <Lock className="w-6 h-6"/>}
+            </div>
+            <div className="flex-1">
+              <p className="text-[10px] uppercase tracking-[0.3em] font-bold" style={{ color: bossReady ? "#EC4899" : "" }}>Boss Battle</p>
+              <p className="font-[Outfit] font-black text-lg">{bossReady ? "Challenge the boss" : "Master all concepts to unlock"}</p>
+              <p className="text-xs opacity-80">{bossReady ? "+50 XP · Mixed quiz from this chapter" : `${doneCount}/${allConcepts.length} concepts complete`}</p>
+            </div>
+          </button>
         </section>
-      ))}
+        );
+      })}
     </div>
   );
 }

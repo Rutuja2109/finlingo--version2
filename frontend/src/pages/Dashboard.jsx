@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
-import { ArrowRight, Sparkles, Target, Flame } from "lucide-react";
+import { ArrowRight, Sparkles, Target, Flame, Repeat } from "lucide-react";
 
 const ICONS_SVG = {
   Shield: "M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z",
@@ -15,13 +15,19 @@ export default function Dashboard() {
   const { user, stats } = useAuth();
   const [courses, setCourses] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
+  const [dueCount, setDueCount] = useState(0);
   const [busy, setBusy] = useState({});
 
   useEffect(() => {
     (async () => {
-      const [c, e] = await Promise.all([api.get("/courses"), api.get("/enrollments/me")]);
+      const [c, e, r] = await Promise.all([
+        api.get("/courses"),
+        api.get("/enrollments/me"),
+        api.get("/revisions/due").catch(() => ({ data: [] })),
+      ]);
       setCourses(c.data);
       setEnrolled(e.data);
+      setDueCount((r.data || []).length);
     })();
   }, []);
 
@@ -77,6 +83,22 @@ export default function Dashboard() {
               style={{ width: `${dailyPct}%` }} data-testid="daily-progress-bar"/>
           </div>
           <p className="text-sm text-zinc-500 mt-2">{Math.round(dailyPct)}% complete</p>
+
+          {dueCount > 0 && (
+            <Link to="/revise" data-testid="revise-cta"
+              className="mt-5 flex items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-[#2563EB]/10 to-[#EC4899]/10 border border-[#2563EB]/20 hover:border-[#2563EB]/50 transition">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#2563EB] grid place-items-center text-white">
+                  <Repeat className="w-5 h-5"/>
+                </div>
+                <div>
+                  <p className="font-[Outfit] font-bold">Revision queue ready</p>
+                  <p className="text-xs text-zinc-500">{dueCount} concept{dueCount>1?"s":""} due for review</p>
+                </div>
+              </div>
+              <ArrowRight className="w-5 h-5 text-[#2563EB]"/>
+            </Link>
+          )}
         </div>
         <div className="bg-white border border-zinc-200 rounded-3xl p-6 flex flex-col items-center text-center">
           <Flame className="w-8 h-8 text-[#FF5C00] mb-2"/>

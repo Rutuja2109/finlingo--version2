@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Zap, Coins, LogOut, Trophy, Home, BookOpen, Award } from "lucide-react";
+import { Flame, Zap, Coins, LogOut, Trophy, Home, BookOpen, Award, Repeat, Sparkles } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 
@@ -36,12 +36,20 @@ export default function AppShell({ children }) {
             <Link to="/courses" className={linkCls("/courses")} data-testid="nav-courses">
               <BookOpen className="w-4 h-4" /> Courses
             </Link>
+            <Link to="/revise" className={linkCls("/revise")} data-testid="nav-revise">
+              <Repeat className="w-4 h-4" /> Revise
+            </Link>
             <Link to="/leaderboard" className={linkCls("/leaderboard")} data-testid="nav-leaderboard">
               <Trophy className="w-4 h-4" /> Leaderboard
             </Link>
             <Link to="/achievements" className={linkCls("/achievements")} data-testid="nav-achievements">
               <Award className="w-4 h-4" /> Achievements
             </Link>
+            {user?.role === "admin" && (
+              <Link to="/admin" className={linkCls("/admin")} data-testid="nav-admin">
+                <Sparkles className="w-4 h-4" /> AI Lab
+              </Link>
+            )}
           </nav>
 
           <div className="flex items-center gap-3">
