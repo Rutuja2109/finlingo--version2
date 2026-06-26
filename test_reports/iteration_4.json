@@ -1,0 +1,57 @@
+{
+  "summary": "FinLingo Phase 2.5 testing — Backend pytest (12/12 PASS) covering forgot-password (existing+unknown email), reset-password (invalid token, full reset cycle, token reuse blocked, auto-login), google/session (401 on bogus session_id), and Phase 1+2 regression smoke (login, /me, /courses, /stats/me, /admin/jobs, /revisions/due, /boss-battles). Frontend Playwright: /login has btn-google + link-forgot, /signup has btn-google. btn-google click navigates to https://auth.emergentagent.com/?redirect=...dashboard (confirmed). link-forgot → /forgot-password. forgot-result panel shows dev-reset-url + btn-copy-reset + link-reset for demo@finlingo.com. /reset-password renders inputs + submit. Full cycle (Demo@123 → NewPwd@123 → relogin → restore back to Demo@123) works end-to-end on the frontend AFTER rewriting the host of the returned reset URL. Demo creds restored to Demo@123 — verified by final login.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/auth/forgot-password",
+        "issue": "dev_reset_url is built from request.headers['origin']/['referer'] which through the cluster ingress resolves to an INTERNAL hostname (e.g. https://adaptive-academy-16.cluster-7.preview.emergentcf.cloud/reset-password?token=...). Hitting that URL externally returns '403 Forbidden' so the reset link is unusable by the end-user pasting it from the UI. The public host is https://adaptive-academy-16.preview.emergentagent.com.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Forgot password → click 'Open reset link' anchor",
+        "issue": "link-reset href is the internal cluster URL returned by the backend (see backend critical bug). Clicking it from the UI lands on a 403 page. Workaround in this test: rewrite host to the public REACT_APP_BACKEND_URL host — flow works perfectly after rewrite (reset page renders, password change works, auto-login + redirect to /dashboard succeed).",
+        "affected_selectors": ["[data-testid=\"link-reset\"]", "[data-testid=\"dev-reset-url\"]"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase25.py",
+    "/app/test_reports/pytest/phase25_results.xml"
+  ],
+  "action_items": [
+    "FIX (HIGH): Backend /auth/forgot-password should not trust request Origin/Referer for building dev_reset_url. Use a configured FRONTEND_PUBLIC_URL env var (or REACT_APP_BACKEND_URL piped into backend .env) and construct `f\"{FRONTEND_PUBLIC_URL}/reset-password?token={token}\"`. Alternatively return only the token + path and let the frontend assemble window.location.origin + path."
+  ],
+  "critical_code_review_comments": [
+    "server.py forgot_password builds the reset URL from untrusted request headers (Origin/Referer). On preview deployments these can be the internal ingress hostname, which is not externally reachable — making the dev-mode reset link useless. Use a server-side configured public URL.",
+    "reset_password performs auto-login by setting cookies + returning access_token. That's fine, but consider invalidating any other active refresh tokens for the user after password change for safety.",
+    "google_session: no rate limiting on the OAuth exchange endpoint; consider light rate limiting since invalid session_id incurs an outbound HTTPS call to demobackend.emergentagent.com.",
+    "server.py is now >1000 lines — splitting into routers (auth, admin, courses, revisions, boss) is overdue (already flagged in iteration_3)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase25.py (new — 12 tests)"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 pytest)",
+    "frontend": "~95% — all spec testids and flows present and functional; one HIGH backend-side bug breaks the click-through reset link in real usage"
+  },
+  "test_credentials": "demo@finlingo.com / Demo@123 (RESTORED at end of test) · admin@finlingo.com / Admin@123",
+  "seed_data_creation": "None new. Did create+consume two password_resets rows in MongoDB for demo user during full reset cycle (both marked used). Demo password mutated through Demo@123 → TmpPass@999 → Demo@123 (backend test) and again Demo@123 → NewPwd@123 → Demo@123 (frontend test). Final state: Demo@123 confirmed working.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Phase 2.5 backend behavior is correct EXCEPT the dev_reset_url hostname. After main agent fixes forgot-password to use a configured public URL, simply re-run /app/backend/tests/test_phase25.py and do a quick frontend run of forgot → click link-reset directly (without hostname rewrite) → reset → dashboard. Google OAuth E2E cannot be tested without a real Google session — only negative path (invalid session_id → 401) is automatable; btn-google navigation to auth.emergentagent.com is verified. Demo creds are Demo@123 (restored). Watch out: demo user stats (XP/level/streak) showed 0 on the dashboard after this run — likely unrelated to reset (server only updates password_hash) but flag if you see XP loss.",
+  "rca_of_the_issue": {
+    "issue_dev_reset_url_internal_host": {
+      "description": "POST /api/auth/forgot-password returns dev_reset_url whose host is the cluster-internal ingress hostname (https://adaptive-academy-16.cluster-7.preview.emergentcf.cloud) instead of the public host (https://adaptive-academy-16.preview.emergentagent.com). External browsers hit 403 Forbidden when opening that URL.",
+      "reproduction": "curl -X POST https://adaptive-academy-16.preview.emergentagent.com/api/auth/forgot-password -H 'Content-Type: application/json' -d '{\"email\":\"demo@finlingo.com\"}' — observe dev_reset_url contains 'emergentcf.cloud' (internal). Open the URL in a browser → 403 Forbidden.",
+      "root_cause": "server.py line ~317: `origin = request.headers.get('origin') or request.headers.get('referer', '').rstrip('/')`. The reverse proxy/ingress (or some intermediate hop) forwards Origin/Referer values that point to the internal cluster hostname rather than the public preview hostname. The backend trusts these and builds the reset URL with the wrong host.",
+      "mitigation": "Introduce an explicit env var (FRONTEND_PUBLIC_URL or PUBLIC_APP_URL) in backend/.env (e.g. https://adaptive-academy-16.preview.emergentagent.com) and use it:\n    public_url = os.environ.get('FRONTEND_PUBLIC_URL') or origin\n    reset_url = f\"{public_url}/reset-password?token={token}\"\nOr return only `{path: '/reset-password', token: ...}` and let the frontend build `window.location.origin + path + '?token=' + token`."
+    }
+  }
+}

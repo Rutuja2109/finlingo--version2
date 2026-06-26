@@ -20,6 +20,7 @@ from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Respons
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, EmailStr, Field
+import httpx
 
 from seed_data import seed_courses
 from pdf_ingest import extract_chapters
@@ -129,6 +130,19 @@ class CompleteConceptIn(BaseModel):
 
 class EnrollIn(BaseModel):
     course_id: str
+
+
+class GoogleSessionIn(BaseModel):
+    session_id: str
+
+
+class ForgotPasswordIn(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordIn(BaseModel):
+    token: str = Field(min_length=10)
+    new_password: str = Field(min_length=6)
 
 
 class GenerateCourseIn(BaseModel):
@@ -278,6 +292,139 @@ async def refresh_token(request: Request, response: Response):
         return {"ok": True}
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+
+@api.post("/auth/forgot-password")
+async def forgot_password(payload: ForgotPasswordIn, request: Request):
+    """Generate a 1-hour reset token. In dev-mode (no email service wired),
+    we return the reset URL inline so the user can use it directly.
+    Always returns 200 to avoid revealing whether an email exists.
+    """
+    email = payload.email.lower()
+    user = await db.users.find_one({"email": email})
+    if not user:
+        return {"ok": True, "dev_reset_url": None,
+                "message": "If this email exists, a reset link has been generated."}
+
+    token = str(uuid.uuid4()).replace("-", "") + str(uuid.uuid4()).replace("-", "")
+    expires_at = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+    await db.password_resets.insert_one({
+        "id": str(uuid.uuid4()), "user_id": user["id"],
+        "token": token, "expires_at": expires_at, "used": False,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    # Build the frontend reset URL from the request Origin (works in any env)
+    origin = request.headers.get("origin") or request.headers.get("referer", "").rstrip("/")
+    if origin and "/api" in origin:
+        origin = origin.split("/api")[0]
+    reset_url = f"{origin}/reset-password?token={token}" if origin else f"/reset-password?token={token}"
+    return {
+        "ok": True,
+        "dev_reset_url": reset_url,
+        "message": "Reset link generated. In production this would be emailed to you.",
+    }
+
+
+@api.post("/auth/reset-password")
+async def reset_password(payload: ResetPasswordIn, response: Response):
+    doc = await db.password_resets.find_one({"token": payload.token, "used": False}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=400, detail="Invalid or already-used token")
+    expires_at = doc["expires_at"]
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Reset link has expired")
+
+    user = await db.users.find_one({"id": doc["user_id"]})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    await db.users.update_one(
+        {"id": user["id"]}, {"$set": {"password_hash": hash_password(payload.new_password)}}
+    )
+    await db.password_resets.update_one(
+        {"token": payload.token}, {"$set": {"used": True,
+                                            "used_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    # Auto-login on successful reset
+    access = create_access_token(user["id"], user["email"])
+    refresh = create_refresh_token(user["id"])
+    set_auth_cookies(response, access, refresh)
+    return {
+        "id": user["id"], "email": user["email"], "name": user["name"],
+        "role": user.get("role", "user"),
+        "avatar_color": user.get("avatar_color", "#FF6B35"),
+        "access_token": access,
+    }
+
+
+@api.post("/auth/google/session")
+async def google_session(payload: GoogleSessionIn, response: Response):
+    """Exchange Emergent OAuth session_id for our JWT.
+
+    Flow:
+    1. Call Emergent's /session-data with the session_id to get verified user info.
+    2. Find or create the user in our users collection (linked by email).
+    3. Issue our own JWT cookies + Bearer token so the rest of the app works unchanged.
+    """
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        try:
+            r = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": payload.session_id},
+            )
+        except Exception as e:
+            raise HTTPException(status_code=502, detail=f"Auth provider unreachable: {e}")
+    if r.status_code != 200:
+        raise HTTPException(status_code=401, detail="Invalid Google session")
+    info = r.json()
+    email = (info.get("email") or "").lower()
+    if not email:
+        raise HTTPException(status_code=400, detail="Google account missing email")
+    name = info.get("name") or email.split("@")[0]
+    picture = info.get("picture")
+
+    user = await db.users.find_one({"email": email})
+    if user:
+        # Link the Google identity to existing user if not already
+        update = {}
+        if not user.get("google_linked"):
+            update["google_linked"] = True
+        if picture and user.get("picture") != picture:
+            update["picture"] = picture
+        if update:
+            await db.users.update_one({"id": user["id"]}, {"$set": update})
+        user_id = user["id"]
+        user_doc = user
+    else:
+        user_id = str(uuid.uuid4())
+        user_doc = {
+            "id": user_id, "email": email, "name": name, "role": "user",
+            # No password — google-only account; can be set later via "change password" if needed.
+            "password_hash": "", "google_linked": True, "picture": picture,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "avatar_color": _pick_color(email),
+        }
+        await db.users.insert_one(user_doc)
+        await db.user_stats.insert_one({
+            "user_id": user_id, "total_xp": 0, "level": 1, "coins": 50,
+            "streak_days": 0, "last_active_date": None, "achievements": [],
+            "concepts_mastered": 0, "lessons_completed": 0,
+        })
+
+    access = create_access_token(user_id, email)
+    refresh = create_refresh_token(user_id)
+    set_auth_cookies(response, access, refresh)
+    return {
+        "id": user_id, "email": email, "name": user_doc.get("name", name),
+        "role": user_doc.get("role", "user"),
+        "avatar_color": user_doc.get("avatar_color", "#FF6B35"),
+        "picture": user_doc.get("picture"),
+        "access_token": access,
+    }
 
 
 def _pick_color(seed: str) -> str:

@@ -29,6 +29,11 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    // CRITICAL: If returning from Google OAuth callback, skip /auth/me check.
+    // AuthCallback will exchange the session_id and establish the session first.
+    if (typeof window !== "undefined" && window.location.hash?.includes("session_id=")) {
+      return;
+    }
     loadMe();
   }, [loadMe]);
 
@@ -64,7 +69,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, stats, login, register, logout, refreshStats, setStats }}>
+    <AuthContext.Provider value={{ user, stats, login, register, logout, refreshStats, setStats, setUser }}>
       {children}
     </AuthContext.Provider>
   );
