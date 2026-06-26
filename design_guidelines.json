@@ -1,0 +1,96 @@
+{
+  "project_name": "FinLingo",
+  "domain": "Professional Certifications (LOMA, CFA, FRM, PMP, AWS)",
+  "theme": "Light Mode (Primary) & Dark Mode Supported",
+  "archetype": "Archetype 4 (Swiss & High-Contrast) mixed with Archetype 6 (Vibrant Play) for gamification accents",
+  "design_philosophy": "Premium. Modern. Minimal. Colorful. Friendly. Professional. Duolingo-inspired but not copied. Every concept is an interactive experience.",
+  "typography": {
+    "headings": {
+      "family": "Outfit",
+      "styles": "tracking-tight, font-bold to font-black",
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tighter",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight",
+      "h3": "text-xl sm:text-2xl",
+      "h4": "text-lg sm:text-xl"
+    },
+    "body": {
+      "family": "Manrope",
+      "styles": "leading-relaxed",
+      "base": "text-base",
+      "small": "text-sm",
+      "labels": "uppercase tracking-[0.2em] text-xs font-semibold"
+    },
+    "banned_fonts": ["Inter", "Roboto", "Open Sans", "Lato"]
+  },
+  "colors": {
+    "light_mode": {
+      "background": "#FAFAFA",
+      "surface": "#FFFFFF",
+      "surface_glass": "rgba(255, 255, 255, 0.7)",
+      "text_primary": "#09090B",
+      "text_secondary": "#52525B",
+      "border": "#E4E4E7"
+    },
+    "dark_mode": {
+      "background": "#0F172A",
+      "surface": "#1E293B",
+      "surface_glass": "rgba(15, 23, 42, 0.6)",
+      "text_primary": "#F8FAFC",
+      "text_secondary": "#94A3B8",
+      "border": "#334155"
+    },
+    "gamification_accents": {
+      "primary_action": "#FF6B35",
+      "success_mastery": "#10B981",
+      "danger_failure": "#EF4444",
+      "warning": "#F59E0B",
+      "xp_coin": "#FBBF24",
+      "streak_flame": "#FF5C00",
+      "boss_battle_glow": "#EC4899",
+      "trust_professional": "#2563EB"
+    }
+  },
+  "mascot": {
+    "name": "Lumi",
+    "description": "A sleek, geometric floating orb enclosed in a transparent, crystalline shell with a glowing iridescent core. It features a holographic, minimalist face (two dot eyes and a soft curved smile).",
+    "vibe": "Friendly, premium, and tech-forward. Balances the strict professional nature of finance/tech certifications with approachable gamification.",
+    "usage": "Integrated across screens: spinning/glowing in celebration on success, pulsing warmly during loading states, dimmed with a subtle sweat drop on failure, and offering contextual hints during Boss Battles."
+  },
+  "component_patterns": {
+    "progress_path": "A vertical, winding SVG path acting as the learning tree. Nodes (Chapters/Modules) are 3D-like, elevated circular buttons. Completed nodes glow with the 'success_mastery' color, active ones pulse with 'primary_action', and locked nodes are greyscale with a frosted glass overlay.",
+    "lesson_player": "Immersive, distraction-free interface. Uses 'Bento-style' grids for interactive components (drag-drop, matching). Flat cards with 2px borders and soft ambient shadows. Hovering lifts the card slightly with a vivid border highlight.",
+    "header_navigation": "Floating 'Crystal Glass' top bar (backdrop-blur-xl) containing the user's Mastery meter (liquid fill animation), XP, Coins, and Streak flame. Remains accessible but unobtrusive.",
+    "boss_battle_ui": "Triggers an automatic switch to Dark Mode. Employs 'Retro-Futurism' styling with a 'Tracing Beam' glowing border around the challenge container. Uses Neon Pink and Crimson accents to create high tension and a high-stakes environment.",
+    "micro_quiz_cards": "Neumorphic tactile buttons for multiple-choice answers, ensuring high legibility and a satisfying 'click' state (scale down, deeper shadow).",
+    "leaderboard": "List layout utilizing 'Grid Borders' (technical look). Ranks are visually distinguished with metallic gradients for top 3 (Gold, Silver, Bronze), followed by clean, alternating row colors."
+  },
+  "motion_and_interactions": {
+    "micro_interactions": "All interactive elements must have clear hover (color shift + slight lift) and active/press states (scale: 0.97, shadow reduction).",
+    "celebrations": "Dynamic, physics-based confetti or glowing expanding rings when completing a module, unlocking an achievement, or leveling up.",
+    "transitions": "Smooth staggered entrances for dashboard elements. 'Liquid glass' fill animations for the mastery meter.",
+    "accessibility": "Respect prefers-reduced-motion. High contrast focus rings (using primary_action color) for keyboard navigation."
+  },
+  "testing": {
+    "data_testid_requirement": "All interactive and key informational elements (buttons, inputs, lesson nodes, quiz answers, streak counters) MUST include a data-testid attribute in kebab-case."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "category": "hero_abstract_background",
+        "url": "https://images.pexels.com/photos/13180245/pexels-photo-13180245.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Abstract 3D shapes with a smooth finish, used for high-end landing page visuals or course covers."
+      },
+      {
+        "category": "professional_student_1",
+        "url": "https://images.pexels.com/photos/6237928/pexels-photo-6237928.jpeg",
+        "description": "Concentrated professional female student, ideal for onboarding or testimonial sections."
+      },
+      {
+        "category": "professional_student_2",
+        "url": "https://images.pexels.com/photos/6549587/pexels-photo-6549587.jpeg",
+        "description": "Young professional deeply focused on a laptop, suitable for certification marketing."
+      }
+    ]
+  },
+  "instructions_to_main_agent": "Use pure HTML/Tailwind for marketing and highly custom layouts (like the progress path). Rely on heavily customized Shadcn components for complex interactive logic (dialogs, select, tabs). Ensure strict adherence to the APCA contrast ratio requirements and avoid using Inter/Roboto for any text. Integrate 'Lumi' the mascot using SVG or pure CSS shapes if image assets are not dynamically available."
+}
