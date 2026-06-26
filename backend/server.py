@@ -152,7 +152,7 @@ class GenerateCourseIn(BaseModel):
     description: str = Field(default="", max_length=400)
     color: str = Field(default="#FF6B35")
     icon: str = Field(default="BookOpen")
-    max_chapters: int = Field(default=3, ge=1, le=12)  # cap for cost
+    max_chapters: int = Field(default=3, ge=1, le=20)  # cap for cost
 
 
 class RevisionGradeIn(BaseModel):

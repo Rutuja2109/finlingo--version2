@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";import { useParams, useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
@@ -84,7 +83,7 @@ export default function LessonPlayer() {
       <div className="mt-6 flex justify-end">
         <button
           data-testid="btn-next-lesson"
-          disabled={!answered && current.type !== "intro"}
+          disabled={!(current.type === "intro" || current.type === "flashcard" || (answered && answered.correct === true))}
           onClick={goNext}
           className="px-7 py-3 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold tracking-tight transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -96,51 +95,101 @@ export default function LessonPlayer() {
 }
 
 // ---------- Lesson types ----------
-function IntroLesson({ l }) {
+function IntroLesson({ l, concept }) {
   return (
-    <div className="text-center">
+    <div className="text-center fade-up">
       <div className="flex justify-center mb-5"><Lumi size={120} mood="happy"/></div>
       <h2 className="font-[Outfit] font-black text-3xl tracking-tighter mb-3">{l.content.heading}</h2>
-      <p className="text-zinc-600 max-w-xl mx-auto text-lg leading-relaxed">{l.content.body}</p>
+      <p className="text-zinc-600 max-w-xl mx-auto text-lg leading-relaxed mb-6">{l.content.body}</p>
+
+      {concept?.simple_explanation && (
+        <div className="bg-gradient-to-br from-[#FF6B35]/5 to-[#EC4899]/5 border border-[#FF6B35]/15 rounded-2xl p-5 text-left max-w-xl mx-auto mb-4">
+          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#FF6B35] mb-2">In plain English</p>
+          <p className="text-zinc-700 leading-relaxed">{concept.simple_explanation}</p>
+        </div>
+      )}
+
+      {concept?.real_world_example && (
+        <div className="bg-[#2563EB]/5 border-l-4 border-[#2563EB] p-4 rounded-r-2xl text-left max-w-xl mx-auto mb-4">
+          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#2563EB] mb-1">Real-world example</p>
+          <p className="text-zinc-700 text-sm">{concept.real_world_example}</p>
+        </div>
+      )}
+
+      {concept?.key_takeaways?.length > 0 && (
+        <div className="text-left max-w-xl mx-auto">
+          <p className="text-xs uppercase tracking-[0.25em] font-bold text-zinc-500 mb-2">Key takeaways</p>
+          <ul className="space-y-1.5">
+            {concept.key_takeaways.map((k, i) => (
+              <li key={i} className="flex gap-2 text-sm text-zinc-700">
+                <Check className="w-4 h-4 text-[#10B981] mt-0.5 shrink-0"/>
+                <span>{k}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
 
 function McqLesson({ l, answered, onAnswer }) {
   const [picked, setPicked] = useState(null);
-  const isAnswered = answered !== undefined;
+  const [attempts, setAttempts] = useState(0);
+  const isAnswered = answered !== undefined && answered.correct === true;
 
   const choose = (i) => {
     if (isAnswered) return;
     setPicked(i);
-    onAnswer(i === l.content.correct);
+    setAttempts((a) => a + 1);
+    const correct = i === l.content.correct;
+    if (correct) {
+      onAnswer(true);
+    } else {
+      // wrong — let them retry (don't lock answer)
+      onAnswer(false);
+    }
+  };
+
+  const tryAgain = () => {
+    setPicked(null);
+    // Reset 'correct' flag so they can answer again
+    onAnswer(undefined);
   };
 
   return (
-    <div>
+    <div className="fade-up">
       <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#FF6B35] mb-2">Quick check</p>
       <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-6">{l.content.question}</h2>
       <div className="grid gap-3">
         {l.content.options.map((opt, i) => {
           const isCorrect = i === l.content.correct;
           const isPicked = i === picked;
+          const showResult = picked !== null;
           let cls = "border-zinc-200 hover:border-zinc-400 bg-white";
-          if (isAnswered && isCorrect) cls = "border-[#10B981] bg-[#10B981]/10";
-          else if (isAnswered && isPicked && !isCorrect) cls = "border-[#EF4444] bg-[#EF4444]/10";
+          if (showResult && isAnswered && isCorrect) cls = "border-[#10B981] bg-[#10B981]/10";
+          else if (showResult && isPicked && !isCorrect) cls = "border-[#EF4444] bg-[#EF4444]/10 shake";
+          else if (showResult && isCorrect && answered?.correct === true) cls = "border-[#10B981] bg-[#10B981]/10";
           return (
             <button key={i} data-testid={`mcq-option-${i}`} onClick={() => choose(i)} disabled={isAnswered}
               className={`text-left px-5 py-4 rounded-2xl border-2 font-semibold transition-all duration-200 flex items-center justify-between ${cls} ${!isAnswered && "active:scale-[0.98]"}`}>
               <span>{opt}</span>
-              {isAnswered && isCorrect && <Check className="w-5 h-5 text-[#10B981]"/>}
-              {isAnswered && isPicked && !isCorrect && <X className="w-5 h-5 text-[#EF4444]"/>}
+              {showResult && isAnswered && isCorrect && <Check className="w-5 h-5 text-[#10B981] pulse-glow"/>}
+              {showResult && isPicked && !isCorrect && <X className="w-5 h-5 text-[#EF4444]"/>}
             </button>
           );
         })}
       </div>
-      {isAnswered && (
-        <div className={`mt-5 p-4 rounded-2xl ${answered.correct ? "bg-[#10B981]/10 text-[#065F46]" : "bg-[#EF4444]/10 text-[#7F1D1D]"}`} data-testid="mcq-feedback">
-          <strong className="font-[Outfit]">{answered.correct ? "Nailed it." : "Not quite."} </strong>
+      {picked !== null && (
+        <div className={`mt-5 p-4 rounded-2xl fade-up ${answered?.correct ? "bg-[#10B981]/10 text-[#065F46]" : "bg-[#EF4444]/10 text-[#7F1D1D]"}`} data-testid="mcq-feedback">
+          <strong className="font-[Outfit]">{answered?.correct ? "Nailed it! " : `Not quite${attempts > 1 ? ` (attempt ${attempts})` : ""}. `}</strong>
           {l.content.explanation}
+          {!answered?.correct && (
+            <button onClick={tryAgain} data-testid="btn-try-again"
+              className="ml-2 inline-flex items-center gap-1 text-[#EF4444] underline font-bold text-sm hover:no-underline">
+              Try again →
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -232,35 +281,48 @@ function MatchLesson({ l, answered, onAnswer }) {
 
 function ScenarioLesson({ l, answered, onAnswer }) {
   const [picked, setPicked] = useState(null);
-  const isAnswered = answered !== undefined;
+  const [attempts, setAttempts] = useState(0);
+  const isAnswered = answered !== undefined && answered.correct === true;
+
   const pick = (i) => {
     if (isAnswered) return;
     setPicked(i);
+    setAttempts((a) => a + 1);
     onAnswer(l.content.choices[i].correct);
   };
+  const tryAgain = () => { setPicked(null); onAnswer(undefined); };
+
   return (
-    <div>
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#EC4899] mb-2">Scenario</p>
+    <div className="fade-up">
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#EC4899] mb-2">Real-world Scenario</p>
       <div className="bg-zinc-50 border-l-4 border-[#EC4899] p-4 rounded-r-2xl mb-5">
         <p className="text-zinc-700 italic">{l.content.scene}</p>
       </div>
       <h2 className="font-[Outfit] font-black text-xl tracking-tight mb-5">{l.content.question}</h2>
       <div className="space-y-3">
         {l.content.choices.map((c, i) => {
+          const showResult = picked !== null;
           let cls = "border-zinc-200 hover:border-zinc-400";
-          if (isAnswered && i === picked) cls = c.correct ? "border-[#10B981] bg-[#10B981]/10" : "border-[#EF4444] bg-[#EF4444]/10";
-          else if (isAnswered && c.correct) cls = "border-[#10B981] bg-[#10B981]/5";
+          if (showResult && i === picked && c.correct) cls = "border-[#10B981] bg-[#10B981]/10";
+          else if (showResult && i === picked && !c.correct) cls = "border-[#EF4444] bg-[#EF4444]/10 shake";
+          else if (showResult && isAnswered && c.correct) cls = "border-[#10B981] bg-[#10B981]/5";
           return (
             <button key={i} data-testid={`scenario-choice-${i}`} onClick={() => pick(i)} disabled={isAnswered}
               className={`w-full text-left px-5 py-4 rounded-2xl border-2 font-semibold transition ${cls}`}>
               <span>{c.text}</span>
-              {isAnswered && i === picked && (
+              {showResult && i === picked && (
                 <p className="text-sm font-normal mt-2 text-zinc-600">{c.feedback}</p>
               )}
             </button>
           );
         })}
       </div>
+      {picked !== null && !answered?.correct && (
+        <button onClick={tryAgain} data-testid="btn-try-again-scenario"
+          className="mt-4 inline-flex items-center gap-1 text-[#EF4444] underline font-bold text-sm hover:no-underline">
+          Try again (attempt {attempts}) →
+        </button>
+      )}
     </div>
   );
 }
@@ -269,8 +331,29 @@ function ScenarioLesson({ l, answered, onAnswer }) {
 function ResultScreen({ result, concept, onAgain }) {
   const nav = useNavigate();
   const isMastered = result.status === "mastered";
+
+  useEffect(() => {
+    // Confetti burst on mastery
+    if (!isMastered) return;
+    const colors = ["#FF6B35", "#EC4899", "#FBBF24", "#10B981", "#2563EB"];
+    const pieces = [];
+    for (let i = 0; i < 40; i++) {
+      const el = document.createElement("div");
+      el.className = "confetti-piece";
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.background = colors[i % colors.length];
+      el.style.animationDuration = (1.6 + Math.random() * 1.2) + "s";
+      el.style.animationDelay = (Math.random() * 0.4) + "s";
+      el.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+      document.body.appendChild(el);
+      pieces.push(el);
+    }
+    const t = setTimeout(() => pieces.forEach((p) => p.remove()), 3500);
+    return () => { clearTimeout(t); pieces.forEach((p) => p.remove()); };
+  }, [isMastered]);
+
   return (
-    <div className="max-w-xl mx-auto text-center pb-24">
+    <div className="max-w-xl mx-auto text-center pb-24 fade-up">
       <div className="mt-8 mb-4 flex justify-center">
         <Lumi size={160} mood={isMastered ? "cheer" : "happy"}/>
       </div>
