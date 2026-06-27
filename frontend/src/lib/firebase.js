@@ -10,13 +10,13 @@ import { getAnalytics, logEvent, setUserId, setUserProperties } from "firebase/a
 //   4. Copy the firebaseConfig object below and replace this placeholder
 // ─────────────────────────────────────────────────────────────────────────────
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_AUTH_DOMAIN",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID",
-  measurementId: "PASTE_YOUR_MEASUREMENT_ID",
+  apiKey: "AIzaSyCyBc_FWa1MuutXWLdQK587tbpEnbz106g",
+  authDomain: "finlingo-9a7ee.firebaseapp.com",
+  projectId: "finlingo-9a7ee",
+  storageBucket: "finlingo-9a7ee.firebasestorage.app",
+  messagingSenderId: "981811440836",
+  appId: "1:981811440836:web:ceca2af046919519606d91",
+  measurementId: "G-86L2WCKQ8K",
 };
 
 let analytics = null;
