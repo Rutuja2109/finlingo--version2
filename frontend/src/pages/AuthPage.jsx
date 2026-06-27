@@ -31,7 +31,7 @@ export default function AuthPage({ mode = "login" }) {
         <div className="relative z-10 flex flex-col justify-between h-full">
           <Link to="/" className="flex items-center gap-3" data-testid="auth-brand">
             <Lumi size={44} />
-            <span className="font-[Outfit] font-black text-2xl tracking-tight">FinLingo</span>
+            <span className="font-[Outfit] font-black text-2xl tracking-tight">FinLearn</span>
           </Link>
           <div>
             <h1 className="font-[Outfit] font-black text-5xl leading-tight tracking-tighter mb-4">

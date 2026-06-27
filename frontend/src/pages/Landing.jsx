@@ -9,7 +9,7 @@ export default function Landing() {
       <header className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <Lumi size={40} />
-          <span className="font-[Outfit] font-black text-xl tracking-tight">FinLingo</span>
+          <span className="font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
         </div>
         <div className="flex items-center gap-3">
           <Link to="/login" data-testid="landing-login" className="px-4 py-2 text-sm font-semibold text-zinc-700 hover:text-zinc-900">Log in</Link>
@@ -27,7 +27,7 @@ export default function Landing() {
             <span className="bg-gradient-to-r from-[#FF6B35] via-[#EC4899] to-[#FF6B35] bg-clip-text text-transparent">finally</span> bingeable.
           </h1>
           <p className="text-lg text-zinc-600 max-w-xl mb-8 leading-relaxed">
-            FinLingo turns 800-page certification books into bite-sized interactive
+            FinLearn turns 800-page certification books into bite-sized interactive
             journeys. Built for LOMA, CFA, FRM, PMP, AWS — and every cert after.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -67,7 +67,7 @@ export default function Landing() {
       </section>
 
       <footer className="max-w-6xl mx-auto px-6 py-10 border-t border-zinc-200 text-sm text-zinc-500 flex justify-between">
-        <span>© 2026 FinLingo · Master what matters.</span>
+        <span>© 2026 FinLearn · Master what matters.</span>
         <span>Meet Lumi, your guide.</span>
       </footer>
     </div>

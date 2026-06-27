@@ -521,15 +521,14 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
     mastery = payload.score
     status_ = "mastered" if payload.score >= 90 else "completed" if payload.score >= 60 else "active"
 
-    # Idempotency: if user already mastered/completed this concept, do NOT re-award XP.
-    # They get the practice attempt logged but no new XP/coins/level changes.
     existing = await db.user_progress.find_one(
         {"user_id": user["id"], "concept_id": payload.concept_id}, {"_id": 0}
     )
     already_rewarded = existing is not None and existing.get("status") in ("completed", "mastered")
     if already_rewarded:
-        xp_earned = 0
-        coins_earned = 0
+        # Give a small practice bonus so the screen never shows +0
+        xp_earned = max(3, base_xp // 10)
+        coins_earned = 1
 
     now = datetime.now(timezone.utc).isoformat()
     # Schedule first review 1 day out if newly completed
@@ -978,28 +977,22 @@ async def root():
     return {"app": "FinLingo", "status": "ok"}
 
 
+@api.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
 # ---------- MOUNT ----------
 app.include_router(api)
 
-# CORS — allow credentials with explicit origins
-cors_origins_env = os.environ.get("CORS_ORIGINS", "*")
-if cors_origins_env == "*":
-    # Use regex to allow all origins while still permitting credentials
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origin_regex=".*",
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-else:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[o.strip() for o in cors_origins_env.split(",") if o.strip()],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# CORS — open for mobile app (Capacitor sends null origin)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 logging.basicConfig(level=logging.INFO,

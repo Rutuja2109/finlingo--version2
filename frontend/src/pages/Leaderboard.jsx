@@ -11,7 +11,7 @@ export default function Leaderboard() {
       <div className="mb-7">
         <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-400">Real-time</p>
         <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tighter">Leaderboard</h1>
-        <p className="text-zinc-500 mt-1">Top FinLingo learners by XP — no fake data, ever.</p>
+        <p className="text-zinc-500 mt-1">Top FinLearn learners by XP — no fake data, ever.</p>
       </div>
 
       {rows.length === 0 && (

@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
+import { sound } from "@/lib/sound";
+import { haptics } from "@/lib/haptics";
 import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw, Repeat } from "lucide-react";
 
 // ----------------------------------------------------------------------
@@ -25,6 +27,9 @@ export default function LessonPlayer() {
   const [answered, setAnswered] = useState(null);         // {correct: bool} for the current attempt
   const [done, setDone] = useState(null);
   const [totalAttempted, setTotalAttempted] = useState(0);
+  const [lumiMood, setLumiMood] = useState("happy");
+  const [lumiAnim, setLumiAnim] = useState("lumi-float");
+  const [lumiKey,  setLumiKey]  = useState(0);
 
   useEffect(() => {
     api.get(`/concepts/${conceptId}`).then(({ data }) => {
@@ -60,17 +65,29 @@ export default function LessonPlayer() {
   const handleAnswer = (isCorrect) => {
     setPicked(true);
     setAnswered({ correct: isCorrect });
-    if (!isCorrect) {
-      // Mark this lesson as wrong-on-first-try (only counted once even if asked again)
+    if (isCorrect) {
+      sound.correct();
+      haptics.success();
+      setLumiMood("cheer");
+      setLumiAnim("lumi-bounce");
+    } else {
+      sound.wrong();
+      haptics.error();
+      setLumiMood("sad");
+      setLumiAnim("shake");
       setWrongFirstTry((prev) => {
         const n = new Set(prev); n.add(currentIdx); return n;
       });
     }
+    setLumiKey((k) => k + 1);
     setTotalAttempted((t) => t + 1);
   };
 
   // For intro / flashcard, advance without an answer step
   const advance = async () => {
+    setLumiMood("happy");
+    setLumiAnim("lumi-float");
+    setLumiKey((k) => k + 1);
     let newQueue = queue.slice(1);
     if (answered && answered.correct === false) {
       // Re-queue the wrong question at the end
@@ -115,7 +132,12 @@ export default function LessonPlayer() {
             className="h-full bg-gradient-to-r from-[#FF6B35] to-[#EC4899] transition-all duration-500"
             style={{ width: `${progressPct}%` }}/>
         </div>
-        <span className="text-sm font-bold tabular-nums text-zinc-500">{Math.max(1, initialQueueLen - queue.length + 1)}/{initialQueueLen}{queue.length > initialQueueLen ? "+" : ""}</span>
+        <div className="flex flex-col items-center">
+          <Lumi key={lumiKey} size={42} mood={lumiMood} className={lumiAnim} />
+          <span className="text-[10px] font-bold tabular-nums text-zinc-400 -mt-1">
+            {Math.max(1, initialQueueLen - queue.length + 1)}/{initialQueueLen}{queue.length > initialQueueLen ? "+" : ""}
+          </span>
+        </div>
       </div>
 
       <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-zinc-400">Concept</p>
@@ -296,7 +318,7 @@ function FlashLesson({ l, onShown }) {
       <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">Flashcard</p>
       <div
         data-testid="flashcard"
-        onClick={() => { setFlipped(!flipped); if (!flipped) onShown(); }}
+        onClick={() => { setFlipped(!flipped); sound.flip(); if (!flipped) onShown(); }}
         className="cursor-pointer bg-gradient-to-br from-zinc-50 to-white border-2 border-zinc-200 rounded-3xl p-10 min-h-[220px] grid place-items-center text-center hover:border-[#FF6B35] transition"
       >
         <div>
@@ -422,6 +444,8 @@ function ResultScreen({ result, concept, onAgain }) {
 
   useEffect(() => {
     if (!isMastered) return;
+    sound.complete();
+    haptics.celebrate();
     const colors = ["#FF6B35", "#EC4899", "#FBBF24", "#10B981", "#2563EB"];
     const pieces = [];
     for (let i = 0; i < 40; i++) {
@@ -442,7 +466,7 @@ function ResultScreen({ result, concept, onAgain }) {
   return (
     <div className="max-w-xl mx-auto text-center pb-24 fade-up">
       <div className="mt-8 mb-4 flex justify-center">
-        <Lumi size={160} mood={isMastered ? "cheer" : "happy"}/>
+        <Lumi size={160} mood={isMastered ? "celebrate" : "happy"} className={isMastered ? "lumi-celebrate" : "lumi-float"} />
       </div>
       <h1 className="font-[Outfit] font-black text-4xl tracking-tighter mb-2">
         {isMastered ? "Concept mastered!" : result.status === "completed" ? "Nicely done!" : "Keep going!"}

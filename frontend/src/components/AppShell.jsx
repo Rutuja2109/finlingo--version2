@@ -26,7 +26,7 @@ export default function AppShell({ children }) {
         <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2.5" data-testid="brand-logo">
             <Lumi size={36} />
-            <span className="font-[Outfit] font-black text-xl tracking-tight">FinLingo</span>
+            <span className="font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
