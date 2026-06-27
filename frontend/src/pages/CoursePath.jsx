@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Lock, Check, Sparkles, ChevronLeft, Skull, Star, BookOpen, Zap } from "lucide-react";
+import { trackChapterStarted } from "@/lib/firebase";
 import Lumi from "@/components/Lumi";
 
 export default function CoursePath() {
@@ -72,10 +73,16 @@ export default function CoursePath() {
             }
             // concept node — alternate left/right in a zigzag
             const side = node.idx % 2 === 0 ? "left" : "right";
+            const handleConceptClick = () => {
+              if (node.idx === 0) {
+                trackChapterStarted({ chapterId: node.ch.id, chapterTitle: node.ch.title, chapterOrder: node.ci + 1 });
+              }
+              nav(`/concept/${node.concept.id}`);
+            };
             return (
               <ConceptNode key={node.concept.id} concept={node.concept} color={course.color}
                 side={side} index={node.idx + 1}
-                onClick={() => nav(`/concept/${node.concept.id}`)} />
+                onClick={handleConceptClick} />
             );
           })}
         </div>

@@ -58,7 +58,7 @@ export default function AppShell({ children }) {
             <Stat icon={Zap} value={stats?.total_xp || 0} color="#FBBF24" testid="stat-xp" />
             <Stat icon={Coins} value={stats?.coins || 0} color="#F59E0B" testid="stat-coins" />
             <button
-              onClick={async () => { await logout(); window.location.href = "/"; }}
+              onClick={() => logout()}
               data-testid="btn-logout"
               className="ml-2 w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition"
               title={user?.name}

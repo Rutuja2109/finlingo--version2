@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Lock, ArrowRight, Check, Star, ChevronDown, ChevronUp } from "lucide-react";
+import { trackCourseEnrolled } from "@/lib/firebase";
 import Lumi from "@/components/Lumi";
 
 const ICONS_SVG = {
@@ -33,6 +34,8 @@ export default function Courses() {
   const enroll = async (id) => {
     setBusy((b) => ({ ...b, [id]: true }));
     await api.post("/enrollments", { course_id: id });
+    const course = courses.find((c) => c.id === id);
+    trackCourseEnrolled({ courseId: id, courseName: course?.name || "" });
     const e = await api.get("/enrollments/me");
     setEnrolled(e.data);
     setBusy((b) => ({ ...b, [id]: false }));

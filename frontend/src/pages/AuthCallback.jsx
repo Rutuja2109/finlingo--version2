@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { identifyUser, trackLogin } from "@/lib/firebase";
 import Lumi from "@/components/Lumi";
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
@@ -23,6 +24,8 @@ export default function AuthCallback() {
         const session_id = decodeURIComponent(m[1]);
         const { data } = await api.post("/auth/google/session", { session_id });
         if (data.access_token) localStorage.setItem("fl_token", data.access_token);
+        identifyUser(data.id, data.name, data.email);
+        trackLogin("google");
         if (setUser) setUser(data);
         if (refreshStats) await refreshStats();
         // Clear the hash and go to dashboard

@@ -6,6 +6,7 @@ import Lumi from "@/components/Lumi";
 import { sound } from "@/lib/sound";
 import { haptics } from "@/lib/haptics";
 import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw, Repeat } from "lucide-react";
+import { trackLessonCompleted, trackConceptCompleted, trackCaseStudyViewed } from "@/lib/firebase";
 
 // ----------------------------------------------------------------------
 // Duolingo-style lesson player
@@ -66,6 +67,7 @@ export default function LessonPlayer() {
   const handleAnswer = (isCorrect) => {
     setPicked(true);
     setAnswered({ correct: isCorrect });
+    trackLessonCompleted({ conceptId, lessonType: current.type, correct: isCorrect, xpEarned: 0 });
     if (isCorrect) {
       sound.correct();
       haptics.success();
@@ -108,6 +110,7 @@ export default function LessonPlayer() {
           concept_id: conceptId, score, duration_sec: 0,
         });
         await refreshStats();
+        trackConceptCompleted({ conceptId, conceptTitle: concept.title, chapterId: "", score, xpEarned: data.xp_earned || 0 });
         setDone(data);
       } catch (e) {
         setDone({ status: "completed", mastery: score, xp_earned: 0, coins_earned: 0, new_achievements: [] });
@@ -155,7 +158,7 @@ export default function LessonPlayer() {
         {current.type === "intro" && <IntroLesson l={current} concept={concept}/>}
         {current.type === "teach" && <TeachLesson l={current}/>}
         {current.type === "example" && <ExampleLesson l={current}/>}
-        {current.type === "case_study" && <CaseStudyLesson l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
+        {current.type === "case_study" && <CaseStudyLesson l={current} conceptId={conceptId} onShown={() => { if (!answered) handleAnswer(true); }}/>}
         {current.type === "mcq" && <McqLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
         {current.type === "flashcard" && <FlashLesson l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
         {current.type === "match" && <MatchLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
@@ -396,12 +399,13 @@ function MatchLesson({ l, answered, onAnswer }) {
   );
 }
 
-function CaseStudyLesson({ l, onShown }) {
+function CaseStudyLesson({ l, onShown, conceptId }) {
   const c = l.content || {};
   const [step, setStep] = useState(0);
   const steps = c.steps || [];
   const isLast = step >= steps.length - 1;
 
+  useEffect(() => { trackCaseStudyViewed({ title: c.title || "", conceptId: conceptId || "" }); }, []); // eslint-disable-line
   useEffect(() => { if (isLast) onShown(); }, [isLast]); // eslint-disable-line
 
   const current = steps[step] || {};

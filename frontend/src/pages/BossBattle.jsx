@@ -4,6 +4,7 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 import { Crown, Skull, Sparkles, Zap, Lock, X, Check } from "lucide-react";
+import { trackBossBattleStarted, trackBossBattleCompleted } from "@/lib/firebase";
 
 export default function BossBattle() {
   const { chapterId } = useParams();
@@ -14,7 +15,12 @@ export default function BossBattle() {
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
 
-  useEffect(() => { api.get(`/boss-battles/${chapterId}`).then(({ data }) => setData(data)); }, [chapterId]);
+  useEffect(() => {
+    api.get(`/boss-battles/${chapterId}`).then(({ data }) => {
+      setData(data);
+      if (data.unlocked) trackBossBattleStarted({ chapterId });
+    });
+  }, [chapterId]);
 
   // Apply full-page dark mode while this route is mounted
   useEffect(() => {
@@ -64,6 +70,7 @@ export default function BossBattle() {
     });
     setResult(res);
     refreshStats();
+    trackBossBattleCompleted({ chapterId, score: res.score, passed: res.passed, xpEarned: res.xp_earned || 0 });
   };
 
   if (result) {

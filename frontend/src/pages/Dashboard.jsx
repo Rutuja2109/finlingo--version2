@@ -4,6 +4,7 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 import { ArrowRight, Sparkles, Target, Flame, Repeat } from "lucide-react";
+import { trackCourseEnrolled } from "@/lib/firebase";
 
 const ICONS_SVG = {
   Shield: "M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z",
@@ -34,6 +35,8 @@ export default function Dashboard() {
   const enroll = async (courseId) => {
     setBusy((b) => ({ ...b, [courseId]: true }));
     await api.post("/enrollments", { course_id: courseId });
+    const course = courses.find((c) => c.id === courseId);
+    trackCourseEnrolled({ courseId, courseName: course?.name || "" });
     const e = await api.get("/enrollments/me");
     setEnrolled(e.data);
     setBusy((b) => ({ ...b, [courseId]: false }));

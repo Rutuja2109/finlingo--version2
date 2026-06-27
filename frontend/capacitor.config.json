@@ -3,7 +3,8 @@
   "appName": "FinLearn",
   "webDir": "build",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "allowNavigation": ["auth.emergentagent.com", "accounts.google.com", "*.google.com", "*.googleapis.com", "*.googleusercontent.com"]
   },
   "android": {
     "allowMixedContent": true
