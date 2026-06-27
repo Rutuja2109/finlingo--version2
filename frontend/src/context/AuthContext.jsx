@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { api, formatApiError } from "@/lib/api";
+import { requestNotificationPermission, scheduleReminders, cancelReminders } from "@/lib/notifications";
 
 const AuthContext = createContext(null);
 
@@ -22,6 +23,9 @@ export function AuthProvider({ children }) {
       setUser(data);
       const s = await api.get("/stats/me");
       setStats(s.data);
+      // Schedule reminders for returning user
+      const granted = await requestNotificationPermission();
+      if (granted) scheduleReminders(s.data?.streak_days || 0);
     } catch {
       setUser(false);
       setStats(null);
@@ -43,6 +47,9 @@ export function AuthProvider({ children }) {
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
       setUser(data);
       await refreshStats();
+      // Schedule daily reminders after login
+      const granted = await requestNotificationPermission();
+      if (granted) scheduleReminders(0);
       return { ok: true };
     } catch (e) {
       return { ok: false, error: formatApiError(e) };
@@ -62,6 +69,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    await cancelReminders();
     try { await api.post("/auth/logout"); } catch {}
     localStorage.removeItem("fl_token");
     setUser(false);

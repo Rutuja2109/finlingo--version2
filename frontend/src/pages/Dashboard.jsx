@@ -108,21 +108,77 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Courses */}
+      {/* Courses — winding path style */}
       <section>
         <div className="flex items-end justify-between mb-5">
-          <h2 className="font-[Outfit] font-black text-2xl tracking-tight">Your courses</h2>
+          <h2 className="font-[Outfit] font-black text-2xl tracking-tight">Your journey</h2>
           <Link to="/courses" data-testid="link-all-courses" className="text-sm font-semibold text-[#FF6B35] hover:underline">
-            Browse all →
+            All courses →
           </Link>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {courses.map((c) => (
-            <CourseCard key={c.id} c={c}
-              enrolled={isEnrolled(c.id)}
-              busy={!!busy[c.id]}
-              onEnroll={() => enroll(c.id)}/>
-          ))}
+
+        {/* Enrolled courses — big winding CTA nodes */}
+        {courses.filter((c) => isEnrolled(c.id)).length > 0 ? (
+          <div className="space-y-4">
+            {courses.filter((c) => isEnrolled(c.id)).map((c) => (
+              <Link key={c.id} to={`/learn/${c.id}`} data-testid={`btn-continue-${c.slug}`}
+                className="flex items-center gap-4 rounded-3xl p-5 text-white relative overflow-hidden transition-all active:scale-[0.98] shadow-xl"
+                style={{ background: `linear-gradient(135deg, ${c.color}ee, ${c.color}99)` }}>
+                <div className="absolute inset-0 opacity-10"
+                  style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+                <div className="relative w-16 h-16 rounded-2xl bg-white/20 grid place-items-center shrink-0">
+                  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={ICONS_SVG[c.icon] || ICONS_SVG.Shield}/>
+                  </svg>
+                </div>
+                <div className="relative flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-white/70">{c.certification}</p>
+                  <p className="font-[Outfit] font-black text-xl tracking-tight leading-tight">{c.name}</p>
+                  <p className="text-sm text-white/80 mt-0.5 truncate">{c.title}</p>
+                </div>
+                <div className="relative flex flex-col items-center gap-1 shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-white/20 grid place-items-center">
+                    <ArrowRight className="w-5 h-5 text-white"/>
+                  </div>
+                  <span className="text-[10px] font-bold text-white/70">Continue</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          /* Not enrolled yet — show a teaser path node */
+          <div className="space-y-3">
+            {courses.slice(0, 1).map((c) => (
+              <div key={c.id} className="rounded-3xl border-2 p-5 flex items-center gap-4 transition-all"
+                style={{ borderColor: `${c.color}40`, background: `${c.color}08` }}>
+                <div className="w-16 h-16 rounded-2xl grid place-items-center shrink-0 text-white"
+                  style={{ background: `linear-gradient(135deg, ${c.color}, ${c.color}bb)` }}>
+                  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={ICONS_SVG[c.icon] || ICONS_SVG.Shield}/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-[Outfit] font-black text-xl tracking-tight">{c.name}</p>
+                  <p className="text-sm text-zinc-500">{c.title}</p>
+                </div>
+                <button onClick={() => enroll(c.id)} disabled={!!busy[c.id]}
+                  data-testid={`btn-enroll-${c.slug}`}
+                  className="px-4 py-2.5 rounded-xl text-sm font-bold transition active:scale-95 disabled:opacity-60 shrink-0"
+                  style={{ background: `${c.color}20`, color: c.color }}>
+                  {busy[c.id] ? "…" : "Begin"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Lumi + locked coming-soon hint */}
+        <div className="mt-6 flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 border border-zinc-200">
+          <Lumi size={44} mood="happy" />
+          <div>
+            <p className="font-[Outfit] font-bold text-sm text-zinc-800">More certifications unlocking soon</p>
+            <p className="text-xs text-zinc-500">CFA, FRM, PMP and more — stay consistent to unlock</p>
+          </div>
         </div>
       </section>
     </div>
@@ -146,36 +202,3 @@ function HeroStat({ label, value, sub }) {
   );
 }
 
-function CourseCard({ c, enrolled, busy, onEnroll }) {
-  return (
-    <div data-testid={`course-card-${c.slug}`}
-      className="group bg-white border border-zinc-200 rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-      <div className="flex items-start justify-between mb-4">
-        <div className="w-12 h-12 rounded-2xl grid place-items-center text-white"
-          style={{ background: c.color }}>
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-            <path d={ICONS_SVG[c.icon] || ICONS_SVG.Shield}/>
-          </svg>
-        </div>
-        <span className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">{c.certification}</span>
-      </div>
-      <h3 className="font-[Outfit] font-black text-xl tracking-tight">{c.name}</h3>
-      <p className="text-sm text-zinc-500 mt-1">{c.title}</p>
-      <p className="text-sm text-zinc-600 mt-3 line-clamp-2">{c.description}</p>
-      <div className="mt-5">
-        {enrolled ? (
-          <Link to={`/learn/${c.id}`} data-testid={`btn-continue-${c.slug}`}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 text-white text-sm font-bold hover:bg-zinc-800 transition">
-            Continue <ArrowRight className="w-4 h-4"/>
-          </Link>
-        ) : (
-          <button onClick={onEnroll} disabled={busy} data-testid={`btn-enroll-${c.slug}`}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition active:scale-95 disabled:opacity-60"
-            style={{ background: `${c.color}1A`, color: c.color }}>
-            {busy ? "Enrolling…" : "Start course"} <ArrowRight className="w-4 h-4"/>
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
