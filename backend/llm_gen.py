@@ -11,7 +11,11 @@ import uuid
 import logging
 from typing import Dict, Any
 
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+except ImportError:
+    LlmChat = None  # type: ignore
+    UserMessage = None  # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -116,6 +120,8 @@ def _strip_json(text: str) -> str:
 
 async def _call_model(provider: str, model: str, system_msg: str, user_msg: str) -> str:
     import asyncio as _aio
+    if LlmChat is None:
+        raise RuntimeError("emergentintegrations not installed — LLM generation unavailable")
     api_key = os.environ["EMERGENT_LLM_KEY"]
     chat = LlmChat(
         api_key=api_key,

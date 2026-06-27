@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Flame, Zap, Coins, LogOut, Trophy, Home, BookOpen, Award, Repeat, Sparkles } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -95,13 +95,43 @@ export default function AppShell({ children }) {
 }
 
 function Stat({ icon: Icon, value, color, testid }) {
+  const prevRef = useRef(value);
+  const [delta, setDelta] = useState(null);
+  const [pulse, setPulse] = useState(false);
+
+  useEffect(() => {
+    const prev = prevRef.current;
+    if (value > prev) {
+      const diff = value - prev;
+      setDelta(`+${diff}`);
+      setPulse(true);
+      const t1 = setTimeout(() => setDelta(null), 1800);
+      const t2 = setTimeout(() => setPulse(false), 600);
+      prevRef.current = value;
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    }
+    prevRef.current = value;
+  }, [value]);
+
   return (
-    <div
-      data-testid={testid}
-      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-zinc-100"
-    >
-      <Icon className="w-4 h-4" style={{ color }} />
-      <span className="font-[Outfit] font-bold text-sm tabular-nums">{value}</span>
+    <div className="relative">
+      <div
+        data-testid={testid}
+        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full transition-all duration-300 ${
+          pulse ? "bg-zinc-200 scale-110" : "bg-zinc-100"
+        }`}
+      >
+        <Icon className="w-4 h-4" style={{ color }} />
+        <span className="font-[Outfit] font-bold text-sm tabular-nums">{value}</span>
+      </div>
+      {delta && (
+        <span
+          className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-black tabular-nums animate-bounce-up pointer-events-none whitespace-nowrap"
+          style={{ color }}
+        >
+          {delta}
+        </span>
+      )}
     </div>
   );
 }

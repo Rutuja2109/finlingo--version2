@@ -89,8 +89,8 @@ export default function LessonPlayer() {
         const { data } = await api.post("/progress/complete-concept", {
           concept_id: conceptId, score, duration_sec: 0,
         });
+        await refreshStats();
         setDone(data);
-        refreshStats();
       } catch (e) {
         setDone({ status: "completed", mastery: score, xp_earned: 0, coins_earned: 0, new_achievements: [] });
       }

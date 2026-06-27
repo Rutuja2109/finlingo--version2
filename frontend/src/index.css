@@ -80,6 +80,15 @@ html.boss-mode header [data-testid="btn-logout"] {
     color: #f4f4f5 !important;
 }
 
+/* XP/coins delta pop animation */
+@keyframes bounce-up {
+    0% { opacity: 0; transform: translateX(-50%) translateY(0); }
+    20% { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+    80% { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-16px); }
+}
+.animate-bounce-up { animation: bounce-up 1.8s ease-out forwards; }
+
 /* Shake on wrong answer */
 @keyframes shake-x {
     0%, 100% { transform: translateX(0); }
