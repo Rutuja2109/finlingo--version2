@@ -177,13 +177,22 @@ api = APIRouter(prefix="/api")
 
 @app.on_event("startup")
 async def on_startup():
+    # Create indexes synchronously (fast)
     await db.users.create_index("email", unique=True)
     await db.user_stats.create_index("user_id", unique=True)
     await db.user_progress.create_index([("user_id", 1), ("concept_id", 1)], unique=True)
     await db.user_enrollments.create_index([("user_id", 1), ("course_id", 1)], unique=True)
     await db.courses.create_index("slug", unique=True)
-    await seed_admin()
-    await seed_courses(db)
+    # Seed in background so healthcheck passes immediately
+    asyncio.create_task(_seed_background())
+
+
+async def _seed_background():
+    try:
+        await seed_admin()
+        await seed_courses(db)
+    except Exception as e:
+        logging.getLogger(__name__).error(f"Seed error: {e}")
 
 
 async def seed_admin():
