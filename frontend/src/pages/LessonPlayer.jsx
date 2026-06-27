@@ -60,6 +60,7 @@ export default function LessonPlayer() {
   const progressPct = Math.max(0, Math.min(100, ((initialQueueLen - queue.length + (answered ? 1 : 0)) / initialQueueLen) * 100));
 
   const scoreable = (lessons || []).filter((l) => l.type === "mcq" || l.type === "scenario").length || 1;
+  const needsAnswerTypes = ["mcq", "scenario"];
 
   // --- Answer handlers ---
   const handleAnswer = (isCorrect) => {
@@ -154,6 +155,7 @@ export default function LessonPlayer() {
         {current.type === "intro" && <IntroLesson l={current} concept={concept}/>}
         {current.type === "teach" && <TeachLesson l={current}/>}
         {current.type === "example" && <ExampleLesson l={current}/>}
+        {current.type === "case_study" && <CaseStudyLesson l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
         {current.type === "mcq" && <McqLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
         {current.type === "flashcard" && <FlashLesson l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
         {current.type === "match" && <MatchLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
@@ -389,6 +391,59 @@ function MatchLesson({ l, answered, onAnswer }) {
         <p className={`mt-4 font-bold ${answered.correct ? "text-[#10B981]" : "text-[#EF4444]"}`} data-testid="match-feedback">
           {answered.correct ? "All matched correctly!" : "Some pairs are off — we'll ask again later."}
         </p>
+      )}
+    </div>
+  );
+}
+
+function CaseStudyLesson({ l, onShown }) {
+  const c = l.content || {};
+  const [step, setStep] = useState(0);
+  const steps = c.steps || [];
+  const isLast = step >= steps.length - 1;
+
+  useEffect(() => { if (isLast) onShown(); }, [isLast]); // eslint-disable-line
+
+  const current = steps[step] || {};
+
+  return (
+    <div className="fade-up">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#8B5CF6]">Case Study</span>
+        <span className="text-[10px] text-zinc-400 font-bold">{step + 1} / {steps.length}</span>
+      </div>
+
+      {step === 0 && (
+        <div className="mb-4 bg-gradient-to-br from-[#8B5CF6]/10 to-[#EC4899]/10 border border-[#8B5CF6]/20 rounded-2xl p-4">
+          <p className="font-[Outfit] font-black text-lg tracking-tight">{c.title}</p>
+          {c.context && <p className="text-sm text-zinc-500 mt-1">{c.context}</p>}
+        </div>
+      )}
+
+      <div className="bg-white border-2 border-zinc-100 rounded-2xl p-5 min-h-[140px]">
+        {current.label && (
+          <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#8B5CF6] mb-2">{current.label}</p>
+        )}
+        <p className="text-zinc-800 leading-relaxed text-[15px]">{current.text}</p>
+        {current.highlight && (
+          <div className="mt-3 bg-[#FBBF24]/15 border-l-4 border-[#FBBF24] px-4 py-3 rounded-r-xl">
+            <p className="text-sm font-semibold text-zinc-800">{current.highlight}</p>
+          </div>
+        )}
+      </div>
+
+      {!isLast && (
+        <button onClick={() => setStep(step + 1)}
+          className="mt-4 px-5 py-2.5 rounded-xl bg-[#8B5CF6] text-white font-bold text-sm hover:bg-[#7C3AED] transition">
+          Next →
+        </button>
+      )}
+
+      {isLast && c.lesson && (
+        <div className="mt-4 bg-[#10B981]/10 border border-[#10B981]/30 rounded-2xl p-4">
+          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#065F46] mb-1">The Lesson</p>
+          <p className="text-zinc-800 font-semibold">{c.lesson}</p>
+        </div>
       )}
     </div>
   );

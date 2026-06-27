@@ -4,6 +4,8 @@ Phase 1: Chapters 1-3 only.
 from datetime import datetime, timezone
 import uuid
 
+SEED_VERSION = "v3-case-studies"  # bump to force re-seed on next deploy
+
 
 def _id():
     return str(uuid.uuid4())
@@ -563,7 +565,296 @@ def _build_ch1(course_id):
     )
 
     m2["concepts"] = [c3, c4]
-    ch["modules"] = [m1, m2]
+
+    # -- Module 3: Real World Stories (Beginner Case Studies) ----------------
+    m3_id = _id()
+    m3 = {"id": m3_id, "chapter_id": ch_id, "order": 3,
+          "title": "Real World Stories — Finance in Plain English"}
+
+    def _cs(title, context, steps, lesson):
+        return {
+            "id": _id(), "type": "case_study",
+            "content": {"title": title, "context": context, "steps": steps, "lesson": lesson},
+        }
+
+    # Case Study 1: Ravi's Piggy Bank
+    cs1 = _concept(m3_id, 1,
+        "Why Money Needs a Job",
+        "Understand why just saving money is not enough — it must be invested to keep its value.",
+        "Money sitting idle loses value over time because prices go up every year. "
+        "Investing means putting money to work so it grows faster than prices rise. "
+        "This is the most basic reason why individuals AND insurance companies invest.",
+        "In 2010, Ravi kept Rs 1 lakh under his mattress. In 2020 he still had Rs 1 lakh but "
+        "a bag of groceries that cost Rs 500 in 2010 now costs Rs 900. His money shrank "
+        "without him spending a single rupee. That is what inflation does to idle cash.",
+        [
+            "Inflation means Rs 100 today buys less next year — money silently loses buying power",
+            "Investing means putting money to work so it grows faster than inflation",
+            "Even a bank Fixed Deposit is a basic form of investing",
+            "Insurance companies invest so they can keep YOUR premiums affordable",
+        ],
+        [
+            "Thinking saving and investing are the same — saving is storing, investing is growing",
+            "Believing cash in a bank is automatically an investment — it must earn interest",
+        ],
+        [
+            _intro("Your Money Has a Silent Enemy",
+                   "Here is a story about Ravi — a regular person who learned the hard way why "
+                   "money must always be put to work. No finance degree needed."),
+            _cs(
+                "Ravi's Piggy Bank Problem",
+                "A simple story about why idle money loses value — and what smart investing does instead.",
+                [
+                    {"label": "The Setup",
+                     "text": "In 2010, Ravi saved Rs 1,00,000 from his job. He was proud. "
+                             "He put it safely in a box under his bed. No risk, he thought. "
+                             "Just cash, safe and sound.",
+                     "highlight": None},
+                    {"label": "10 Years Later",
+                     "text": "In 2020, Ravi opened his box. Still Rs 1,00,000. He felt great — "
+                             "until he went grocery shopping. The same food that cost Rs 500 in 2010 "
+                             "now cost Rs 900. His rent had doubled. But his savings? Still Rs 1,00,000.",
+                     "highlight": "His money did not shrink in number — but it shrank in what it could BUY. This is called inflation."},
+                    {"label": "What Should Ravi Have Done?",
+                     "text": "If Ravi had put Rs 1,00,000 in a bank Fixed Deposit at 7% per year, "
+                             "after 10 years he would have Rs 1,96,715 — nearly double. "
+                             "That growth would have kept up with rising prices.",
+                     "highlight": None},
+                    {"label": "The Insurance Company Version",
+                     "text": "Insurance companies collect millions in premiums every month. "
+                             "If they just kept it sitting idle they would slowly run out of money to pay claims. "
+                             "Instead they invest it in bonds so the money grows while waiting to be used.",
+                     "highlight": "Every Rs 200 you pay for insurance is put to work so the company can afford to pay Rs 5 lakh if something goes wrong."},
+                ],
+                "Money must be invested — not just saved — because inflation silently erodes its purchasing power every year."
+            ),
+            _flash("What is inflation in one sentence?",
+                   "Inflation means prices rise over time so the same money buys less — making idle cash lose real value."),
+            _mcq("Ravi keeps Rs 50,000 in cash at home for 5 years. Prices rise 6% per year. What happened to his money?",
+                 ["It grew because he kept it safe",
+                  "It stayed the same — Rs 50,000 is Rs 50,000",
+                  "It lost purchasing power — he can now buy less with the same Rs 50,000",
+                  "It became more valuable because cash is scarce"],
+                 2,
+                 "Inflation of 6% per year means what cost Rs 50,000 before now costs about Rs 66,911. "
+                 "Ravi can buy only 75% of what he used to — even though the number did not change."),
+            _mcq("Why do insurance companies invest the premiums they collect?",
+                 ["To make the company owners rich as quickly as possible",
+                  "Because regulators force them to buy only government bonds",
+                  "So the money grows over time and is available to pay future claims affordably",
+                  "To avoid paying taxes on premium income"],
+                 2,
+                 "Insurance companies invest premiums so the money grows while waiting to pay claims. "
+                 "Investment income also keeps YOUR premiums lower."),
+            _scenario(
+                "Priya collects Rs 10 lakh in insurance premiums in January. "
+                "Her boss says: Put it in our current account and do not touch it until claims come in.",
+                "What is the main problem with this approach?",
+                [("It is too risky — current accounts can be hacked", False,
+                  "The main problem is not hacking risk. Idle cash loses real value to inflation every month."),
+                 ("The money sits idle and loses real value to inflation while earning zero return "
+                  "that could help pay future claims or reduce premiums", True,
+                  "Correct. Premiums must be invested — even in safe government bonds — "
+                  "so the money grows. Idle cash is the enemy of a well-run insurance company."),
+                 ("It is fine — keeping cash is the safest strategy for an insurance company", False,
+                  "Safe does not mean idle. Even conservative investing in government bonds "
+                  "is far better than earning nothing in a current account."),
+                ]),
+        ],
+    )
+
+    # Case Study 2: How Your Premium Becomes an Investment
+    cs2 = _concept(m3_id, 2,
+        "How Your Premium Becomes an Investment",
+        "Trace the journey of a premium from payment to investment to claim payout.",
+        "When you pay a premium the insurance company does not put it in a drawer. "
+        "It goes through a cycle: premium collected, invested in assets, assets earn income, income pays claims. "
+        "If companies did not invest, your premium would be 3 to 4 times higher.",
+        "You pay Rs 800 per month for health insurance. That Rs 800 joins millions of other premiums. "
+        "The investment team buys government bonds paying 7% interest per year. "
+        "That interest income pays claims — without ever touching your original Rs 800.",
+        [
+            "Premium flow: you pay, insurer collects, investment team deploys, income pays claims",
+            "Investment income lets insurers charge lower premiums than save-and-pay math would allow",
+            "Float = collected premiums not yet paid as claims — the investment fuel of every insurer",
+            "Warren Buffett built Berkshire Hathaway using insurance float to invest in stocks",
+        ],
+        [
+            "Thinking premiums directly fund claims — most claims are paid from investment income",
+            "Assuming all premiums go into risky stocks — the vast majority go into safe bonds",
+        ],
+        [
+            _intro("Where Does Your Premium Actually Go?",
+                   "You pay Rs 800 a month. The insurance company receives it. Then what? "
+                   "Most people have no idea. Let us trace exactly where your money goes — "
+                   "and why it comes back as a claim payout when you need it."),
+            _cs(
+                "The Journey of Rs 800",
+                "Follow a single monthly premium payment as it travels through an insurance company.",
+                [
+                    {"label": "Step 1 — You Pay",
+                     "text": "You pay Rs 800 this month for health insurance. "
+                             "You get a receipt. Your coverage is active.",
+                     "highlight": None},
+                    {"label": "Step 2 — Into the Pool",
+                     "text": "Your Rs 800 joins a pool with 2 million other policyholders. "
+                             "The total pool this month is Rs 160 crore. "
+                             "Most people will NOT make a claim — statistically only 5 to 8 percent will.",
+                     "highlight": "Insurance works because not everyone has a problem at the same time."},
+                    {"label": "Step 3 — The Investment Department",
+                     "text": "Rs 160 crore goes to the investment team. They buy government bonds "
+                             "paying 7% interest per year. After one year that pool earns "
+                             "Rs 11.2 crore in interest — money earned without collecting a single extra rupee from you.",
+                     "highlight": None},
+                    {"label": "Step 4 — Your Claim Gets Paid",
+                     "text": "When you file a hospital claim for Rs 45,000 the company pays it "
+                             "largely from investment income — not from burning through everyone's Rs 800 payments. "
+                             "The original pool stays invested, earning interest for future claims.",
+                     "highlight": "Rs 800 per month + time + investment returns = ability to pay a Rs 45,000 claim."},
+                    {"label": "The Warren Buffett Angle",
+                     "text": "Warren Buffett built much of his wealth using exactly this model. "
+                             "He bought insurance companies to use policyholder premiums — called float — to invest in stocks. "
+                             "The premiums are essentially a loan from policyholders that can be invested.",
+                     "highlight": "Float = premiums collected but not yet paid as claims. It is the investment fuel of every insurance company."},
+                ],
+                "Your premium does not sit in a safe — it gets invested immediately, earns returns, "
+                "and that return is what makes your Rs 800 per month cover a Rs 45,000 hospital bill."
+            ),
+            _flash("What is float in an insurance company?",
+                   "Float is the pool of premiums collected from policyholders that have not yet been paid out as claims — the investment fuel of every insurer."),
+            _mcq("You pay Rs 800 per month in health insurance. The insurer invests this in bonds earning 7% per year. "
+                 "What does the investment income most directly help the insurer do?",
+                 ["Pay higher salaries to insurance agents",
+                  "Buy expensive office buildings",
+                  "Pay future claims and keep your premium lower than it would otherwise be",
+                  "Speculate in the stock market for quick profits"],
+                 2,
+                 "Investment income from premium pools is what makes insurance affordable. "
+                 "Without it, insurers would need to charge 3 to 4 times more just to cover claims."),
+            _mcq("An insurance company collects Rs 500 crore in premiums. Only Rs 350 crore in claims expected. "
+                 "What should the investment team do with the remaining Rs 150 crore?",
+                 ["Keep it in a savings account earning 3.5%",
+                  "Distribute it as bonuses immediately",
+                  "Invest it in assets matched to the timing of future claims",
+                  "Return it to policyholders as a refund"],
+                 2,
+                 "The Rs 150 crore must be invested to earn returns matched to when future claims need to be paid. "
+                 "Simply parking it in savings wastes the opportunity."),
+            _scenario(
+                "Sanjay explains to his grandmother why her life insurance premiums do not just sit in a bank. "
+                "She asks: So my Rs 500 per month is being gambled in the stock market?",
+                "How should Sanjay best correct her?",
+                [("Yes — all insurance money goes into stocks to maximise return", False,
+                  "Most insurance premiums go into safe bonds not stocks. Life insurers must "
+                  "match stable assets to long-term liabilities."),
+                 ("No — most is invested in safe government bonds earning steady interest "
+                  "used to pay claims. Only a small regulated portion may go into stocks.", True,
+                  "Correct. The vast majority of insurance assets are in bonds — safe, "
+                  "predictable, and matched to the timing of future claim payments."),
+                 ("He should tell her it stays in a bank account for safety", False,
+                  "Cash in a bank earns very little. Insurance companies must invest premiums "
+                  "to generate returns needed to pay claims affordably."),
+                ]),
+        ],
+    )
+
+    # Case Study 3: AIG 2008
+    cs3 = _concept(m3_id, 3,
+        "The AIG Story — What Happens When an Insurer Gambles",
+        "Learn from the biggest insurance failure in history why conservative investing is a rule not a suggestion.",
+        "AIG was the world's largest insurance company. In the 2000s they stopped investing conservatively "
+        "and started making risky bets. When those bets failed in 2008 they could not pay what they owed. "
+        "The US government rescued them with 182 billion dollars — the largest corporate bailout in history.",
+        "AIG's London office sold insurance on risky home loans worth 440 billion dollars "
+        "without setting aside enough money to pay if those loans defaulted. "
+        "When US housing prices crashed 440 billion dollars in obligations came due and AIG had almost nothing.",
+        [
+            "Insurance companies must invest conservatively — they hold OTHER PEOPLE'S money",
+            "Higher returns always come with higher risk — AIG chased returns and lost everything",
+            "Regulators require investment limits to prevent exactly this kind of failure",
+            "Prudent Investor rule: invest as a careful sensible person would with their own money",
+        ],
+        [
+            "Thinking bigger companies are automatically safer — AIG was the biggest and still failed",
+            "Confusing high potential return with good investment — for insurers stability beats returns",
+        ],
+        [
+            _intro("The Biggest Insurance Disaster in History",
+                   "You are about to read the story of AIG — a company so large it insured other insurance companies. "
+                   "And how it nearly destroyed the global financial system in 2008. "
+                   "No finance background needed — just follow the story."),
+            _cs(
+                "AIG: From World's Largest Insurer to Government Bailout",
+                "How one insurance company's gambling nearly crashed the world economy — explained in plain English.",
+                [
+                    {"label": "Who Was AIG?",
+                     "text": "American International Group — AIG — was the world's largest insurance company by 2007. "
+                             "It operated in 130 countries and insured everything from cars to Boeing airplanes. "
+                             "It was considered completely safe. Too big and too important to ever fail.",
+                     "highlight": None},
+                    {"label": "The Gamble",
+                     "text": "Inside AIG a small office in London started selling promises to banks. "
+                             "The promise: if homeowners stop paying their home loans AIG will cover the losses. "
+                             "Banks paid AIG fees for this. Easy money — as long as housing prices kept rising.",
+                     "highlight": "The problem: AIG was making promises worth 440 billion dollars without setting aside enough money to keep them."},
+                    {"label": "The Crash",
+                     "text": "In 2007 and 2008 millions of Americans stopped paying their home loans. "
+                             "Housing prices crashed. The banks came to AIG: you promised to cover our losses — pay up. "
+                             "AIG owed 440 billion dollars. They had nowhere near that. They ran out of money.",
+                     "highlight": None},
+                    {"label": "The Rescue",
+                     "text": "The US government stepped in with a rescue of 182 billion dollars. "
+                             "American taxpayers bailed out a private insurance company because letting it fail "
+                             "would have crashed banks, pension funds, and entire economies worldwide.",
+                     "highlight": "182 billion dollar rescue — the largest corporate bailout in history. All because an insurer stopped investing conservatively."},
+                    {"label": "Why This Matters for You",
+                     "text": "This is exactly why insurance regulators create strict investment rules. "
+                             "Insurance companies hold YOUR money — your premiums, your life insurance payout. "
+                             "They are not allowed to gamble with it. Conservative investing is not optional — it is a legal obligation.",
+                     "highlight": "The Prudent Investor Standard: invest as a careful sensible person would with their own money."},
+                ],
+                "AIG forgot the most important rule: the money belongs to policyholders not the company. "
+                "Conservative investing is not weakness — it is a duty."
+            ),
+            _flash("What is the Prudent Investor Standard?",
+                   "The rule that insurance companies must invest as a careful sensible person would with their own money — no excessive risk with policyholders funds."),
+            _mcq("AIG made promises worth 440 billion dollars without holding enough money to cover them. "
+                 "Which basic principle did they violate?",
+                 ["They should have invested more in stocks for higher returns",
+                  "They should have diversified into real estate instead",
+                  "They took on obligations far beyond what their assets could cover — violating the Prudent Investor Standard",
+                  "They should have hired more investment analysts"],
+                 2,
+                 "The core violation: AIG's obligations massively exceeded their ability to pay. "
+                 "Insurers must maintain assets sufficient to cover all promises — always."),
+            _mcq("After the AIG case, which approach best fits an insurance company?",
+                 ["Maximise returns at any cost — policyholders want their premiums to grow",
+                  "Invest conservatively in stable assets matched to the timing and size of future claims",
+                  "Copy successful hedge fund strategies to outperform the market",
+                  "Keep all money in cash to guarantee safety"],
+                 1,
+                 "Insurance companies must be conservative investors — stability and liability matching "
+                 "matter more than maximising returns. A disciplined portfolio of mostly bonds matched to claim timing."),
+            _scenario(
+                "Vikram is a new analyst at Prudential Life Insurance. His manager suggests "
+                "allocating 40% of the portfolio to high-risk technology startup investments for huge returns.",
+                "Based on the AIG story what should Vikram do?",
+                [("Agree — higher returns mean more money for policyholders", False,
+                  "Higher potential returns come with higher risk. Insurance companies hold "
+                  "policyholders money and must prioritise stability. This is dangerously speculative."),
+                 ("Raise concerns — this is far too risky for an insurer, likely violates regulatory limits, "
+                  "and could expose the company to the same failure as AIG", True,
+                  "Correct. Insurance regulators cap equity allocations and ban speculative investments. "
+                  "A 40% startup allocation would likely be illegal AND put policyholders at catastrophic risk."),
+                 ("Invest 20% in startups instead — a compromise is always the right answer", False,
+                  "The percentage alone does not fix the fundamental problem. "
+                  "Even small allocations to highly speculative investments may violate regulatory standards."),
+                ]),
+        ],
+    )
+
+    m3["concepts"] = [cs1, cs2, cs3]
+    ch["modules"] = [m1, m2, m3]
     return ch
 
 
@@ -5359,6 +5650,7 @@ def build_seed():
     loma = {
         "id": course_id,
         "slug": "loma-357",
+        "seed_version": SEED_VERSION,
         "name": "LOMA 357",
         "title": "Institutional Investing: Principles and Practices",
         "certification": "LOMA",
@@ -5413,10 +5705,18 @@ def flatten_for_db(courses):
 
 
 async def seed_courses(db):
-    """Seed LOMA 357 into DB. Skip if already present with correct data."""
+    """Seed LOMA 357 into DB. Re-seeds if version is outdated."""
     existing_loma = await db.courses.find_one({"slug": "loma-357"})
     if existing_loma:
-        return  # already seeded
+        if existing_loma.get("seed_version") == SEED_VERSION:
+            return  # already up to date
+        # Outdated -- wipe all course data and re-seed
+        await db.courses.delete_many({})
+        await db.chapters.delete_many({})
+        await db.modules.delete_many({})
+        await db.concepts.delete_many({})
+        await db.lessons.delete_many({})
+        print(f"[seed] Outdated version detected, wiping and re-seeding as {SEED_VERSION}")
 
     courses = build_seed()
     cs, chs, ms, cps, ls = flatten_for_db(courses)
