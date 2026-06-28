@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
+import { Capacitor } from "@capacitor/core";
+import { Browser } from "@capacitor/browser";
 
 export default function AuthPage({ mode = "login" }) {
   const { login, register } = useAuth();
@@ -120,9 +122,19 @@ export default function AuthPage({ mode = "login" }) {
 
           {/* REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH */}
           <button type="button" data-testid="btn-google"
-            onClick={() => {
-              const redirectUrl = window.location.origin + "/dashboard";
-              window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+            onClick={async () => {
+              // On native Android: open Chrome Custom Tab with deep-link callback.
+              // Chrome is trusted by Google for OAuth; WebView is blocked by Google since 2021.
+              // On web: navigate the tab directly (works fine in browsers).
+              if (Capacitor.isNativePlatform()) {
+                await Browser.open({
+                  url: `https://auth.emergentagent.com/?redirect=${encodeURIComponent("finlingo://callback")}`,
+                  presentationStyle: "popover",
+                });
+              } else {
+                const redirectUrl = window.location.origin + "/dashboard";
+                window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+              }
             }}
             className="w-full py-3 rounded-xl border-2 border-zinc-200 hover:border-zinc-400 bg-white font-[Outfit] font-bold tracking-tight inline-flex items-center justify-center gap-2.5 transition active:scale-[0.98]">
             <GoogleG/>
