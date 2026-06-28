@@ -45,11 +45,6 @@ export default function App() {
 }
 
 function AppRouter() {
-  // CRITICAL: detect Google OAuth callback synchronously during render
-  // (before any Protected route can redirect). The session_id arrives in the URL hash.
-  if (typeof window !== "undefined" && window.location.hash?.includes("session_id=")) {
-    return <AuthCallback />;
-  }
   return (
     <Routes>
       <Route path="/" element={<PublicOnly><Landing/></PublicOnly>}/>
