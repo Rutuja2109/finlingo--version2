@@ -115,7 +115,7 @@ function getMessages(streakDays) {
     };
   }
   return {
-    morning: { title: `${streakDays}-day legend! 🌟`, body: "You're unstoppable. Keep mastering LOMA 357 one concept at a time." },
+    morning: { title: `${streakDays}-day legend! 🌟`, body: "You're unstoppable. Keep mastering finance one concept at a time." },
     evening: { title: `${streakDays} days — don't stop now! 🏆`, body: "Champions practice every day. A quick concept is all it takes." },
   };
 }

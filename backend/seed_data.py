@@ -1,10 +1,8 @@
-"""Seed LOMA 357 â€” Institutional Investing: Principles and Practices.
-Phase 1: Chapters 1-3 only.
-"""
+"""Seed course — Institutional Investing: Principles and Practices."""
 from datetime import datetime, timezone
 import uuid
 
-SEED_VERSION = "v3-case-studies"  # bump to force re-seed on next deploy
+SEED_VERSION = "v4-course-renamed"  # bump to force re-seed on next deploy
 
 
 def _id():
@@ -2126,7 +2124,7 @@ def _build_ch4(course_id):
         ],
         [
             "Thinking higher interest rates are always bad â€” they hurt existing bondholders but benefit new investors buying at higher yields.",
-            "Confusing nominal return (stated %) with real return (after inflation) â€” the LOMA exam tests both.",
+            "Confusing nominal return (stated %) with real return (after inflation) â€” both are key concepts in any finance certification.",
             "Ignoring reinvestment risk: when rates fall, coupon payments get reinvested at lower yields, reducing total return.",
         ],
         lessons=[
@@ -2285,7 +2283,7 @@ def _build_ch4(course_id):
         m2_id, 2,
         "Investment Risks: Systematic and Specific Risks",
         "Classify investment risks as systematic (market-wide) or specific (security-level), describe the major risk types in each category, and explain why diversification eliminates specific but not systematic risk.",
-        "Risk is not one thing â€” it is many. When the stock market crashes, ALL stocks tend to fall â€” this is systematic risk you cannot escape by diversification. But when a single company goes bankrupt, only its bondholders suffer â€” this is specific risk you CAN eliminate by holding many securities. LOMA 357 tests your ability to name, define, and classify these risks correctly. Insurance companies face ALL of these risks and use sophisticated risk management frameworks to control them.",
+        "Risk is not one thing â€” it is many. When the stock market crashes, ALL stocks tend to fall â€” this is systematic risk you cannot escape by diversification. But when a single company goes bankrupt, only its bondholders suffer â€” this is specific risk you CAN eliminate by holding many securities. Mastering these distinctions is essential for any finance professional. Insurance companies face ALL of these risks and use sophisticated risk management frameworks to control them.",
         "In 2008, Lehman Brothers' collapse illustrated both risk types simultaneously. Systematic risk: the entire credit market froze, corporate bond prices crashed everywhere â€” no diversification could prevent this. Specific risk: investors who held ONLY Lehman bonds lost 90 cents on the dollar, while those who had diversified across 50 issuers lost only their 2% Lehman allocation. Hartford Financial, which held a diversified bond portfolio of 300+ issuers, survived with losses 80% smaller than those that concentrated in mortgage-backed securities.",
         [
             "Systematic risks affect all investments in a market â€” they CANNOT be eliminated by diversification.",
@@ -3006,7 +3004,7 @@ def _build_ch6(course_id):
         ],
         lessons=[
             _intro("Three Ways to Manage the Asset-Liability Relationship",
-                   "Every insurer must decide how tightly to link its assets to its liabilities. Dedication locks them together perfectly. Immunization creates a controlled relationship. Interest-rate anticipation deliberately creates gaps to profit from rate predictions. Understanding all three is essential for the LOMA 357 exam."),
+                   "Every insurer must decide how tightly to link its assets to its liabilities. Dedication locks them together perfectly. Immunization creates a controlled relationship. Interest-rate anticipation deliberately creates gaps to profit from rate predictions. Understanding all three is essential for any institutional investor."),
             _teach("Portfolio Immunization: Matching Duration to Neutralize Rate Risk",
                    "Portfolio immunization sets asset duration equal to liability duration so that when interest rates change, the change in asset value exactly offsets the change in liability value. If an insurer's liabilities have duration 10, it holds assets with duration 10. When rates rise 1%: liabilities fall ~10% (in present value), assets also fall ~10% â€” the solvency ratio stays constant. Immunization is not perfect: it only works for parallel yield curve shifts and requires rebalancing as time passes and as the portfolio changes.",
                    ["Immunization: set asset duration = liability duration.",
@@ -4939,7 +4937,7 @@ def _build_ch12(course_id):
         ],
         lessons=[
             _intro("GICs and Funding Agreements: Insurance Companies as Investment Guarantors",
-                   "Insurance companies don't just invest money — they also manufacture investment products. GICs and funding agreements are contracts that promise a guaranteed return, transferring investment risk to the insurer. Understanding these products is essential LOMA 357 knowledge."),
+                   "Insurance companies don't just invest money — they also manufacture investment products. GICs and funding agreements are contracts that promise a guaranteed return, transferring investment risk to the insurer. Understanding these products is essential for anyone working in institutional finance."),
             _teach("GIC Structure, Types, and the Crediting Rate Spread",
                    "A Guaranteed Investment Contract has three core elements: (1) Principal — the deposit placed by the pension plan or institutional investor; (2) Crediting rate — the guaranteed annual interest rate the insurer commits to pay over the contract term; (3) Term — typically 1 to 10 years; most 3-5 years. GIC types: (a) Bullet GIC — single lump-sum deposit, single maturity payment (most common for pension plans). No withdrawals permitted before maturity except for specific benefit payments; (b) Window GIC — multiple deposits accepted during a contribution window period, then closes. Useful for 401(k) plans with ongoing contributions; (c) Immediate Participation Guarantee (IPG) — the depositor participates in the actual investment performance rather than a fixed guaranteed rate; hybrid product; (d) Synthetic GIC — the pension plan owns the underlying assets but buys a 'wrap contract' from the insurer that guarantees book value even if market values decline. The insurer provides the guarantee without actually holding the assets. The crediting rate spread: insurer's investment return MINUS crediting rate MINUS expenses = profit margin. Typical spread: 30-80 basis points. If spreads compress (investment yields fall, competition forces higher crediting rates), profitability collapses.",
                    ["Bullet GIC: single deposit, fixed rate, fixed term — simplest structure.",
@@ -5649,12 +5647,12 @@ def build_seed():
     course_id = _id()
     loma = {
         "id": course_id,
-        "slug": "loma-357",
+        "slug": "institutional-investing-101",
         "seed_version": SEED_VERSION,
-        "name": "LOMA 357",
+        "name": "Institutional Investing",
         "title": "Institutional Investing: Principles and Practices",
-        "certification": "LOMA",
-        "description": "Master institutional investing concepts for the LOMA 357 exam â€” from basic asset classes to advanced portfolio management and regulation.",
+        "certification": "Finance",
+        "description": "Master institutional investing from the ground up â€” asset classes, portfolio management, risk frameworks, and regulatory principles used by the world's largest investors.",
         "color": "#FF6B35",
         "icon": "Shield",
         "order": 1,
@@ -5705,8 +5703,8 @@ def flatten_for_db(courses):
 
 
 async def seed_courses(db):
-    """Seed LOMA 357 into DB. Re-seeds if version is outdated."""
-    existing_loma = await db.courses.find_one({"slug": "loma-357"})
+    """Seed Institutional Investing course into DB. Re-seeds if version is outdated."""
+    existing_loma = await db.courses.find_one({"slug": "institutional-investing-101"})
     if existing_loma:
         if existing_loma.get("seed_version") == SEED_VERSION:
             return  # already up to date
@@ -5731,5 +5729,5 @@ async def seed_courses(db):
     if ls:
         await db.lessons.insert_many(ls)
 
-    print(f"[seed] LOMA 357 seeded: {len(cs)} courses, {len(chs)} chapters, "
+    print(f"[seed] Institutional Investing seeded: {len(cs)} courses, {len(chs)} chapters, "
           f"{len(ms)} modules, {len(cps)} concepts, {len(ls)} lessons")
