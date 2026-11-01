@@ -23,6 +23,7 @@ from pydantic import BaseModel, EmailStr, Field
 import httpx
 
 from seed_data import seed_courses
+from seed_finance import seed_finance_courses
 from pdf_ingest import extract_chapters
 from llm_gen import generate_chapter_lessons
 
@@ -191,6 +192,7 @@ async def _seed_background():
     try:
         await seed_admin()
         await seed_courses(db)
+        await seed_finance_courses(db)
     except Exception as e:
         logging.getLogger(__name__).error(f"Seed error: {e}")
 

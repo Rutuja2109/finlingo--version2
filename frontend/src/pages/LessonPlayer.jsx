@@ -453,6 +453,36 @@ function CaseStudyLesson({ l, onShown, conceptId }) {
   );
 }
 
+// verdict: "good" (best), "ok" (safe but not best), "bad" (wrong). Older content only has `correct`.
+const VERDICT_STYLE = {
+  good: { box: "bg-[#10B981]/10 border-[#10B981]/40 text-[#065F46]", title: "Smart move", Icon: Check, color: "text-[#10B981]" },
+  ok:   { box: "bg-[#F59E0B]/10 border-[#F59E0B]/40 text-[#92400E]", title: "Safe, but not the best", Icon: Check, color: "text-[#F59E0B]" },
+  bad:  { box: "bg-[#EF4444]/10 border-[#EF4444]/40 text-[#7F1D1D]", title: "Not this one", Icon: X, color: "text-[#EF4444]" },
+};
+const rupees = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
+
+function OutcomeBars({ outcome }) {
+  const [bLabel, bVal] = outcome.before;
+  const [aLabel, aVal] = outcome.after;
+  const max = Math.max(bVal, aVal, 1);
+  const lost = aVal < bVal;
+  return (
+    <div className="mt-4 bg-white border border-zinc-200 rounded-2xl p-4 fade-up" data-testid="scenario-outcome">
+      <p className="uppercase tracking-[0.2em] text-[10px] font-bold text-zinc-400 mb-3">What happened next</p>
+      <div className="flex justify-between text-sm mb-1"><span>{bLabel}</span><b className="font-[Outfit]">{rupees(bVal)}</b></div>
+      <div className="h-3 rounded-full bg-zinc-100 overflow-hidden mb-3">
+        <div className="h-full rounded-full bg-zinc-300 transition-all duration-700" style={{ width: `${(bVal / max) * 100}%` }} />
+      </div>
+      <div className="flex justify-between text-sm mb-1"><span>{aLabel}</span><b className="font-[Outfit]">{rupees(aVal)}</b></div>
+      <div className="h-3 rounded-full bg-zinc-100 overflow-hidden mb-2">
+        <div className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${(aVal / max) * 100}%`, background: lost ? "#EF4444" : "#10B981" }} />
+      </div>
+      {outcome.note && <p className="text-xs text-zinc-500">{outcome.note}</p>}
+    </div>
+  );
+}
+
 function ScenarioLesson({ l, answered, onAnswer }) {
   const [pickedIdx, setPickedIdx] = useState(null);
 
@@ -464,33 +494,51 @@ function ScenarioLesson({ l, answered, onAnswer }) {
     onAnswer(l.content.choices[i].correct);
   };
 
+  const choices = l.content.choices || [];
+  const picked = pickedIdx !== null ? choices[pickedIdx] : null;
+  const verdict = picked ? (picked.verdict || (picked.correct ? "good" : "bad")) : null;
+  const vs = verdict ? VERDICT_STYLE[verdict] : null;
+
   return (
     <div className="fade-up">
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#EC4899] mb-2">Real-world Scenario</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#EC4899] mb-2">Real-life situation</p>
       <div className="bg-zinc-50 border-l-4 border-[#EC4899] p-4 rounded-r-2xl mb-5">
         <p className="text-zinc-700 italic">{l.content.scene}</p>
       </div>
       <h2 className="font-[Outfit] font-black text-xl tracking-tight mb-5">{l.content.question}</h2>
       <div className="space-y-3">
-        {(l.content.choices || []).map((c, i) => {
+        {choices.map((c, i) => {
           const showResult = pickedIdx !== null;
-          let cls = "border-zinc-200 hover:border-zinc-400";
-          if (showResult && i === pickedIdx && c.correct) cls = "border-[#10B981] bg-[#10B981]/10";
-          else if (showResult && i === pickedIdx && !c.correct) cls = "border-[#EF4444] bg-[#EF4444]/10 shake";
-          else if (showResult && c.correct) cls = "border-[#10B981] bg-[#10B981]/5";
+          const cv = c.verdict || (c.correct ? "good" : "bad");
+          let cls = "border-zinc-200 hover:border-[#FF6B35] bg-white";
+          if (showResult && i === pickedIdx) {
+            cls = cv === "good" ? "border-[#10B981] bg-[#10B981]/10"
+              : cv === "ok" ? "border-[#F59E0B] bg-[#F59E0B]/10"
+              : "border-[#EF4444] bg-[#EF4444]/10 shake";
+          } else if (showResult && cv === "good") {
+            cls = "border-[#10B981] bg-[#10B981]/5";
+          }
           return (
             <button key={i} data-testid={`scenario-choice-${i}`} onClick={() => pick(i)} disabled={answered !== null}
-              className={`w-full text-left px-5 py-4 rounded-2xl border-2 font-semibold transition ${cls}`}>
+              className={`w-full text-left px-5 py-4 rounded-2xl border-2 font-semibold transition active:scale-[0.98] ${cls}`}>
               <span>{c.text}</span>
-              {showResult && i === pickedIdx && (
-                <p className="text-sm font-normal mt-2 text-zinc-600">{c.feedback}</p>
-              )}
             </button>
           );
         })}
       </div>
+
+      {picked && vs && (
+        <div className={`mt-5 p-4 rounded-2xl border fade-up ${vs.box}`} data-testid="scenario-feedback">
+          <p className="font-[Outfit] font-extrabold flex items-center gap-2 mb-1">
+            <vs.Icon className={`w-5 h-5 ${vs.color}`} /> {vs.title}
+          </p>
+          <p className="text-sm leading-relaxed">{picked.feedback}</p>
+        </div>
+      )}
+      {picked && picked.outcome && <OutcomeBars outcome={picked.outcome} />}
+
       {answered !== null && !answered.correct && (
-        <p className="mt-3 text-xs font-semibold text-[#7F1D1D] opacity-80">↻ We'll ask this scenario again later in the lesson.</p>
+        <p className="mt-3 text-xs font-semibold text-[#7F1D1D] opacity-80">↻ We'll ask this again later in the lesson.</p>
       )}
     </div>
   );

@@ -20,15 +20,16 @@ export default function Landing() {
       <section className="max-w-6xl mx-auto px-6 pt-12 pb-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF6B35]/10 text-[#FF6B35] text-xs font-bold uppercase tracking-[0.2em] mb-6">
-            <Sparkles className="w-3.5 h-3.5"/> AI-Powered Mastery Learning
+            <Sparkles className="w-3.5 h-3.5"/> Learn by choosing
           </div>
           <h1 className="font-[Outfit] font-black text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tighter mb-6">
-            Certifications,<br/>
-            <span className="bg-gradient-to-r from-[#FF6B35] via-[#EC4899] to-[#FF6B35] bg-clip-text text-transparent">finally</span> bingeable.
+            Learn money,<br/>
+            <span className="bg-gradient-to-r from-[#FF6B35] via-[#EC4899] to-[#FF6B35] bg-clip-text text-transparent">finally</span> fun.
           </h1>
           <p className="text-lg text-zinc-600 max-w-xl mb-8 leading-relaxed">
-            FinLearn turns 800-page certification books into bite-sized interactive
-            journeys. Built for LOMA, CFA, FRM, PMP, AWS — and every cert after.
+            Budgeting, the stock market and Bitcoin, taught through real-life
+            choices. Make the call, see what happens, learn why. No jargon,
+            no lectures.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link to="/signup" data-testid="hero-cta-start"
@@ -40,7 +41,7 @@ export default function Landing() {
               Try the demo
             </Link>
           </div>
-          <p className="text-xs text-zinc-500 mt-4">No credit card · Real XP · Real leaderboards</p>
+          <p className="text-xs text-zinc-500 mt-4">Free to start · Educational content, not financial advice</p>
         </div>
 
         <div className="relative">
@@ -49,10 +50,10 @@ export default function Landing() {
             <div className="flex items-center justify-center mb-6"><Lumi size={130} mood="cheer"/></div>
             <div className="space-y-3">
               {[
-                { icon: Brain, txt: "Active recall · Mastery learning · Spaced repetition", c:"#2563EB" },
-                { icon: Target, txt: "Daily goals, streaks & real XP rewards", c:"#10B981" },
+                { icon: Brain, txt: "Real-life choices, then the why behind each answer", c:"#2563EB" },
+                { icon: Target, txt: "Daily goals, streaks & XP rewards", c:"#10B981" },
                 { icon: Trophy, txt: "Boss battles & live leaderboards", c:"#EC4899" },
-                { icon: Layers, txt: "Works for LOMA, CFA, FRM, PMP, AWS & beyond", c:"#FF6B35" },
+                { icon: Layers, txt: "Money basics, stocks, Bitcoin and LOMA", c:"#FF6B35" },
               ].map(({icon:Ic, txt, c}, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50">
                   <div className="w-9 h-9 rounded-lg grid place-items-center" style={{background: `${c}1A`}}>

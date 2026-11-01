@@ -37,11 +37,11 @@ export default function AuthPage({ mode = "login" }) {
           </Link>
           <div>
             <h1 className="font-[Outfit] font-black text-5xl leading-tight tracking-tighter mb-4">
-              Master certifications.<br/>One concept at a time.
+              Learn money.<br/>One choice at a time.
             </h1>
             <p className="text-white/85 max-w-md">
-              Built for LOMA, CFA, FRM, PMP, AWS and beyond. Interactive lessons,
-              real XP, real progress — no more PDFs.
+              Budgeting, stocks and Bitcoin through real-life situations.
+              Make the call, see what happens, learn why.
             </p>
           </div>
           <div className="text-xs uppercase tracking-[0.3em] text-white/70">Master what matters</div>
