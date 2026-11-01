@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE = process.env.REACT_APP_BACKEND_URL;
+const DEFAULT_BACKEND_URL = "https://finlingo-api.onrender.com";
+const BASE = (process.env.REACT_APP_BACKEND_URL || DEFAULT_BACKEND_URL).replace(/\/+$/, "");
 export const API = `${BASE}/api`;
 
 export const api = axios.create({

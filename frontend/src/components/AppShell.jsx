@@ -1,22 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Zap, Coins, LogOut, Trash2, Trophy, Home, BookOpen, Award, Repeat, Sparkles } from "lucide-react";
+import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 
 export default function AppShell({ children }) {
-  const { user, stats, logout, deleteAccount } = useAuth();
+  const { user, stats, logout } = useAuth();
   const nav = useNavigate();
   const loc = useLocation();
-
-  const onDeleteAccount = async () => {
-    if (!window.confirm("Delete your account and all your progress? This cannot be undone.")) return;
-    const password = window.prompt("Enter your password to confirm (leave blank if you signed in with Google):") ?? null;
-    if (password === null) return;
-    const res = await deleteAccount(password);
-    if (res.ok) window.location.replace("/login");
-    else window.alert(res.error);
-  };
 
   const linkCls = (path) =>
     `flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
@@ -74,16 +65,14 @@ export default function AppShell({ children }) {
             >
               <LogOut className="w-4 h-4" />
             </button>
-            {user && user.role !== "admin" ? (
-              <button
-                onClick={onDeleteAccount}
-                data-testid="btn-delete-account"
-                className="w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-red-100 text-zinc-500 hover:text-red-600 transition"
-                title="Delete account"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            ) : null}
+            <Link
+              to="/account"
+              data-testid="btn-account"
+              className="w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition"
+              title="Account"
+            >
+              <Settings className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </header>

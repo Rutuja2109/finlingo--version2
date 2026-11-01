@@ -35,7 +35,7 @@ export default function Landing() {
               className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold text-lg transition active:scale-[0.98]">
               Start learning free <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link to="/login" data-testid="hero-cta-demo"
+            <Link to="/login?demo=1" data-testid="hero-cta-demo"
               className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-300 font-[Outfit] font-bold text-lg transition">
               Try the demo
             </Link>

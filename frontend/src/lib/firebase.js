@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics, logEvent, setUserId, setUserProperties } from "firebase/analytics";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAnalytics, logEvent, setUserId, setUserProperties, isSupported } from "firebase/analytics";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PASTE YOUR FIREBASE CONFIG HERE
@@ -21,17 +21,24 @@ const firebaseConfig = {
 
 let analytics = null;
 
-function getAnalyticsInstance() {
+async function initAnalytics() {
   if (analytics) return analytics;
   try {
-    // Only init if config is filled in
-    if (firebaseConfig.apiKey === "PASTE_YOUR_API_KEY") return null;
-    const app = initializeApp(firebaseConfig);
+    const supported = await isSupported();
+    if (!supported) return null;
+    const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
     analytics = getAnalytics(app);
     return analytics;
   } catch {
     return null;
   }
+}
+
+// Kick off init immediately so it's ready before the first event
+initAnalytics();
+
+function getAnalyticsInstance() {
+  return analytics;
 }
 
 // ─── Core tracker (safe no-op if Firebase not configured) ────────────────────

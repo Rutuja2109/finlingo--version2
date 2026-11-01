@@ -630,6 +630,7 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
             "streak_days": streak, "last_active_date": today,
             "concepts_mastered": concepts_mastered, "lessons_completed": lessons_completed,
             "achievements": achievements,
+            **_xp_today_fields(stats, xp_earned),
         }},
         upsert=True,
     )
@@ -642,6 +643,13 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
     }
 
 
+def _xp_today_fields(stats: dict, delta: int) -> dict:
+    """Fields that add `delta` XP to today's running total (resets each UTC day)."""
+    today = datetime.now(timezone.utc).date().isoformat()
+    base = stats.get("xp_today", 0) if stats.get("xp_today_date") == today else 0
+    return {"xp_today": base + delta, "xp_today_date": today}
+
+
 @api.get("/stats/me")
 async def my_stats(user: dict = Depends(get_current_user)):
     s = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0})
@@ -651,6 +659,9 @@ async def my_stats(user: dict = Depends(get_current_user)):
              "lessons_completed": 0}
         await db.user_stats.insert_one(s)
         s.pop("_id", None)
+    today = datetime.now(timezone.utc).date().isoformat()
+    s["xp_today"] = s.get("xp_today", 0) if s.get("xp_today_date") == today else 0
+    s.pop("xp_today_date", None)
     return s
 
 
@@ -913,8 +924,11 @@ async def revisions_grade(payload: RevisionGradeIn, user: dict = Depends(get_cur
         upsert=True,
     )
     if xp_bonus:
+        cur = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0}) or {}
         await db.user_stats.update_one(
-            {"user_id": user["id"]}, {"$inc": {"total_xp": xp_bonus, "coins": xp_bonus // 2}}
+            {"user_id": user["id"]},
+            {"$inc": {"total_xp": xp_bonus, "coins": xp_bonus // 2},
+             "$set": _xp_today_fields(cur, xp_bonus)},
         )
     return {"next_review_in_days": nxt, "xp_bonus": xp_bonus}
 
@@ -984,7 +998,7 @@ async def boss_battle_submit(payload: BossBattleSubmitIn, user: dict = Depends(g
     await db.user_stats.update_one(
         {"user_id": user["id"]},
         {"$set": {"total_xp": new_xp, "level": new_level, "coins": new_coins,
-                  "achievements": achievements}},
+                  "achievements": achievements, **_xp_today_fields(stats, xp_award)}},
         upsert=True,
     )
     # Record battle

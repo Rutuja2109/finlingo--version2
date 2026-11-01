@@ -15,6 +15,7 @@ import Achievements from "@/pages/Achievements";
 import Admin from "@/pages/Admin";
 import Revision from "@/pages/Revision";
 import BossBattle from "@/pages/BossBattle";
+import Account from "@/pages/Account";
 import AuthCallback from "@/pages/AuthCallback";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
@@ -58,7 +59,8 @@ function AppRouter() {
       <Route path="/concept/:conceptId" element={<Protected><LessonPlayer/></Protected>}/>
       <Route path="/leaderboard" element={<Protected><Leaderboard/></Protected>}/>
       <Route path="/achievements" element={<Protected><Achievements/></Protected>}/>
-      <Route path="/admin" element={<Protected><Admin/></Protected>}/>
+      <Route path="/account" element={<Protected><Account/></Protected>}/>
+      <Route path="/admin"element={<Protected><Admin/></Protected>}/>
       <Route path="/revise" element={<Protected><Revision/></Protected>}/>
       <Route path="/boss/:chapterId" element={<Protected><BossBattle/></Protected>}/>
       <Route path="*" element={<Navigate to="/" replace/>}/>

@@ -45,28 +45,30 @@ export default function Dashboard() {
   const isEnrolled = (id) => enrolled.some((c) => c.id === id);
   const xpToNext = 100 - (stats?.total_xp || 0) % 100;
   const dailyGoal = 30;
-  const todayXp = Math.min(stats?.total_xp || 0, dailyGoal);
-  const dailyPct = Math.min(100, ((todayXp % dailyGoal) / dailyGoal) * 100);
+  const todayXp = stats?.xp_today || 0;
+  const dailyPct = Math.min(100, (todayXp / dailyGoal) * 100);
 
   return (
     <div className="pb-24">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899] rounded-3xl p-7 md:p-10 text-white mb-8 relative overflow-hidden">
-        <div className="absolute -right-10 -top-10 opacity-40"><Lumi size={220} mood="cheer"/></div>
+      <section className="bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899] rounded-3xl p-5 md:p-10 text-white mb-6 md:mb-8 relative overflow-hidden">
+        <div className="absolute -right-4 -top-3 md:-right-10 md:-top-10 opacity-30 pointer-events-none">
+          <Lumi size={115} mood="cheer"/>
+        </div>
         <div className="relative">
-          <p className="uppercase tracking-[0.25em] text-xs font-bold text-white/85 mb-2">
+          <p className="uppercase tracking-[0.2em] text-[11px] md:text-xs font-bold text-white/90 mb-2">
             <Sparkles className="w-3.5 h-3.5 inline -mt-0.5 mr-1"/>
             {greeting()}, {user?.name?.split(" ")[0] || "learner"}
           </p>
-          <h1 className="font-[Outfit] font-black text-3xl md:text-5xl tracking-tighter leading-tight max-w-2xl">
+          <h1 className="font-[Outfit] font-black text-2xl md:text-5xl tracking-tighter leading-tight max-w-[75%] md:max-w-2xl">
             {(stats?.streak_days || 0) > 0
-              ? <>You're on a <span className="underline decoration-white/40">{stats.streak_days}-day streak</span>. Keep it alive.</>
+              ? <>{stats.streak_days}-day streak. Keep it alive.</>
               : "Let's start your streak today."}
           </h1>
-          <div className="mt-6 grid sm:grid-cols-3 gap-3 max-w-2xl">
+          <div className="mt-5 grid grid-cols-3 gap-2 md:gap-3 max-w-2xl">
             <HeroStat label="Level" value={stats?.level || 1} sub={`${xpToNext} XP to next`}/>
-            <HeroStat label="Total XP" value={stats?.total_xp || 0} sub={`Lifetime points`}/>
-            <HeroStat label="Mastered" value={stats?.concepts_mastered || 0} sub={`Concepts`}/>
+            <HeroStat label="Total XP" value={stats?.total_xp || 0} sub="Lifetime"/>
+            <HeroStat label="Mastered" value={stats?.concepts_mastered || 0} sub="Concepts"/>
           </div>
         </div>
       </section>
@@ -85,7 +87,7 @@ export default function Dashboard() {
             <div className="h-full bg-gradient-to-r from-[#FF6B35] to-[#EC4899] transition-all duration-700"
               style={{ width: `${dailyPct}%` }} data-testid="daily-progress-bar"/>
           </div>
-          <p className="text-sm text-zinc-500 mt-2">{Math.round(dailyPct)}% complete</p>
+          <p className="text-sm text-zinc-500 mt-2">{Math.min(todayXp, dailyGoal)} / {dailyGoal} XP today</p>
 
           {dueCount > 0 && (
             <Link to="/revise" data-testid="revise-cta"
@@ -179,8 +181,8 @@ export default function Dashboard() {
         <div className="mt-6 flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 border border-zinc-200">
           <Lumi size={44} mood="happy" />
           <div>
-            <p className="font-[Outfit] font-bold text-sm text-zinc-800">More certifications unlocking soon</p>
-            <p className="text-xs text-zinc-500">CFA, FRM, PMP and more — stay consistent to unlock</p>
+            <p className="font-[Outfit] font-bold text-sm text-zinc-800">More certifications coming soon</p>
+            <p className="text-xs text-zinc-500">FRM, AWS and more are on the way</p>
           </div>
         </div>
       </section>
@@ -197,10 +199,10 @@ function greeting() {
 
 function HeroStat({ label, value, sub }) {
   return (
-    <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-      <p className="uppercase tracking-[0.2em] text-[10px] font-bold text-white/80">{label}</p>
-      <p className="font-[Outfit] font-black text-3xl tabular-nums">{value}</p>
-      <p className="text-xs text-white/75">{sub}</p>
+    <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-white/20 min-w-0">
+      <p className="uppercase tracking-[0.15em] text-[10px] font-bold text-white/85">{label}</p>
+      <p className="font-[Outfit] font-black text-2xl md:text-3xl tabular-nums leading-tight">{value}</p>
+      <p className="text-[11px] md:text-xs text-white/80 truncate">{sub}</p>
     </div>
   );
 }

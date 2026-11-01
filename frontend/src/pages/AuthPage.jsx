@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 
@@ -7,7 +7,9 @@ export default function AuthPage({ mode = "login" }) {
   const { login, register } = useAuth();
   const nav = useNavigate();
   const isLogin = mode === "login";
-  const [form, setForm] = useState({ email: isLogin ? "demo@finlingo.com" : "", password: isLogin ? "Demo@123" : "", name: "" });
+  const [params] = useSearchParams();
+  const isDemo = isLogin && params.get("demo") === "1";
+  const [form, setForm] = useState({ email: isDemo ? "demo@finlingo.com" : "", password: isDemo ? "Demo@123" : "", name: "" });
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -42,7 +44,7 @@ export default function AuthPage({ mode = "login" }) {
               real XP, real progress — no more PDFs.
             </p>
           </div>
-          <div className="text-xs uppercase tracking-[0.3em] text-white/70">Phase 1 · Platform Shell</div>
+          <div className="text-xs uppercase tracking-[0.3em] text-white/70">Master what matters</div>
         </div>
       </div>
 
@@ -118,9 +120,9 @@ export default function AuthPage({ mode = "login" }) {
             </Link>
           </p>
 
-          {isLogin && (
+          {isDemo && (
             <p className="text-xs text-zinc-400 text-center mt-3">
-              Demo credentials prefilled · demo@finlingo.com / Demo@123
+              Demo account prefilled — just tap Log in.
             </p>
           )}
         </form>
