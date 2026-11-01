@@ -75,8 +75,21 @@ export function AuthProvider({ children }) {
     setStats(null);
   };
 
+  const deleteAccount = async (password) => {
+    try {
+      await api.delete("/auth/account", { data: { password } });
+      cancelReminders().catch(() => {});
+      localStorage.removeItem("fl_token");
+      setUser(false);
+      setStats(null);
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: formatApiError(e) };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, stats, login, register, logout, refreshStats, setStats, setUser }}>
+    <AuthContext.Provider value={{ user, stats, login, register, logout, deleteAccount,refreshStats, setStats, setUser }}>
       {children}
     </AuthContext.Provider>
   );

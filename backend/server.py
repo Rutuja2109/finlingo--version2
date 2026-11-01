@@ -278,6 +278,27 @@ async def logout(response: Response):
     return {"ok": True}
 
 
+class DeleteAccountIn(BaseModel):
+    password: Optional[str] = None
+
+
+@api.delete("/auth/account")
+async def delete_account(payload: DeleteAccountIn, response: Response, user: dict = Depends(get_current_user)):
+    if user.get("role") == "admin":
+        raise HTTPException(status_code=403, detail="Admin accounts cannot be deleted here")
+    stored = await db.users.find_one({"id": user["id"]})
+    # Password accounts must confirm; Google-only accounts have no password hash
+    if stored and stored.get("password_hash"):
+        if not payload.password or not verify_password(payload.password, stored["password_hash"]):
+            raise HTTPException(status_code=401, detail="Incorrect password")
+    uid = user["id"]
+    for coll in ("user_stats", "user_progress", "user_enrollments", "boss_battles", "password_resets"):
+        await db[coll].delete_many({"user_id": uid})
+    await db.users.delete_one({"id": uid})
+    clear_auth_cookies(response)
+    return {"ok": True}
+
+
 @api.get("/auth/me")
 async def me(user: dict = Depends(get_current_user)):
     return user
