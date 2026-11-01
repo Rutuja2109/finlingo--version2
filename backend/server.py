@@ -166,7 +166,7 @@ class BossBattleSubmitIn(BaseModel):
 
 
 # Where uploaded PDFs are stored (ephemeral container disk)
-UPLOAD_DIR = P("/app/data/uploads")
+UPLOAD_DIR = P(os.environ.get("UPLOAD_DIR") or str(ROOT_DIR / "data" / "uploads"))
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
