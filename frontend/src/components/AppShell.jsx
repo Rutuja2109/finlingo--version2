@@ -32,10 +32,10 @@ export default function AppShell({ children }) {
         data-testid="app-header"
         className="sticky top-0 z-40 backdrop-blur-xl bg-white/70 border-b border-zinc-200"
       >
-        <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-3 sm:px-5 h-16 flex items-center justify-between gap-2">
           <Link to="/dashboard" className="flex items-center gap-2.5" data-testid="brand-logo">
             <Lumi size={36} />
-            <span className="font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
+            <span className="hidden sm:inline font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">

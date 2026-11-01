@@ -25,8 +25,12 @@ export function AuthProvider({ children }) {
       const s = await api.get("/stats/me");
       setStats(s.data);
       identifyUser(data.id, data.name, data.email);
-      const granted = await requestNotificationPermission();
-      if (granted) scheduleReminders(s.data?.streak_days || 0);
+      try {
+        const granted = await requestNotificationPermission();
+        if (granted) scheduleReminders(s.data?.streak_days || 0);
+      } catch {
+        // reminders are optional; never let them break the session
+      }
     } catch {
       setUser(false);
       setStats(null);
@@ -45,8 +49,12 @@ export function AuthProvider({ children }) {
       await refreshStats();
       identifyUser(data.id, data.name, data.email);
       trackLogin(email === "demo@finlingo.com" ? "demo" : "email");
-      const granted = await requestNotificationPermission();
-      if (granted) scheduleReminders(0);
+      try {
+        const granted = await requestNotificationPermission();
+        if (granted) scheduleReminders(0);
+      } catch {
+        // reminders are optional
+      }
       return { ok: true };
     } catch (e) {
       return { ok: false, error: formatApiError(e) };

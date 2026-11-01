@@ -3,22 +3,25 @@
  * Only active on native (Android/iOS). On web, silently no-ops.
  */
 
-let _LocalNotifications = null;
+// The plugin is returned inside a plain object: resolving a Capacitor plugin proxy
+// directly from an async function makes JS call `.then` on it, which Capacitor 5+ rejects.
+let _holder = null;
 
 async function getPlugin() {
-  if (_LocalNotifications) return _LocalNotifications;
+  if (_holder) return _holder;
   try {
     const { LocalNotifications } = await import("@capacitor/local-notifications");
-    _LocalNotifications = LocalNotifications;
-    return _LocalNotifications;
+    _holder = { LN: LocalNotifications };
+    return _holder;
   } catch {
     return null;
   }
 }
 
 export async function requestNotificationPermission() {
-  const LN = await getPlugin();
-  if (!LN) return false;
+  const plugin = await getPlugin();
+  if (!plugin) return false;
+  const LN = plugin.LN;
   try {
     const { display } = await LN.requestPermissions();
     return display === "granted";
@@ -28,8 +31,9 @@ export async function requestNotificationPermission() {
 }
 
 export async function scheduleReminders(streakDays = 0, reminderHour = 8) {
-  const LN = await getPlugin();
-  if (!LN) return;
+  const plugin = await getPlugin();
+  if (!plugin) return;
+  const LN = plugin.LN;
 
   try {
     // Cancel existing reminders first
@@ -79,8 +83,9 @@ export async function scheduleReminders(streakDays = 0, reminderHour = 8) {
 }
 
 export async function cancelReminders() {
-  const LN = await getPlugin();
-  if (!LN) return;
+  const plugin = await getPlugin();
+  if (!plugin) return;
+  const LN = plugin.LN;
   try {
     const pending = await LN.getPending();
     if (pending.notifications.length > 0) {
