@@ -9,7 +9,7 @@ def _id():
     return str(uuid.uuid4())
 
 
-# â”€â”€ lesson builders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── lesson builders ──────────────────────────────────────────────────────────
 
 def _intro(heading, body):
     return {"id": _id(), "type": "intro", "content": {"heading": heading, "body": body}}
@@ -50,9 +50,9 @@ def _concept(mod_id, order, title, objective, simple_explanation,
     }
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# CHAPTER 1 â€” Introduction to Investing
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─────────────────────────────────────────────────────────────────────────────
+# CHAPTER 1 — Introduction to Investing
+# ─────────────────────────────────────────────────────────────────────────────
 
 def _build_ch1(course_id):
     ch_id = _id()
@@ -62,7 +62,7 @@ def _build_ch1(course_id):
         "description": "Understand what investing is, who investors are, and how the investment function operates inside an insurance company.",
     }
 
-    # â”€â”€ Module 1: Investing Fundamentals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 1: Investing Fundamentals ─────────────────────────────────────
     m1_id = _id()
     m1 = {"id": m1_id, "chapter_id": ch_id, "order": 1, "title": "Investing Fundamentals"}
 
@@ -70,10 +70,10 @@ def _build_ch1(course_id):
         "What Is Investing?",
         "Define investing and distinguish it from speculating and gambling.",
         "Investing means putting money into assets today to earn income or capital gains over time. "
-        "It requires analysis, patience, and risk management â€” very different from gambling (pure chance) "
+        "It requires analysis, patience, and risk management — very different from gambling (pure chance) "
         "or speculating (very short-term, high-risk bets).",
         "MetLife puts $500 million into 10-year government bonds expecting steady coupon income "
-        "to match future policyholder claims â€” that is classic institutional investing.",
+        "to match future policyholder claims — that is classic institutional investing.",
         [
             "Return = Income (interest/dividends) + Capital Gains (price appreciation)",
             "Long time horizons separate investors from speculators",
@@ -81,17 +81,17 @@ def _build_ch1(course_id):
             "Risk analysis is inseparable from return analysis",
         ],
         [
-            "Assuming all risk-taking is gambling â€” investing manages risk through analysis",
+            "Assuming all risk-taking is gambling — investing manages risk through analysis",
             "Confusing short-term speculation with long-term investing",
         ],
         [
             _intro("What Is Investing?",
                    "Every dollar has a job to do. Investing is about putting capital to work "
-                   "intelligently â€” earning returns while managing risk. Let's explore what "
+                   "intelligently — earning returns while managing risk. Let's explore what "
                    "truly separates investors from gamblers and speculators."),
             _teach("Capital at Work",
-                   "Investing is the act of committing money to an asset â€” a bond, stock, "
-                   "real estate property, or other instrument â€” with the expectation of "
+                   "Investing is the act of committing money to an asset — a bond, stock, "
+                   "real estate property, or other instrument — with the expectation of "
                    "earning a return. That return has two forms: income (regular cash flows "
                    "like interest or dividends) and capital gains (the asset appreciates in "
                    "value). Institutional investors like life insurance companies manage "
@@ -105,11 +105,11 @@ def _build_ch1(course_id):
                    ]),
             _teach("Investing vs. Speculating vs. Gambling",
                    "These three are often confused but differ fundamentally. A gambler creates "
-                   "artificial risk â€” the casino has an edge and there is no underlying asset "
+                   "artificial risk — the casino has an edge and there is no underlying asset "
                    "to analyze. A speculator takes on existing market risk for short-term "
                    "price gains, often using leverage and rapid trading. An investor commits "
                    "capital based on thorough analysis of an asset's fundamentals, cash flows, "
-                   "and long-term value â€” typically holding for years or decades. Life insurers "
+                   "and long-term value — typically holding for years or decades. Life insurers "
                    "must invest, not speculate, because their policyholders depend on stable, "
                    "predictable returns over very long periods.",
                    [
@@ -125,7 +125,7 @@ def _build_ch1(course_id):
                      "reviews the fund: 60-day hold periods, 10x leverage, bets on currency "
                      "swings. Pacific Life's policies carry 20-year obligations. She declines. "
                      "Instead, she directs the $1 billion into 20-year investment-grade bonds "
-                     "yielding 4.5% â€” perfectly matching the company's liability duration. "
+                     "yielding 4.5% — perfectly matching the company's liability duration. "
                      "Two years later, the hedge fund loses 40%. Pacific Life is unaffected.",
                      "Institutional investors align every asset with long-term obligations. "
                      "Speculation, however tempting, violates their fiduciary duty."),
@@ -137,13 +137,13 @@ def _build_ch1(course_id):
                   "Making a short-term bet on currency movements using leverage",
                   "Depositing money in a savings account for one week"],
                  1,
-                 "Investing requires analysis, a meaningful time horizon, and a risk-return framework â€” "
+                 "Investing requires analysis, a meaningful time horizon, and a risk-return framework — "
                  "not pure chance or very short-term price bets."),
             _mcq("A life insurer buys 20-year government bonds to match 20-year policy liabilities. "
                  "A day trader buys the same bonds and sells them in 3 days for a small gain. "
                  "Which party is speculating?",
                  ["The life insurer", "The day trader",
-                  "Both equally", "Neither â€” both are investing"],
+                  "Both equally", "Neither — both are investing"],
                  1,
                  "The day trader's short-term, price-movement approach is speculation. "
                  "The insurer's duration-matched, liability-driven approach is investing."),
@@ -162,7 +162,7 @@ def _build_ch1(course_id):
                  "Total return = income ($2M coupons) + capital gains ($500K stock sale) = $2.5M."),
             _mcq("COMMON MISTAKE: A new analyst says 'All investing is just legal gambling.' "
                  "What is wrong with this statement?",
-                 ["It is correct â€” all investments involve chance",
+                 ["It is correct — all investments involve chance",
                   "Investing uses analysis and long horizons to manage risk; gambling relies purely on chance with no underlying asset",
                   "Gambling is just very short-term investing",
                   "Both involve risk, so they are the same thing"],
@@ -173,10 +173,10 @@ def _build_ch1(course_id):
                       "proposes buying 60-day call options on tech stocks to 'boost quarterly "
                       "returns by 15%.' Prudential's policyholders hold 25-year life contracts.",
                       "What is the most appropriate response?",
-                      [("Agree â€” higher returns always benefit policyholders", False,
+                      [("Agree — higher returns always benefit policyholders", False,
                         "Short-term options are speculation mismatched to 25-year obligations. "
                         "Policyholders need stable long-term returns."),
-                       ("Decline â€” this speculative strategy mismatches Prudential's 25-year liability horizon", True,
+                       ("Decline — this speculative strategy mismatches Prudential's 25-year liability horizon", True,
                         "Correct. The 60-day options are speculation that violates the "
                         "prudent investor standard required of insurance companies."),
                        ("Invest 5% just to test it out", False,
@@ -189,12 +189,12 @@ def _build_ch1(course_id):
     c2 = _concept(m1_id, 2,
         "Types of Investors: Retail vs. Institutional",
         "Distinguish retail investors from institutional investors and explain why insurers are key institutional investors.",
-        "Retail investors are individuals managing their own money â€” they are typically small-scale "
+        "Retail investors are individuals managing their own money — they are typically small-scale "
         "and have shorter time horizons. Institutional investors manage large pools of money on "
         "behalf of others: pension funds, endowments, mutual funds, and insurance companies. "
         "Insurance companies are among the largest institutional investors in the world.",
         "Prudential Financial manages over $1.5 trillion in assets on behalf of millions of "
-        "policyholders, pension clients, and institutional customers â€” making it one of the "
+        "policyholders, pension clients, and institutional customers — making it one of the "
         "world's largest institutional investors.",
         [
             "Retail investors: individuals, smaller scale, shorter horizons",
@@ -203,13 +203,13 @@ def _build_ch1(course_id):
             "Institutional investors have greater market influence and access to deal flow",
         ],
         [
-            "Assuming institutional investors just have 'more money' â€” they also have different obligations and constraints",
-            "Thinking all institutional investors behave identically â€” insurers differ from hedge funds significantly",
+            "Assuming institutional investors just have 'more money' — they also have different obligations and constraints",
+            "Thinking all institutional investors behave identically — insurers differ from hedge funds significantly",
         ],
         [
             _intro("Who Are Investors?",
                    "Not all investors are created equal. A retiree putting $10,000 in an index "
-                   "fund and an insurance company deploying $10 billion in bonds both 'invest' â€” "
+                   "fund and an insurance company deploying $10 billion in bonds both 'invest' — "
                    "but they operate in completely different worlds. Let's understand why."),
             _teach("Retail Investors",
                    "Retail investors are individuals investing their personal funds. They typically "
@@ -225,7 +225,7 @@ def _build_ch1(course_id):
                        "Guided by personal goals: retirement, education, home purchase",
                    ]),
             _teach("Institutional Investors and Insurance Companies",
-                   "Institutional investors manage large pools of capital on behalf of beneficiaries â€” "
+                   "Institutional investors manage large pools of capital on behalf of beneficiaries — "
                    "pension fund retirees, insurance policyholders, endowment beneficiaries, or "
                    "mutual fund shareholders. They have enormous market influence, access to private "
                    "deals, dedicated research teams, and strict regulatory oversight. Insurance "
@@ -233,22 +233,22 @@ def _build_ch1(course_id):
                    "To keep that promise, they must invest those premiums wisely. The investment "
                    "income helps keep premiums affordable for policyholders.",
                    [
-                       "Manage capital on behalf of beneficiaries â€” fiduciary responsibility",
-                       "Insurance companies: collect premiums â†’ invest â†’ pay claims",
+                       "Manage capital on behalf of beneficiaries — fiduciary responsibility",
+                       "Insurance companies: collect premiums → invest → pay claims",
                        "Investment income reduces the premiums policyholders must pay",
                        "Subject to strict regulatory constraints on what they can invest in",
                        "Must match investment horizon to liability duration",
                    ]),
             _example("The Pension Fund vs. The Day Trader",
                      "Maria is a 35-year-old teacher putting $500/month into a retirement account. "
-                     "She picks low-cost index funds and plans to retire in 30 years â€” she is a "
+                     "She picks low-cost index funds and plans to retire in 30 years — she is a "
                      "retail investor. Meanwhile, the California Public Employees Retirement System "
                      "(CalPERS) manages $450 billion on behalf of 2 million public employees. "
                      "CalPERS employs 400 investment professionals, invests in private equity, "
                      "real estate, and infrastructure, and has a 30-year liability horizon. "
                      "Both Maria and CalPERS are 'investors,' but their scale, sophistication, "
                      "obligations, and regulatory environment are fundamentally different.",
-                     "Institutional investors are not just bigger retail investors â€” they operate "
+                     "Institutional investors are not just bigger retail investors — they operate "
                      "under fiduciary obligations, regulatory constraints, and long-term liability "
                      "matching requirements that retail investors never face."),
             _flash("Why do insurance companies invest premium income?",
@@ -259,7 +259,7 @@ def _build_ch1(course_id):
                   "A life insurance company managing policyholder premiums",
                   "A freelancer putting savings in a mutual fund"],
                  2,
-                 "An insurance company manages capital on behalf of policyholders â€” "
+                 "An insurance company manages capital on behalf of policyholders — "
                  "making it an institutional investor with fiduciary obligations."),
             _mcq("How do insurance companies primarily benefit policyholders through investing?",
                  ["By speculating in high-return assets",
@@ -276,12 +276,12 @@ def _build_ch1(course_id):
                   "Retail investors have access to private equity and infrastructure deals"],
                  2,
                  "The defining feature of institutional investors is the fiduciary obligation "
-                 "â€” they manage others' money and must act in beneficiaries' best interests."),
+                 "— they manage others' money and must act in beneficiaries' best interests."),
             _mcq("An insurer collects $100M in premiums. It invests $95M in bonds earning 4% annually. "
                  "How much annual investment income does this generate?",
                  ["$4,000,000", "$3,800,000", "$9,500,000", "$100,000,000"],
                  1,
-                 "$95M Ã— 4% = $3.8 million in annual investment income to help fund future claims."),
+                 "$95M × 4% = $3.8 million in annual investment income to help fund future claims."),
             _mcq("COMMON MISTAKE: A student says institutional investors are 'just retail investors "
                  "with more money.' What is the critical difference they are missing?",
                  ["Institutional investors use different brokerage platforms",
@@ -291,12 +291,12 @@ def _build_ch1(course_id):
                   "There is no meaningful difference"],
                  1,
                  "Fiduciary duty, regulatory constraints, and liability matching are the "
-                 "critical differences â€” not just the dollar amount."),
+                 "critical differences — not just the dollar amount."),
             _scenario("You work in the investment department of Northwestern Mutual, a life insurer. "
                       "The CEO suggests putting 50% of the $200 billion portfolio into a "
                       "cryptocurrency fund for potentially higher returns.",
                       "What concern should you immediately raise?",
-                      [("Great idea â€” higher returns mean more profit", False,
+                      [("Great idea — higher returns mean more profit", False,
                         "Cryptocurrency is highly volatile and speculative. Insurance regulators "
                         "prohibit such allocations, and it violates the prudent investor standard."),
                        ("This violates fiduciary duty, regulatory investment limits, and the "
@@ -312,7 +312,7 @@ def _build_ch1(course_id):
 
     m1["concepts"] = [c1, c2]
 
-    # â”€â”€ Module 2: The Investment Function â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 2: The Investment Function ────────────────────────────────────
     m2_id = _id()
     m2 = {"id": m2_id, "chapter_id": ch_id, "order": 2, "title": "The Investment Function"}
 
@@ -325,10 +325,10 @@ def _build_ch1(course_id):
         "back to pay claims, expenses, and shareholder returns.",
         "At New York Life, premiums from 10 million policyholders flow into the investment department "
         "daily. The team of 200 investment professionals deploys those funds across government bonds, "
-        "corporate bonds, mortgages, and equities â€” generating the income that funds claims.",
+        "corporate bonds, mortgages, and equities — generating the income that funds claims.",
         [
             "Investment function: manages the insurer's invested assets",
-            "Premium flow: collected â†’ invested â†’ returns help fund claims",
+            "Premium flow: collected → invested → returns help fund claims",
             "Investment income reduces need for higher premiums",
             "Investment professionals must balance return, risk, liquidity, and regulatory compliance",
         ],
@@ -339,28 +339,28 @@ def _build_ch1(course_id):
         [
             _intro("The Engine Behind Insurance",
                    "When you pay your insurance premium, that money does not sit in a vault. "
-                   "It goes to work immediately in the investment function â€” the team that keeps "
+                   "It goes to work immediately in the investment function — the team that keeps "
                    "the promise to pay your claims. Let's follow the money."),
             _teach("Movement of Funds",
                    "An insurance company's cash flows work in a cycle. Policyholders pay premiums. "
                    "Those premiums are collected and handed to the investment department. Investment "
-                   "professionals deploy the funds into various assets â€” government bonds, corporate "
+                   "professionals deploy the funds into various assets — government bonds, corporate "
                    "bonds, mortgages, equities, and real estate. Over time, these assets generate "
                    "income (interest, dividends, rent) and capital gains. When policyholders file "
                    "claims, the insurer uses investment income and, if necessary, sells assets to "
                    "fund those payments. This cycle is the core of how insurance companies operate.",
                    [
-                       "Premiums in â†’ Investment department â†’ Assets purchased",
+                       "Premiums in → Investment department → Assets purchased",
                        "Assets generate income and capital gains",
-                       "Income + gains â†’ fund claims, expenses, and profit",
+                       "Income + gains → fund claims, expenses, and profit",
                        "Investment income allows insurers to offer more competitive premiums",
                    ]),
             _teach("Overview of the Investment Function",
                    "The investment function has four core responsibilities: (1) Portfolio Management "
-                   "â€” selecting and managing assets; (2) Risk Management â€” ensuring the portfolio "
-                   "does not expose the company to unacceptable levels of risk; (3) Compliance â€” "
+                   "— selecting and managing assets; (2) Risk Management — ensuring the portfolio "
+                   "does not expose the company to unacceptable levels of risk; (3) Compliance — "
                    "ensuring all investments meet legal and regulatory requirements; and (4) "
-                   "Reporting â€” communicating portfolio performance to management and regulators. "
+                   "Reporting — communicating portfolio performance to management and regulators. "
                    "The investment team works closely with actuaries (who model future liabilities), "
                    "the finance team (which manages cash flows), and senior management.",
                    [
@@ -376,10 +376,10 @@ def _build_ch1(course_id):
                      "securities (17%), and $100 into equity (8%). Over the year, Lincoln earns "
                      "$54 in interest and dividends on Linda's $1,200. When Linda's husband dies "
                      "10 years later, Lincoln has been earning and reinvesting returns on "
-                     "thousands of similar premiums â€” the investment income funds his $500,000 "
+                     "thousands of similar premiums — the investment income funds his $500,000 "
                      "death benefit without Lincoln needing to raise premiums.",
                      "The investment function converts premium income into long-term returns that "
-                     "fund future claims â€” the entire business model depends on it working well."),
+                     "fund future claims — the entire business model depends on it working well."),
             _flash("What are the four core responsibilities of the investment function?",
                    "Portfolio Management, Risk Management, Compliance, and Reporting."),
             _mcq("What happens to insurance premiums immediately after they are collected?",
@@ -401,7 +401,7 @@ def _build_ch1(course_id):
             _mcq("Which team does the investment function work MOST closely with to understand future liabilities?",
                  ["Marketing", "Human Resources", "Actuaries", "Information Technology"],
                  2,
-                 "Actuaries model the timing and amount of future claim payments â€” the investment "
+                 "Actuaries model the timing and amount of future claim payments — the investment "
                  "function must match the asset portfolio to those projected liability cash flows."),
             _mcq("A life insurer has $50B in assets. Industry data shows most insurance company "
                  "assets are in which asset class?",
@@ -411,7 +411,7 @@ def _build_ch1(course_id):
                  "provide predictable income and can be matched to long-term policy liabilities."),
             _mcq("COMMON MISTAKE: An analyst assumes the investment department only manages stocks. "
                  "What major asset class are they ignoring?",
-                 ["Cryptocurrency", "Bonds â€” which make up the majority of most insurer portfolios",
+                 ["Cryptocurrency", "Bonds — which make up the majority of most insurer portfolios",
                   "Foreign currencies", "Art and collectibles"],
                  1,
                  "Bonds dominate insurance company portfolios because they provide predictable "
@@ -421,14 +421,14 @@ def _build_ch1(course_id):
                       "from a tech company.",
                       "Which explanation is most accurate?",
                       [("MetLife invests premiums in stocks, waits for them to go up, then pays claims", False,
-                        "This is oversimplified and wrong â€” most assets are bonds, and the "
+                        "This is oversimplified and wrong — most assets are bonds, and the "
                         "cycle is much more systematic than 'wait and sell.'"),
-                       ("Policyholders pay premiums â†’ investment department deploys into diversified "
-                        "assets â†’ income and gains fund future claim payments and expenses", True,
-                        "Correct. This captures the full cycle: premiums â†’ investment â†’ income â†’ claims."),
+                       ("Policyholders pay premiums → investment department deploys into diversified "
+                        "assets → income and gains fund future claim payments and expenses", True,
+                        "Correct. This captures the full cycle: premiums → investment → income → claims."),
                        ("MetLife collects premiums and holds them in cash until claims are filed", False,
                         "Holding premiums in cash would generate no return and fail to keep "
-                        "premiums competitive â€” insurers must invest to stay solvent and competitive."),
+                        "premiums competitive — insurers must invest to stay solvent and competitive."),
                        ]),
         ],
     )
@@ -439,9 +439,9 @@ def _build_ch1(course_id):
         "The investment function is structured with clear roles: portfolio managers make investment "
         "decisions, analysts research opportunities, traders execute transactions, and compliance "
         "officers ensure rules are followed. Internal controls prevent errors, fraud, and "
-        "violations â€” protecting the company and its policyholders.",
+        "violations — protecting the company and its policyholders.",
         "At Allstate, investment decisions flow through a defined hierarchy: analysts research "
-        "bonds â†’ portfolio managers approve allocations â†’ traders execute purchases â†’ compliance "
+        "bonds → portfolio managers approve allocations → traders execute purchases → compliance "
         "verifies each trade meets regulatory limits. This four-eyes principle prevents any "
         "single person from making unauthorized decisions.",
         [
@@ -451,8 +451,8 @@ def _build_ch1(course_id):
             "Board oversight: investment committee reviews strategy and major decisions",
         ],
         [
-            "Thinking one person can do all investment tasks â€” segregation of duties is required",
-            "Underestimating compliance â€” regulators can penalize insurers for policy violations",
+            "Thinking one person can do all investment tasks — segregation of duties is required",
+            "Underestimating compliance — regulators can penalize insurers for policy violations",
         ],
         [
             _intro("Structure Behind the Strategy",
@@ -462,7 +462,7 @@ def _build_ch1(course_id):
             _teach("Roles of Investment Professionals",
                    "The investment function employs specialists with distinct roles. Portfolio "
                    "managers set strategy and decide which assets to buy or sell based on "
-                   "the company's investment policy. Analysts research potential investments â€” "
+                   "the company's investment policy. Analysts research potential investments — "
                    "reading financial statements, building models, assessing credit quality. "
                    "Traders execute the actual purchase and sale transactions in the market. "
                    "Compliance officers verify that every transaction complies with the insurer's "
@@ -486,7 +486,7 @@ def _build_ch1(course_id):
                    "large transactions, pre-trade compliance checks, and regular independent "
                    "audits of the investment portfolio.",
                    [
-                       "Segregation of duties: decision â†’ execution â†’ settlement by different people",
+                       "Segregation of duties: decision → execution → settlement by different people",
                        "Investment committee: board-level approval for major decisions",
                        "Pre-trade compliance: automatic checks before any trade executes",
                        "Regular audits: independent verification of portfolio composition and controls",
@@ -494,13 +494,13 @@ def _build_ch1(course_id):
             _example("The Rogue Trader Scenario at Barings Bank",
                      "In 1995, Nick Leeson at Barings Bank had control over both trading AND "
                      "the back-office settlement function. Without segregation of duties, he "
-                     "was able to hide $1.4 billion in losses in an error account â€” eventually "
+                     "was able to hide $1.4 billion in losses in an error account — eventually "
                      "causing the collapse of the 233-year-old bank. Insurance companies learned "
                      "from such disasters: today, every insurer requires that the person who "
                      "decides to make a trade (front office), the person who executes it "
                      "(trading desk), and the person who records and settles it (back office) "
                      "are always different individuals reporting to different managers.",
-                     "Segregation of duties is not bureaucracy â€” it is the control that "
+                     "Segregation of duties is not bureaucracy — it is the control that "
                      "prevented countless insurance company failures."),
             _flash("What is 'segregation of duties' in the investment function?",
                    "Ensuring that the person who decides on an investment, the person who executes it, "
@@ -513,7 +513,7 @@ def _build_ch1(course_id):
                  "in financial markets. Portfolio managers decide; traders execute."),
             _mcq("Why is segregation of duties a critical internal control?",
                  ["It speeds up the investment process",
-                  "It ensures no single individual can make, execute, and record a transaction â€” preventing fraud and errors",
+                  "It ensures no single individual can make, execute, and record a transaction — preventing fraud and errors",
                   "It reduces the number of employees needed",
                   "It allows more flexible investment strategies"],
                  1,
@@ -533,11 +533,11 @@ def _build_ch1(course_id):
                   "An automated system checks if a proposed trade complies with investment guidelines before it executes",
                   "A quarterly audit of the portfolio by external auditors"],
                  2,
-                 "Pre-trade controls check compliance before execution â€” preventing non-compliant "
+                 "Pre-trade controls check compliance before execution — preventing non-compliant "
                  "trades rather than catching them after the fact."),
             _mcq("COMMON MISTAKE: A small insurance company lets its portfolio manager also "
                  "execute trades and record them in the accounting system. Why is this a problem?",
-                 ["It is fine for small companies â€” controls are only for large firms",
+                 ["It is fine for small companies — controls are only for large firms",
                   "It violates segregation of duties, creating opportunity for fraud or errors to go undetected",
                   "It is more efficient and reduces costs",
                   "Regulators only require segregation for companies over $1 billion"],
@@ -548,7 +548,7 @@ def _build_ch1(course_id):
                       "has been deciding which bonds to buy AND recording those transactions in "
                       "the accounting system for the past year.",
                       "What should Tom do?",
-                      [("Nothing â€” it has worked fine so far", False,
+                      [("Nothing — it has worked fine so far", False,
                         "Past success doesn't mean the control is adequate. This is a fundamental "
                         "segregation of duties violation that must be corrected immediately."),
                        ("Report this immediately to the compliance officer and recommend splitting "
@@ -557,7 +557,7 @@ def _build_ch1(course_id):
                         "compliance and corrected to prevent potential fraud or errors."),
                        ("Let the employee know personally but do not escalate", False,
                         "This is a systemic control failure that requires formal reporting and "
-                        "structural correction â€” not an informal warning."),
+                        "structural correction — not an informal warning."),
                        ]),
         ],
     )
@@ -856,9 +856,9 @@ def _build_ch1(course_id):
     return ch
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# CHAPTER 2 â€” Overview of Basic Investment Vehicles
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─────────────────────────────────────────────────────────────────────────────
+# CHAPTER 2 — Overview of Basic Investment Vehicles
+# ─────────────────────────────────────────────────────────────────────────────
 
 def _build_ch2(course_id):
     ch_id = _id()
@@ -868,36 +868,36 @@ def _build_ch2(course_id):
         "description": "Master the major asset classes: cash, bonds, stocks, real estate, and REITs.",
     }
 
-    # â”€â”€ Module 1: Fixed Income & Cash â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 1: Fixed Income & Cash ─────────────────────────────────────────
     m1_id = _id()
     m1 = {"id": m1_id, "chapter_id": ch_id, "order": 1, "title": "Fixed Income and Cash"}
 
     c1 = _concept(m1_id, 1,
         "Cash and Cash Equivalents",
         "Define cash and cash equivalents and explain why insurers hold them.",
-        "Cash and cash equivalents are the most liquid assets â€” money in bank accounts, "
+        "Cash and cash equivalents are the most liquid assets — money in bank accounts, "
         "Treasury bills, commercial paper, and money market instruments maturing in 90 days "
         "or less. They earn low returns but provide immediate liquidity for unexpected claims.",
         "After Hurricane Katrina, insurers needed to pay $40 billion in claims quickly. "
         "Companies that held adequate cash and T-bills could pay without selling long-term "
         "bonds at a loss. Companies that were illiquid had to sell bonds at fire-sale prices.",
         [
-            "Cash equivalents: T-bills, commercial paper, money market funds maturing in â‰¤90 days",
+            "Cash equivalents: T-bills, commercial paper, money market funds maturing in ≤90 days",
             "Highest liquidity, lowest return of all asset classes",
             "Insurers hold cash to meet unexpected claim surges and operational expenses",
             "Too much cash = opportunity cost; too little = liquidity risk",
         ],
         [
-            "Assuming all cash equivalents are literally cash â€” T-bills and commercial paper also qualify",
-            "Thinking more cash is always better â€” excess cash earns very little and hurts returns",
+            "Assuming all cash equivalents are literally cash — T-bills and commercial paper also qualify",
+            "Thinking more cash is always better — excess cash earns very little and hurts returns",
         ],
         [
             _intro("The Asset That Is Always Ready",
                    "Before we talk about sophisticated investments, let's start with the "
-                   "most basic: cash. It earns almost nothing â€” but without it, an insurer "
+                   "most basic: cash. It earns almost nothing — but without it, an insurer "
                    "cannot pay claims. Understanding cash management is foundational."),
             _teach("What Are Cash and Cash Equivalents?",
-                   "Cash includes physical currency and bank deposits â€” immediately available for "
+                   "Cash includes physical currency and bank deposits — immediately available for "
                    "use. Cash equivalents are short-term, highly liquid investments that can be "
                    "converted to a known cash amount within 90 days with minimal price risk. "
                    "The most common cash equivalents used by insurers include: U.S. Treasury "
@@ -913,11 +913,11 @@ def _build_ch2(course_id):
                    ]),
             _teach("Why Insurers Hold Cash Equivalents",
                    "Insurance companies hold cash for three reasons. First, liquidity: claims "
-                   "arrive unpredictably and must be paid promptly â€” an insurer cannot tell a "
+                   "arrive unpredictably and must be paid promptly — an insurer cannot tell a "
                    "bereaved family to 'wait while we sell a bond.' Second, operations: payroll, "
                    "rent, and technology costs must be met from liquid funds. Third, opportunity: "
                    "cash held ready can be deployed quickly when attractive investment "
-                   "opportunities arise. However, holding too much cash is costly â€” cash earns "
+                   "opportunities arise. However, holding too much cash is costly — cash earns "
                    "the lowest return of any asset class, hurting overall portfolio performance.",
                    [
                        "Liquidity reserve: pay unexpected large claims without forced asset sales",
@@ -932,9 +932,9 @@ def _build_ch2(course_id):
                      "Companies like State Farm that maintained disciplined liquidity reserves "
                      "in T-bills and money market funds could begin paying claims immediately. "
                      "Smaller, poorly managed insurers that held too little cash were forced to "
-                     "sell long-term bonds in a disrupted market â€” receiving cents on the dollar "
+                     "sell long-term bonds in a disrupted market — receiving cents on the dollar "
                      "and struggling to pay claims on time, damaging policyholder trust.",
-                     "Adequate cash reserves are not wasteful â€” they are the difference between "
+                     "Adequate cash reserves are not wasteful — they are the difference between "
                      "honoring promises and defaulting on them during a crisis."),
             _flash("What is the maximum maturity for an investment to be classified as a 'cash equivalent'?",
                    "90 days (3 months). Instruments maturing within 90 days with minimal price risk qualify."),
@@ -945,7 +945,7 @@ def _build_ch2(course_id):
                   "A 10-year mortgage loan"],
                  1,
                  "A 30-day T-bill matures in under 90 days, has near-zero default risk, "
-                 "and can be converted to cash at a known value â€” the definition of a cash equivalent."),
+                 "and can be converted to cash at a known value — the definition of a cash equivalent."),
             _mcq("Why would an insurance company hold T-bills instead of earning higher returns "
                  "in long-term bonds?",
                  ["T-bills have higher returns than long-term bonds",
@@ -961,35 +961,35 @@ def _build_ch2(course_id):
                   "Is unsecured corporate short-term debt with slightly higher yield and credit risk",
                   "Can only be purchased by retail investors"],
                  2,
-                 "Commercial paper is short-term unsecured debt issued by corporations â€” "
+                 "Commercial paper is short-term unsecured debt issued by corporations — "
                  "it offers slightly higher yields than T-bills but carries some credit risk."),
             _mcq("An insurer has $10B in assets. Industry practice suggests holding 5% in cash equivalents. "
                  "How much should be in cash?",
                  ["$50 million", "$500 million", "$5 billion", "$1 billion"],
                  1,
-                 "$10B Ã— 5% = $500 million in cash equivalents as a liquidity reserve."),
+                 "$10B × 5% = $500 million in cash equivalents as a liquidity reserve."),
             _mcq("COMMON MISTAKE: An analyst argues that holding any cash is wasteful because "
                  "bonds earn more. What critical factor are they ignoring?",
                  ["Bond prices never fall",
-                  "Liquidity â€” insurers must pay claims on demand without forced asset sales",
+                  "Liquidity — insurers must pay claims on demand without forced asset sales",
                   "Cash earns more than bonds in the short term",
                   "Regulators prohibit bond investments"],
                  1,
                  "Cash provides liquidity for unexpected claims. Without it, insurers must "
-                 "sell bonds at potentially unfavorable prices â€” often at a loss during crises."),
+                 "sell bonds at potentially unfavorable prices — often at a loss during crises."),
             _scenario("It is October 2024. A major earthquake strikes a region where your "
                       "insurer has significant property coverage. You expect $2 billion in "
                       "claims over the next 30 days. Your insurer currently holds only $200M "
                       "in cash and cash equivalents.",
                       "What is the most immediate problem this creates?",
-                      [("No problem â€” the insurer can easily borrow the difference", False,
+                      [("No problem — the insurer can easily borrow the difference", False,
                         "Borrowing in a crisis is expensive and may not be possible quickly. "
                         "Adequate liquidity reserves should prevent this situation."),
                        ("The insurer must sell long-term bonds at potentially depressed prices "
-                        "to fund claims â€” likely incurring losses and harming the balance sheet", True,
+                        "to fund claims — likely incurring losses and harming the balance sheet", True,
                         "Correct. Insufficient cash forces fire-sale asset liquidations, "
                         "destroying value and potentially threatening solvency."),
-                       ("Wait â€” claims don't all arrive at once so cash is sufficient", False,
+                       ("Wait — claims don't all arrive at once so cash is sufficient", False,
                         "In a catastrophe, claims arrive rapidly and simultaneously. "
                         "Insufficient liquidity is a serious solvency risk."),
                        ]),
@@ -1005,21 +1005,21 @@ def _build_ch2(course_id):
         "liabilities. Credit ratings (AAA to D) assess default probability.",
         "Pacific Mutual Life buys a $100M, 10-year Boeing corporate bond with a 4% coupon. "
         "Boeing pays $4M per year in interest, then repays $100M at maturity. If Boeing is "
-        "downgraded from A to BBB, the bond's price falls â€” increasing Pacific Mutual's paper loss.",
+        "downgraded from A to BBB, the bond's price falls — increasing Pacific Mutual's paper loss.",
         [
             "Bond = loan: investor lends money to issuer (government, corporation, municipality)",
             "Coupon rate: annual interest payment as % of face value",
             "Maturity: date when principal is repaid",
-            "Credit rating: AAA (safest) â†’ D (default); measures default probability",
+            "Credit rating: AAA (safest) → D (default); measures default probability",
             "Higher credit risk = higher yield (return) demanded by investors",
         ],
         [
             "Confusing coupon rate (contractual interest rate) with current yield (market-based rate)",
-            "Assuming all bonds have the same risk â€” sovereign bonds differ greatly from high-yield corporate bonds",
+            "Assuming all bonds have the same risk — sovereign bonds differ greatly from high-yield corporate bonds",
         ],
         [
             _intro("The Engine of Insurance Portfolios",
-                   "Bonds are not exciting â€” but they power the insurance industry. "
+                   "Bonds are not exciting — but they power the insurance industry. "
                    "Life insurers hold trillions in bonds because bonds do something "
                    "stocks cannot: promise specific, predictable payments at specific times. "
                    "Let's understand every dimension of bonds."),
@@ -1029,7 +1029,7 @@ def _build_ch2(course_id):
                    "and (2) repayment of the principal (face value or par value) at maturity. "
                    "The coupon rate is the annual interest rate expressed as a percentage of "
                    "face value. For example, a $1,000 bond with a 5% coupon pays $50 per year. "
-                   "Maturity is when the principal is returned â€” ranging from days (T-bills) "
+                   "Maturity is when the principal is returned — ranging from days (T-bills) "
                    "to 30+ years (long-term government bonds). The yield is the actual "
                    "return an investor earns, which changes as the bond's market price changes.",
                    [
@@ -1037,14 +1037,14 @@ def _build_ch2(course_id):
                        "Coupon rate: stated annual interest as % of face value",
                        "Maturity date: when principal is repaid to investor",
                        "Yield: actual return based on current market price (not face value)",
-                       "Price and yield move in OPPOSITE directions â€” key exam concept",
+                       "Price and yield move in OPPOSITE directions — key exam concept",
                    ]),
             _teach("Bond Issuers and Credit Ratings",
                    "Bonds are issued by three main categories: governments (sovereign and "
                    "municipal), corporations, and agencies. Government bonds (U.S. Treasuries) "
                    "are considered risk-free for default purposes. Municipal bonds are issued "
                    "by state/local governments and often carry tax advantages. Corporate bonds "
-                   "carry credit risk â€” the possibility that the company cannot repay. "
+                   "carry credit risk — the possibility that the company cannot repay. "
                    "Credit rating agencies (Moody's, S&P, Fitch) assess credit quality: "
                    "AAA/Aaa is the highest (near risk-free); BBB/Baa is the lowest investment-grade; "
                    "BB/Ba and below are high-yield (junk) bonds with significant default risk. "
@@ -1054,7 +1054,7 @@ def _build_ch2(course_id):
                        "Municipal bonds: state/local, often tax-exempt interest",
                        "Corporate bonds: higher yield, higher credit risk",
                        "Investment grade: AAA, AA, A, BBB (Moody's: Aaa, Aa, A, Baa)",
-                       "High yield (junk): BB and below â€” significant default risk",
+                       "High yield (junk): BB and below — significant default risk",
                        "Insurers: usually limited to investment-grade by regulation",
                    ]),
             _example("Boeing Bond at Pacific Mutual Life",
@@ -1065,18 +1065,18 @@ def _build_ch2(course_id):
                      "Boeing faces production problems. S&P downgrades Boeing from A to BBB. "
                      "Immediately, the bond's market price drops from $100M to $94M as "
                      "investors demand higher yields to compensate for increased risk. "
-                     "Pacific Mutual's portfolio shows an unrealized $6M loss â€” though if "
+                     "Pacific Mutual's portfolio shows an unrealized $6M loss — though if "
                      "they hold to maturity and Boeing doesn't default, they still receive "
                      "all coupons and full principal.",
-                     "Credit downgrades cause immediate price losses even without actual default â€” "
+                     "Credit downgrades cause immediate price losses even without actual default — "
                      "credit quality must be monitored continuously."),
             _flash("When bond prices fall, what happens to bond yields?",
-                   "Yields RISE. Price and yield move in opposite directions â€” "
+                   "Yields RISE. Price and yield move in opposite directions — "
                    "this is the most fundamental bond relationship."),
             _mcq("A $1,000 bond has a coupon rate of 6%. What is the annual coupon payment?",
                  ["$6", "$600", "$60", "$6,000"],
                  2,
-                 "$1,000 Ã— 6% = $60 per year in coupon payments to the bondholder."),
+                 "$1,000 × 6% = $60 per year in coupon payments to the bondholder."),
             _mcq("Which bond issuer is considered to have the LOWEST credit risk?",
                  ["A start-up company rated CCC",
                   "A municipality in financial distress",
@@ -1084,7 +1084,7 @@ def _build_ch2(course_id):
                   "A high-yield corporate bond"],
                  2,
                  "U.S. Treasury bonds are backed by the full faith and credit of the U.S. "
-                 "government â€” widely considered the benchmark risk-free asset."),
+                 "government — widely considered the benchmark risk-free asset."),
             _mcq("A bond is rated BB by S&P. What does this mean?",
                  ["It is investment-grade and suitable for most insurance portfolios",
                   "It is the highest possible credit rating",
@@ -1092,31 +1092,31 @@ def _build_ch2(course_id):
                   "It is a government bond with no default risk"],
                  2,
                  "BB is below the BBB investment-grade threshold. These 'high-yield' or "
-                 "'junk' bonds offer higher returns but carry significant default risk â€” "
+                 "'junk' bonds offer higher returns but carry significant default risk — "
                  "most insurance regulators restrict or prohibit large holdings."),
             _mcq("A $100M bond portfolio loses value when interest rates rise from 3% to 5%. "
                  "Why did the portfolio value decrease?",
                  ["Higher interest rates mean the government stopped paying coupons",
-                  "New bonds now offer 5% yields, making existing 3% bonds less attractive â€” "
+                  "New bonds now offer 5% yields, making existing 3% bonds less attractive — "
                   "their price falls to make their yield competitive",
                   "The issuer defaulted on the bonds",
                   "Higher interest rates reduce bond coupon payments"],
                  1,
                  "When rates rise, newly issued bonds offer higher yields. Existing lower-yield "
-                 "bonds must fall in price to offer a comparable yield â€” price/yield move inversely."),
+                 "bonds must fall in price to offer a comparable yield — price/yield move inversely."),
             _mcq("COMMON MISTAKE: An analyst says a BBB-rated bond is 'junk.' Is this correct?",
-                 ["Yes â€” anything below AAA is junk",
-                  "No â€” BBB is the lowest investment-grade rating, not junk. BB and below is high-yield/junk",
-                  "Yes â€” BBB bonds always default",
-                  "No â€” BBB is actually the highest rating"],
+                 ["Yes — anything below AAA is junk",
+                  "No — BBB is the lowest investment-grade rating, not junk. BB and below is high-yield/junk",
+                  "Yes — BBB bonds always default",
+                  "No — BBB is actually the highest rating"],
                  1,
-                 "BBB (Baa) is investment grade â€” the minimum typically required for insurer "
+                 "BBB (Baa) is investment grade — the minimum typically required for insurer "
                  "portfolios. Junk/high-yield begins at BB (Ba) and below."),
             _scenario("Your insurance company holds $500M in corporate bonds rated A by Moody's. "
                       "Moody's just downgraded all of them to Ba1 (high-yield/junk). Your "
                       "regulator requires all bond holdings to be investment-grade.",
                       "What action must you take?",
-                      [("Do nothing â€” the coupons still get paid",
+                      [("Do nothing — the coupons still get paid",
                         False,
                         "The downgrade below investment grade violates your regulatory requirement. "
                         "You must act regardless of whether coupons are still being paid."),
@@ -1135,7 +1135,7 @@ def _build_ch2(course_id):
 
     m1["concepts"] = [c1, c2]
 
-    # â”€â”€ Module 2: Equity & Real Estate â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 2: Equity & Real Estate ────────────────────────────────────────
     m2_id = _id()
     m2 = {"id": m2_id, "chapter_id": ch_id, "order": 2, "title": "Equity and Real Estate"}
 
@@ -1144,11 +1144,11 @@ def _build_ch2(course_id):
         "Distinguish common from preferred stock and explain the role of dividends in insurer portfolios.",
         "Stocks represent ownership in a company. Common stockholders vote and receive dividends "
         "but are last to be paid in bankruptcy. Preferred stockholders receive fixed dividends "
-        "before common holders and have priority in liquidation â€” making preferred stock more "
+        "before common holders and have priority in liquidation — making preferred stock more "
         "bond-like. Insurers use preferred stocks for their predictable dividends.",
         "MassMutual holds preferred shares in major utilities. When the utility pays its $5/share "
         "annual preferred dividend, MassMutual receives a predictable income stream similar to "
-        "bond coupons â€” but with the tax advantage that 70% of dividends received are "
+        "bond coupons — but with the tax advantage that 70% of dividends received are "
         "excluded from corporate income tax (the dividends-received deduction).",
         [
             "Common stock: ownership + voting rights + residual claim (last in bankruptcy)",
@@ -1158,19 +1158,19 @@ def _build_ch2(course_id):
             "Dividends-received deduction: 70%+ of inter-corporate dividends are tax-exempt",
         ],
         [
-            "Assuming preferred stock is always 'better' â€” common stock has growth potential preferred lacks",
+            "Assuming preferred stock is always 'better' — common stock has growth potential preferred lacks",
             "Forgetting that preferred dividends are not guaranteed like bond coupons",
         ],
         [
             _intro("Owning a Piece of the Business",
                    "Bonds are loans. Stocks are ownership. When you buy a stock, you become "
-                   "a part-owner of the company â€” sharing in its profits through dividends "
+                   "a part-owner of the company — sharing in its profits through dividends "
                    "and growth. Let's explore how stocks fit into insurance portfolios."),
             _teach("Common Stock vs. Preferred Stock",
                    "Common stock represents basic ownership of a corporation. Common stockholders "
                    "vote on major decisions (electing the board, approving mergers) and receive "
                    "dividends when declared by the board. However, in bankruptcy, common "
-                   "stockholders are paid last â€” after bondholders and preferred stockholders â€” "
+                   "stockholders are paid last — after bondholders and preferred stockholders — "
                    "often receiving nothing. Preferred stock is a hybrid between bonds and "
                    "equity. Preferred stockholders receive a fixed dividend (stated as a "
                    "percentage of par value or a fixed dollar amount) before common stockholders "
@@ -1181,7 +1181,7 @@ def _build_ch2(course_id):
                        "Common: voting rights, variable dividends, growth potential, last claim",
                        "Preferred: fixed dividends, priority over common, limited voting",
                        "Preferred dividends must be paid before common dividends",
-                       "In liquidation: bondholders â†’ preferred stockholders â†’ common stockholders",
+                       "In liquidation: bondholders → preferred stockholders → common stockholders",
                    ]),
             _teach("Dividends and the Insurance Portfolio",
                    "Dividends are cash payments from a company to its shareholders, typically "
@@ -1204,12 +1204,12 @@ def _build_ch2(course_id):
                      "of major U.S. utility companies. Duke Energy's preferred shares pay a "
                      "fixed $6/share annual dividend. MassMutual receives these dividends "
                      "predictably each quarter. Because of the dividends-received deduction, "
-                     "70% of this income is tax-exempt â€” effectively reducing MassMutual's "
+                     "70% of this income is tax-exempt — effectively reducing MassMutual's "
                      "tax burden on $1.4 billion of that $2 billion. Meanwhile, common "
                      "stockholders in Duke Energy saw their dividend cut during a tough year, "
                      "but MassMutual's preferred dividend was protected by its priority status.",
                      "Preferred stock combines bond-like income predictability with equity's "
-                     "tax advantages â€” ideal for tax-sensitive institutional investors."),
+                     "tax advantages — ideal for tax-sensitive institutional investors."),
             _flash("What is the key advantage of preferred stock for an insurance company investor?",
                    "Fixed dividends with priority over common stock (paid first) and the "
                    "dividends-received deduction that makes the income partially tax-exempt."),
@@ -1217,23 +1217,23 @@ def _build_ch2(course_id):
                  ["Senior bondholders", "Preferred stockholders",
                   "Junior bondholders", "Common stockholders"],
                  3,
-                 "Common stockholders are residual claimants â€” they receive whatever is left "
+                 "Common stockholders are residual claimants — they receive whatever is left "
                  "after all creditors (bondholders) and preferred stockholders are paid, "
                  "which in bankruptcy is often nothing."),
             _mcq("Why might an insurance company prefer preferred stock over common stock?",
                  ["Preferred stock always appreciates more in price",
-                  "Preferred stock offers fixed dividends and priority in liquidation â€” "
+                  "Preferred stock offers fixed dividends and priority in liquidation — "
                   "providing more predictable income similar to bond coupons",
                   "Preferred stockholders have stronger voting rights",
                   "Preferred stock is not subject to any market price risk"],
                  1,
                  "Preferred stock's fixed dividends and liquidation priority make it more "
-                 "predictable than common stock â€” better suited to insurer liability matching."),
+                 "predictable than common stock — better suited to insurer liability matching."),
             _mcq("A company has 1,000 preferred shares outstanding with a $100 par value "
                  "and a 5% preferred dividend rate. What is the total annual preferred dividend?",
                  ["$500", "$5,000", "$50,000", "$500,000"],
                  1,
-                 "1,000 shares Ã— $100 par Ã— 5% = $5,000 total annual preferred dividend."),
+                 "1,000 shares × $100 par × 5% = $5,000 total annual preferred dividend."),
             _mcq("What is the dividends-received deduction?",
                  ["A deduction insurance companies take when paying dividends to policyholders",
                   "A corporate tax provision allowing companies to exclude 70-100% of "
@@ -1242,31 +1242,31 @@ def _build_ch2(course_id):
                   "A deduction for dividends paid to preferred shareholders"],
                  1,
                  "The DRD allows corporations receiving dividends from other U.S. corporations "
-                 "to exclude 70-100% of that income from federal taxes â€” highly valuable for insurers."),
+                 "to exclude 70-100% of that income from federal taxes — highly valuable for insurers."),
             _mcq("COMMON MISTAKE: A student assumes preferred stock dividends are as guaranteed "
                  "as bond coupons. Why is this incorrect?",
-                 ["They are exactly the same â€” both are legally required payments",
+                 ["They are exactly the same — both are legally required payments",
                   "Preferred dividends can be suspended by the board without triggering bankruptcy, "
                   "unlike bond coupons which are contractual obligations",
                   "Bond coupons can also be suspended without penalty",
                   "Preferred dividends are actually more guaranteed than bond coupons"],
                  1,
-                 "Bond coupons are contractual â€” missing one is a default event. Preferred "
+                 "Bond coupons are contractual — missing one is a default event. Preferred "
                  "dividends are discretionary; while they must be paid before common dividends, "
                  "they can be omitted without triggering bankruptcy."),
             _scenario("Nationwide Insurance must choose between investing $50M in 5% preferred "
                       "shares of a utility company or 5% corporate bonds from the same company. "
                       "The insurer's tax rate is 21%.",
                       "Which investment is likely MORE tax-efficient for Nationwide?",
-                      [("The corporate bonds â€” bond coupons are always better", False,
+                      [("The corporate bonds — bond coupons are always better", False,
                         "Bond interest is fully taxable as ordinary income at 21%. The "
                         "dividends-received deduction makes preferred stock income more tax-efficient."),
-                       ("The preferred shares â€” the dividends-received deduction makes "
+                       ("The preferred shares — the dividends-received deduction makes "
                         "most of the dividend income tax-exempt", True,
                         "Correct. With a 70% DRD, only 30% of the preferred dividends are "
-                        "taxable â€” making the effective tax rate approximately 6.3% vs. 21% "
+                        "taxable — making the effective tax rate approximately 6.3% vs. 21% "
                         "on bond interest. Preferred is significantly more tax-efficient."),
-                       ("It makes no difference â€” both earn 5%", False,
+                       ("It makes no difference — both earn 5%", False,
                         "The after-tax return differs significantly due to the DRD. Tax "
                         "efficiency is critical for institutional investors."),
                        ]),
@@ -1276,13 +1276,13 @@ def _build_ch2(course_id):
     c4 = _concept(m2_id, 2,
         "Real Estate, Mortgage Loans, and REITs",
         "Describe real estate investment types, mortgage loans, appraisals, and REITs available to insurers.",
-        "Real estate is a major asset class for insurance companies â€” they invest through "
+        "Real estate is a major asset class for insurance companies — they invest through "
         "direct ownership, mortgage loans, and Real Estate Investment Trusts (REITs). "
         "Direct real estate provides rental income and appreciation. Mortgage loans earn "
         "interest income. REITs offer liquid, diversified real estate exposure.",
         "Prudential Real Estate Investors manages $100 billion in real estate globally "
-        "for insurance and pension clients â€” office buildings, apartments, logistics warehouses, "
-        "and retail centers â€” earning rental income to fund long-term insurance liabilities.",
+        "for insurance and pension clients — office buildings, apartments, logistics warehouses, "
+        "and retail centers — earning rental income to fund long-term insurance liabilities.",
         [
             "Real estate types: office, retail, industrial, multifamily (residential), hotel",
             "Direct ownership: rental income + appreciation, but illiquid and management-intensive",
@@ -1291,13 +1291,13 @@ def _build_ch2(course_id):
             "Appraisals: professional valuation required to determine fair market value",
         ],
         [
-            "Assuming real estate is always more profitable than bonds â€” real estate has liquidity risk and management costs",
+            "Assuming real estate is always more profitable than bonds — real estate has liquidity risk and management costs",
             "Confusing mortgage loans (insurer as lender) with buying real estate (insurer as owner)",
         ],
         [
             _intro("Bricks, Mortar, and Insurance Dollars",
                    "The skylines of major cities are partly funded by insurance company investments. "
-                   "Real estate offers income, inflation protection, and diversification â€” "
+                   "Real estate offers income, inflation protection, and diversification — "
                    "but comes with unique challenges. Let's explore how insurers invest in real estate."),
             _teach("Types of Real Estate and Direct Ownership",
                    "Insurers invest in commercial real estate across five main property types: "
@@ -1305,8 +1305,8 @@ def _build_ch2(course_id):
                    "and malls), industrial (warehouses, logistics, manufacturing), multifamily "
                    "(apartment complexes), and hotel (hospitality properties). Direct ownership "
                    "means the insurer actually owns the building and receives rental income from "
-                   "tenants. Real estate appraisals â€” professional valuations conducted by "
-                   "licensed appraisers â€” are required to establish fair market value for "
+                   "tenants. Real estate appraisals — professional valuations conducted by "
+                   "licensed appraisers — are required to establish fair market value for "
                    "accounting, regulatory, and transaction purposes. Direct real estate offers "
                    "strong returns and inflation protection but is illiquid (cannot be sold "
                    "quickly), management-intensive, and geographically concentrated.",
@@ -1325,7 +1325,7 @@ def _build_ch2(course_id):
                    "Real Estate Investment Trusts (REITs) are companies that own portfolios of "
                    "income-producing real estate. They are publicly traded like stocks, providing "
                    "much greater liquidity than direct ownership. By law, REITs must distribute "
-                   "at least 90% of taxable income to shareholders as dividends â€” making them "
+                   "at least 90% of taxable income to shareholders as dividends — making them "
                    "income-generating. REITs allow insurers to access real estate returns "
                    "without the management burden of direct ownership.",
                    [
@@ -1343,12 +1343,12 @@ def _build_ch2(course_id):
                      "to a Dallas developer at 5.5% interest, secured by a 50-story tower. "
                      "And TIAA holds $50M in Prologis REIT shares (industrial/warehouse "
                      "properties), receiving quarterly dividends and maintaining liquidity. "
-                     "This three-pronged real estate approach â€” direct ownership, mortgage "
-                     "lending, and REITs â€” provides income, appreciation, and liquidity.",
+                     "This three-pronged real estate approach — direct ownership, mortgage "
+                     "lending, and REITs — provides income, appreciation, and liquidity.",
                      "Insurance companies use multiple real estate approaches to balance "
                      "return, liquidity, and management burden."),
             _flash("What is the minimum percentage of taxable income a REIT must distribute to shareholders?",
-                   "90% â€” REITs must distribute at least 90% of taxable income as dividends "
+                   "90% — REITs must distribute at least 90% of taxable income as dividends "
                    "to maintain their REIT status and tax benefits."),
             _mcq("An insurance company makes a $200M loan to a hotel developer, secured by "
                  "the hotel building. How is this investment classified?",
@@ -1357,7 +1357,7 @@ def _build_ch2(course_id):
                   "A commercial mortgage loan",
                   "A preferred stock investment"],
                  2,
-                 "The insurer is acting as a lender (not an owner) â€” this is a commercial "
+                 "The insurer is acting as a lender (not an owner) — this is a commercial "
                  "mortgage loan with the hotel as collateral."),
             _mcq("Why might an insurer prefer a REIT over direct real estate ownership?",
                  ["REITs always earn higher returns than direct ownership",
@@ -1366,26 +1366,26 @@ def _build_ch2(course_id):
                   "REITs are exempt from all taxes"],
                  1,
                  "REITs trade on stock exchanges and can be sold quickly. Direct real estate "
-                 "can take months or years to sell â€” a significant liquidity disadvantage."),
+                 "can take months or years to sell — a significant liquidity disadvantage."),
             _mcq("What is the purpose of a real estate appraisal?",
                  ["To determine the property's rental income potential only",
                   "To establish the property's fair market value for accounting, regulatory, and transaction purposes",
                   "To calculate the owner's property tax bill",
                   "To approve a mortgage application"],
                  1,
-                 "Appraisals establish fair market value â€” required for financial reporting, "
+                 "Appraisals establish fair market value — required for financial reporting, "
                  "regulatory capital calculations, and buy/sell transactions."),
             _mcq("A REIT earns $100M in taxable income. How much must it distribute as dividends?",
                  ["At least $50M", "At least $70M", "At least $90M", "100% of income"],
                  2,
-                 "REITs must distribute at least 90% of taxable income â€” so at least $90M "
+                 "REITs must distribute at least 90% of taxable income — so at least $90M "
                  "of the $100M must be paid out as dividends to shareholders."),
             _mcq("COMMON MISTAKE: An analyst says commercial mortgage loans are the same as "
                  "direct real estate ownership because both involve real estate. What key "
                  "difference are they missing?",
                  ["They are the same thing",
                   "In a mortgage loan the insurer is a LENDER earning interest; in direct ownership "
-                  "the insurer is an OWNER earning rent â€” different risk, return, and legal position",
+                  "the insurer is an OWNER earning rent — different risk, return, and legal position",
                   "Only direct ownership generates income",
                   "Mortgage loans have higher returns than direct ownership in all scenarios"],
                  1,
@@ -1394,7 +1394,7 @@ def _build_ch2(course_id):
                  "appreciation. In direct ownership, the insurer earns rent AND appreciation "
                  "but bears all operating risks."),
             _scenario("Your insurance company wants real estate exposure but has strict liquidity "
-                      "requirements â€” you must be able to sell any investment within 5 business days "
+                      "requirements — you must be able to sell any investment within 5 business days "
                       "if needed.",
                       "Which real estate investment best meets this requirement?",
                       [("Direct ownership of office buildings in downtown Chicago", False,
@@ -1402,9 +1402,9 @@ def _build_ch2(course_id):
                         "the 5-day liquidity requirement."),
                        ("Publicly-traded REIT shares", True,
                         "Correct. REITs trade on public exchanges and can be sold within "
-                        "one business day â€” meeting the 5-day liquidity requirement easily."),
+                        "one business day — meeting the 5-day liquidity requirement easily."),
                        ("A $500M commercial mortgage loan to a developer", False,
-                        "Mortgage loans are illiquid â€” they typically cannot be sold quickly "
+                        "Mortgage loans are illiquid — they typically cannot be sold quickly "
                         "without a significant discount, especially in stressed markets."),
                        ]),
         ],
@@ -1415,9 +1415,9 @@ def _build_ch2(course_id):
     return ch
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# CHAPTER 3 â€” Advanced Investment Vehicles and Capital Markets
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─────────────────────────────────────────────────────────────────────────────
+# CHAPTER 3 — Advanced Investment Vehicles and Capital Markets
+# ─────────────────────────────────────────────────────────────────────────────
 
 def _build_ch3(course_id):
     ch_id = _id()
@@ -1427,7 +1427,7 @@ def _build_ch3(course_id):
         "description": "Master structured securities, derivatives, alternative investments, and capital market mechanics.",
     }
 
-    # â”€â”€ Module 1: Structured Products & Derivatives â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 1: Structured Products & Derivatives ───────────────────────────
     m1_id = _id()
     m1 = {"id": m1_id, "chapter_id": ch_id, "order": 1, "title": "Structured Securities and Derivatives"}
 
@@ -1436,37 +1436,37 @@ def _build_ch3(course_id):
         "Explain the securitization process and distinguish ABS from MBS.",
         "Securitization is the process of pooling financial assets (like mortgages or auto loans) "
         "and issuing securities backed by those pools. The result is Asset-Backed Securities (ABS) "
-        "â€” or if backed specifically by mortgages, Mortgage-Backed Securities (MBS). These give "
+        "— or if backed specifically by mortgages, Mortgage-Backed Securities (MBS). These give "
         "insurers access to diversified pools of loans with predictable income.",
         "Fannie Mae pools 10,000 individual home mortgages totaling $2 billion and issues MBS "
         "to institutional investors like TIAA. TIAA receives monthly principal and interest "
-        "payments from the mortgage pool â€” diversified across thousands of homeowners "
+        "payments from the mortgage pool — diversified across thousands of homeowners "
         "rather than dependent on a single borrower.",
         [
-            "Securitization: pooling assets â†’ issuing securities backed by the pool",
+            "Securitization: pooling assets → issuing securities backed by the pool",
             "ABS: backed by auto loans, credit cards, student loans, etc.",
             "MBS: specifically backed by mortgage loans on real property",
-            "Tranches: MBS split into risk layers â€” senior gets paid first, junior absorbs losses first",
+            "Tranches: MBS split into risk layers — senior gets paid first, junior absorbs losses first",
             "Prepayment risk: borrowers repay early, disrupting expected cash flows",
         ],
         [
-            "Assuming MBS are risk-free because they are 'backed by houses' â€” 2008 crisis showed otherwise",
+            "Assuming MBS are risk-free because they are 'backed by houses' — 2008 crisis showed otherwise",
             "Confusing the originator (bank making loans) with the investor (insurer buying MBS)",
         ],
         [
             _intro("From Mortgages to Markets",
                    "How does your monthly mortgage payment end up as an investment in a "
-                   "pension fund's portfolio? Through securitization â€” one of the most "
+                   "pension fund's portfolio? Through securitization — one of the most "
                    "important financial innovations of the 20th century. Let's trace the path."),
             _teach("The Securitization Process",
                    "Securitization converts illiquid individual loans into tradeable securities. "
-                   "Here is how it works step by step: (1) Origination â€” a bank makes thousands "
-                   "of loans (mortgages, auto loans, credit cards). (2) Pooling â€” the bank sells "
+                   "Here is how it works step by step: (1) Origination — a bank makes thousands "
+                   "of loans (mortgages, auto loans, credit cards). (2) Pooling — the bank sells "
                    "these loans to a Special Purpose Vehicle (SPV), a legally separate entity. "
-                   "(3) Structuring â€” the SPV issues securities (ABS or MBS) backed by the pool's "
-                   "cash flows. (4) Tranching â€” the securities are divided into tranches: senior "
+                   "(3) Structuring — the SPV issues securities (ABS or MBS) backed by the pool's "
+                   "cash flows. (4) Tranching — the securities are divided into tranches: senior "
                    "tranches receive payments first and carry the lowest risk; junior/equity "
-                   "tranches absorb losses first but earn higher returns. (5) Distribution â€” "
+                   "tranches absorb losses first but earn higher returns. (5) Distribution — "
                    "institutional investors like insurance companies buy the tranches.",
                    [
                        "Step 1: Bank originates many individual loans",
@@ -1480,30 +1480,30 @@ def _build_ch3(course_id):
                    "auto loans, credit card receivables, student loans, equipment leases. "
                    "Mortgage-Backed Securities (MBS) are backed specifically by pools of mortgage "
                    "loans and come in two forms: Agency MBS (issued/guaranteed by Fannie Mae, "
-                   "Freddie Mac, or Ginnie Mae â€” very low credit risk) and Non-Agency/Private-Label "
-                   "MBS (no government guarantee â€” higher credit risk). Key risks: credit risk "
+                   "Freddie Mac, or Ginnie Mae — very low credit risk) and Non-Agency/Private-Label "
+                   "MBS (no government guarantee — higher credit risk). Key risks: credit risk "
                    "(borrowers default), prepayment risk (borrowers refinance early, returning "
                    "principal sooner than expected, disrupting the insurer's income stream), "
                    "and extension risk (in rising rate environments, borrowers prepay less, "
                    "keeping the insurer locked in lower-rate assets).",
                    [
-                       "ABS: auto loans, credit cards, student loans â€” diverse consumer assets",
-                       "Agency MBS: Fannie/Freddie/Ginnie guarantee â€” near-sovereign credit quality",
-                       "Non-Agency MBS: no guarantee â€” higher yield, higher credit risk",
+                       "ABS: auto loans, credit cards, student loans — diverse consumer assets",
+                       "Agency MBS: Fannie/Freddie/Ginnie guarantee — near-sovereign credit quality",
+                       "Non-Agency MBS: no guarantee — higher yield, higher credit risk",
                        "Prepayment risk: early repayment disrupts expected income timing",
                        "Extension risk: rising rates cause slower prepayment, extending duration",
                    ]),
             _example("The 2008 Crisis: When MBS Went Wrong",
                      "In 2006-2007, Wall Street banks securitized millions of subprime "
-                     "mortgages â€” loans made to borrowers with poor credit â€” into Non-Agency "
+                     "mortgages — loans made to borrowers with poor credit — into Non-Agency "
                      "MBS rated AAA by rating agencies. Insurance companies bought billions "
                      "in these 'safe' instruments. When U.S. home prices fell 30% in 2008, "
                      "millions of homeowners defaulted simultaneously. The mortgage pools "
-                     "failed to generate the promised cash flows. The 'senior' tranches â€” "
-                     "supposedly the safest â€” lost 30-60% of their value. AIG Financial "
+                     "failed to generate the promised cash flows. The 'senior' tranches — "
+                     "supposedly the safest — lost 30-60% of their value. AIG Financial "
                      "Products had written credit insurance on $500 billion of these "
                      "securities and required a $182 billion government bailout to survive.",
-                     "Securitization spreads risk â€” but if the underlying loans are all "
+                     "Securitization spreads risk — but if the underlying loans are all "
                      "correlated (all failing simultaneously), diversification fails completely."),
             _flash("What is 'prepayment risk' in a Mortgage-Backed Security?",
                    "The risk that homeowners repay their mortgages early (when rates fall and "
@@ -1516,7 +1516,7 @@ def _build_ch3(course_id):
                   "A direct investment in commercial real estate"],
                  1,
                  "ABS are backed by pools of non-mortgage financial assets like auto loans, "
-                 "credit card receivables, or student loans â€” not mortgages (that's MBS)."),
+                 "credit card receivables, or student loans — not mortgages (that's MBS)."),
             _mcq("What is the role of a Special Purpose Vehicle (SPV) in securitization?",
                  ["To make the original loans to borrowers",
                   "To hold the pool of assets and issue securities backed by those assets, "
@@ -1533,21 +1533,21 @@ def _build_ch3(course_id):
                   "Agency MBS guaranteed by Fannie Mae, Freddie Mac, or Ginnie Mae",
                   "Equity tranches that absorb first losses"],
                  2,
-                 "Agency MBS benefit from explicit or implicit U.S. government guarantees â€” "
+                 "Agency MBS benefit from explicit or implicit U.S. government guarantees — "
                  "making their credit risk near-sovereign level."),
             _mcq("Interest rates fall from 7% to 4%. Homeowners rush to refinance. "
                  "What risk does an MBS investor face?",
-                 ["Extension risk â€” the MBS duration extends beyond expectations",
-                  "Prepayment risk â€” principal is returned early, forcing reinvestment at lower rates",
-                  "Credit risk â€” homeowners default due to lower rates",
-                  "Liquidity risk â€” the MBS cannot be sold"],
+                 ["Extension risk — the MBS duration extends beyond expectations",
+                  "Prepayment risk — principal is returned early, forcing reinvestment at lower rates",
+                  "Credit risk — homeowners default due to lower rates",
+                  "Liquidity risk — the MBS cannot be sold"],
                  1,
                  "When rates fall, homeowners refinance (prepay mortgages). MBS investors "
                  "receive their principal back early and must reinvest at now-lower rates."),
             _mcq("COMMON MISTAKE: An analyst argues MBS backed by residential mortgages are "
                  "always safe because 'housing prices always go up.' Why is this wrong?",
-                 ["It is correct â€” real estate values only increase",
-                  "Housing prices can and do fall â€” the 2008 crisis showed that correlated "
+                 ["It is correct — real estate values only increase",
+                  "Housing prices can and do fall — the 2008 crisis showed that correlated "
                   "mortgage defaults can devastate MBS values regardless of collateral quality",
                   "MBS are backed by the government so price doesn't matter",
                   "Only non-agency MBS can lose value"],
@@ -1558,14 +1558,14 @@ def _build_ch3(course_id):
                       "The Federal Reserve raises interest rates from 3% to 6.5%. Mortgage "
                       "prepayments slow dramatically as homeowners keep their low-rate mortgages.",
                       "Which risk has just materialized?",
-                      [("Prepayment risk â€” homeowners are repaying too quickly", False,
+                      [("Prepayment risk — homeowners are repaying too quickly", False,
                         "Prepayment risk occurs when rates FALL. Rising rates slow prepayments."),
-                       ("Extension risk â€” the effective duration of the MBS extends as "
+                       ("Extension risk — the effective duration of the MBS extends as "
                         "prepayments slow, locking the insurer into below-market rates", True,
                         "Correct. Extension risk materializes when rising rates cause homeowners "
                         "to keep existing low-rate mortgages, extending the MBS duration "
                         "and trapping investors in below-market yields."),
-                       ("Credit risk â€” Fannie Mae is about to default", False,
+                       ("Credit risk — Fannie Mae is about to default", False,
                         "Agency MBS have U.S. government support. Rate changes affect "
                         "prepayment behavior, not agency credit quality."),
                        ]),
@@ -1577,7 +1577,7 @@ def _build_ch3(course_id):
         "Define derivatives and explain how insurers use options, swaps, futures, and forwards.",
         "Derivatives are financial contracts whose value depends on ('derives from') an underlying "
         "asset like a bond, interest rate, or stock index. Insurers use derivatives primarily "
-        "to hedge (reduce) risk â€” not to speculate. Common derivatives include options (right "
+        "to hedge (reduce) risk — not to speculate. Common derivatives include options (right "
         "but not obligation to buy/sell), swaps (exchange of cash flows), futures (standardized "
         "contracts to buy/sell at future price), and forwards (customized future contracts).",
         "TIAA uses interest rate swaps to convert $5 billion of variable-rate bonds into "
@@ -1587,13 +1587,13 @@ def _build_ch3(course_id):
         [
             "Derivatives derive value from an underlying asset (bond, rate, stock, commodity)",
             "Options: right but NOT obligation to buy (call) or sell (put) at a set price",
-            "Swaps: exchange cash flow streams â€” most common: interest rate swaps (fixed for floating)",
+            "Swaps: exchange cash flow streams — most common: interest rate swaps (fixed for floating)",
             "Futures: standardized, exchange-traded contracts for future delivery",
             "Forwards: customized, over-the-counter contracts (same concept as futures but tailored)",
             "Insurers use derivatives to HEDGE risk, not to speculate",
         ],
         [
-            "Assuming all derivatives are speculative â€” insurers use them defensively to hedge risk",
+            "Assuming all derivatives are speculative — insurers use them defensively to hedge risk",
             "Confusing the 'right to buy' (call option) with the 'obligation to buy' (futures/forwards)",
         ],
         [
@@ -1607,7 +1607,7 @@ def _build_ch3(course_id):
                    "performance of an underlying asset, rate, or index. Because they are "
                    "contracts (not actual asset purchases), derivatives can be structured to "
                    "provide precise protection against specific risks with relatively low upfront "
-                   "cost. Insurance companies use derivatives almost exclusively for hedging â€” "
+                   "cost. Insurance companies use derivatives almost exclusively for hedging — "
                    "reducing or eliminating specific portfolio risks. For example, if an insurer "
                    "fears that falling interest rates will hurt its bond portfolio income, it "
                    "can use interest rate derivatives to lock in its income level.",
@@ -1615,18 +1615,18 @@ def _build_ch3(course_id):
                        "Value derived from underlying asset, rate, or index",
                        "Can hedge interest rate risk, equity market risk, credit risk, currency risk",
                        "Low upfront cost relative to the protection provided",
-                       "Insurers prohibited from using derivatives to SPECULATE â€” hedging only",
+                       "Insurers prohibited from using derivatives to SPECULATE — hedging only",
                    ]),
             _teach("Options, Swaps, Futures, and Forwards",
                    "Options give the buyer the RIGHT (but not the obligation) to buy (call option) "
                    "or sell (put option) an asset at a predetermined price (strike price) before "
                    "or on a specific date. The buyer pays a premium for this right. "
-                   "Swaps are agreements to exchange cash flow streams â€” the most common being "
+                   "Swaps are agreements to exchange cash flow streams — the most common being "
                    "an interest rate swap where one party pays fixed interest in exchange for "
                    "receiving variable (floating) rate interest. "
                    "Futures are standardized, exchange-traded contracts obligating both parties "
                    "to buy/sell an asset at a specified price on a future date. "
-                   "Forwards are like futures but customized (over-the-counter) â€” negotiated "
+                   "Forwards are like futures but customized (over-the-counter) — negotiated "
                    "directly between counterparties with flexible terms.",
                    [
                        "Call option: right to BUY at strike price (buyer profits if price rises above strike)",
@@ -1642,11 +1642,11 @@ def _build_ch3(course_id):
                      "an interest rate swap with Goldman Sachs: TIAA pays floating (LIBOR + 1.5%) "
                      "to Goldman Sachs and receives a fixed 6.5% in return. Now TIAA's net "
                      "income is locked at 6.5% regardless of where rates move. Goldman Sachs "
-                     "takes the other side â€” betting that rates will stay high. "
+                     "takes the other side — betting that rates will stay high. "
                      "When the Fed cuts rates to 2%, TIAA's swap saves $225M annually "
                      "while Goldman Sachs pays the difference.",
                      "Interest rate swaps allow insurers to convert rate uncertainty into "
-                     "predictable fixed income â€” protecting their ability to fund future claims."),
+                     "predictable fixed income — protecting their ability to fund future claims."),
             _flash("What is the key difference between an option and a futures contract?",
                    "An option gives the holder the RIGHT but not the obligation to transact. "
                    "A futures contract OBLIGATES both parties to transact at the agreed price."),
@@ -1657,15 +1657,15 @@ def _build_ch3(course_id):
                   "The risk of policyholder claims rising"],
                  1,
                  "A put option gives the right to SELL at the strike price. If the market "
-                 "falls below the strike, the put gains value â€” offsetting equity portfolio losses."),
+                 "falls below the strike, the put gains value — offsetting equity portfolio losses."),
             _mcq("In an interest rate swap, the 'fixed-rate receiver' benefits when:",
                  ["Interest rates rise above the fixed rate",
-                  "Interest rates fall below the fixed rate â€” they receive more than they would at market",
+                  "Interest rates fall below the fixed rate — they receive more than they would at market",
                   "The swap is cancelled early",
                   "The underlying bond defaults"],
                  1,
                  "The fixed-rate receiver gets a constant fixed payment regardless of market rates. "
-                 "If rates fall, they are receiving above-market income â€” the swap has positive value."),
+                 "If rates fall, they are receiving above-market income — the swap has positive value."),
             _mcq("How does a forward contract differ from a futures contract?",
                  ["Forwards are exchange-traded; futures are over-the-counter",
                   "Forwards have no counterparty risk; futures do",
@@ -1686,8 +1686,8 @@ def _build_ch3(course_id):
                  "offsetting bond portfolio value losses."),
             _mcq("COMMON MISTAKE: A compliance officer claims all derivatives are speculative "
                  "and insurance companies shouldn't use them. Why is this incorrect?",
-                 ["It is correct â€” regulators prohibit all insurer derivative use",
-                  "Derivatives used for hedging REDUCE portfolio risk â€” regulators explicitly "
+                 ["It is correct — regulators prohibit all insurer derivative use",
+                  "Derivatives used for hedging REDUCE portfolio risk — regulators explicitly "
                   "permit (and often encourage) hedging derivatives for insurers",
                   "Only pension funds can use derivatives",
                   "All derivatives generate profit with no risk"],
@@ -1702,7 +1702,7 @@ def _build_ch3(course_id):
                       [("Buy call options on Treasury bonds", False,
                         "Call options on bonds profit when bond PRICES rise (rates fall). "
                         "This is the wrong direction for the risk being hedged."),
-                       ("Enter an interest rate swap paying fixed, receiving floating â€” "
+                       ("Enter an interest rate swap paying fixed, receiving floating — "
                         "profiting when rates rise to fund higher policyholder returns", True,
                         "Correct. Paying fixed/receiving floating profits as rates rise, "
                         "generating cash flows to fund increased policyholder obligations."),
@@ -1715,43 +1715,43 @@ def _build_ch3(course_id):
 
     m1["concepts"] = [c1, c2]
 
-    # â”€â”€ Module 2: Alternative Investments & Market Infrastructure â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 2: Alternative Investments & Market Infrastructure ─────────────
     m2_id = _id()
     m2 = {"id": m2_id, "chapter_id": ch_id, "order": 2, "title": "Alternative Investments and Capital Markets"}
 
     c3 = _concept(m2_id, 1,
         "Hedge Funds, Private Equity, and Infrastructure",
         "Describe alternative investment vehicles available to institutional investors.",
-        "Alternative investments go beyond stocks and bonds â€” they include hedge funds "
+        "Alternative investments go beyond stocks and bonds — they include hedge funds "
         "(which use sophisticated strategies to generate returns in all markets), private equity "
         "(investing in non-publicly traded companies), and infrastructure (airports, toll roads, "
         "utilities). Insurers use these for diversification and higher returns but face "
         "significant liquidity constraints.",
         "The Ontario Teachers Pension Plan owns 100% of London Heathrow Airport, several "
-        "toll highways in Chile, and the Birmingham Airport â€” earning predictable, "
+        "toll highways in Chile, and the Birmingham Airport — earning predictable, "
         "inflation-linked returns over 50-year time horizons that match their pension liabilities perfectly.",
         [
-            "Hedge funds: flexible strategies (long/short, macro, arbitrage) â€” seek absolute returns",
+            "Hedge funds: flexible strategies (long/short, macro, arbitrage) — seek absolute returns",
             "Private equity: invest in non-public companies through LBO, venture capital, growth equity",
-            "Infrastructure: airports, highways, utilities â€” long-duration, inflation-linked income",
-            "All alternatives: illiquid, complex, higher fees â€” suitable only for large institutions",
+            "Infrastructure: airports, highways, utilities — long-duration, inflation-linked income",
+            "All alternatives: illiquid, complex, higher fees — suitable only for large institutions",
         ],
         [
-            "Assuming hedge funds always make money â€” many hedge funds underperform or close",
+            "Assuming hedge funds always make money — many hedge funds underperform or close",
             "Confusing private equity (buying companies) with public equity (buying stocks)",
         ],
         [
             _intro("Beyond Stocks and Bonds",
                    "The world's largest insurers don't just buy bonds and stocks. They own "
                    "airports, highways, and companies you've never heard of. Alternative "
-                   "investments offer higher returns â€” but come with unique complexity "
+                   "investments offer higher returns — but come with unique complexity "
                    "and illiquidity that most investors cannot handle."),
             _teach("Hedge Funds and Private Equity",
                    "Hedge funds are privately organized investment vehicles that employ "
                    "flexible, often complex strategies unavailable to traditional funds. "
                    "They may go long AND short (profiting from both rising and falling prices), "
                    "use leverage, trade globally, and employ quantitative algorithms. "
-                   "The goal is 'absolute return' â€” making money regardless of market direction. "
+                   "The goal is 'absolute return' — making money regardless of market direction. "
                    "Private equity (PE) involves investing in companies that are not publicly traded. "
                    "PE firms typically buy companies using leverage (leveraged buyouts/LBOs), "
                    "improve operations over 3-7 years, then sell for a profit. Venture capital "
@@ -1761,7 +1761,7 @@ def _build_ch3(course_id):
                        "Hedge fund strategies: long/short equity, global macro, merger arbitrage, quant",
                        "'2 and 20' fee structure: 2% management fee + 20% of profits",
                        "LBO: acquiring a company with significant debt, improving it, then selling",
-                       "Venture capital: early-stage startups â€” high risk, potential massive returns",
+                       "Venture capital: early-stage startups — high risk, potential massive returns",
                        "PE liquidity: capital locked for 7-10 years in typical PE fund",
                    ]),
             _teach("Infrastructure Investments",
@@ -1774,19 +1774,19 @@ def _build_ch3(course_id):
                    "revenues (cash flows are predictable), long asset lives (30-100 years, "
                    "matching long-duration insurance liabilities), and inflation linkage (fees "
                    "often indexed to CPI, protecting real returns). The main drawback is "
-                   "illiquidity â€” infrastructure assets cannot be sold quickly.",
+                   "illiquidity — infrastructure assets cannot be sold quickly.",
                    [
-                       "Essential services: airports, utilities â€” demand is inelastic",
+                       "Essential services: airports, utilities — demand is inelastic",
                        "Stable, contracted or regulated revenue streams",
                        "Long asset life matches long-duration insurance liabilities",
-                       "Often inflation-linked â€” protects real purchasing power",
+                       "Often inflation-linked — protects real purchasing power",
                        "Illiquid: can take years to sell; suitable for long-horizon institutions",
                    ]),
             _example("Teachers Pension Buys Heathrow Airport",
                      "In 2019, the Ontario Teachers Pension Plan (OTPP) increased its stake in "
-                     "London Heathrow Airport to 25%, investing Â£2.4 billion. Heathrow is "
+                     "London Heathrow Airport to 25%, investing £2.4 billion. Heathrow is "
                      "regulated by the UK Civil Aviation Authority, which sets the fees airlines "
-                     "pay â€” providing predictable, regulated revenue. Fees are indexed to UK "
+                     "pay — providing predictable, regulated revenue. Fees are indexed to UK "
                      "inflation. OTPP expects to hold this investment for 20-30 years, matching "
                      "its obligations to pay pensions to Ontario teachers who retire in the "
                      "2030s-2040s. Annual regulated return: approximately 4-5% above inflation. "
@@ -1830,7 +1830,7 @@ def _build_ch3(course_id):
                   "$2M management + $60M performance = $62M total",
                   "$20M management only = $20M total"],
                  0,
-                 "Management fee: $1B Ã— 2% = $20M. Performance: $300M profit Ã— 20% = $60M. "
+                 "Management fee: $1B × 2% = $20M. Performance: $300M profit × 20% = $60M. "
                  "Total fees: $80M (investors net $220M on the $300M gain)."),
             _mcq("COMMON MISTAKE: An analyst says insurance companies shouldn't invest in "
                  "private equity because 'it's riskier than stocks.' What important factor "
@@ -1838,7 +1838,7 @@ def _build_ch3(course_id):
                  ["Private equity has lower risk than stocks",
                   "For insurers with long time horizons and stable liabilities, illiquidity "
                   "is acceptable and private equity's higher expected return compensates "
-                  "for the risk â€” it's about matching investment characteristics to obligations",
+                  "for the risk — it's about matching investment characteristics to obligations",
                   "Insurance regulators prohibit private equity completely",
                   "Private equity returns are identical to public equity returns"],
                  1,
@@ -1850,15 +1850,15 @@ def _build_ch3(course_id):
                       "infrastructure (60%) and investment-grade bonds (40%). Pacific Life's "
                       "policyholders have 20-year term insurance contracts.",
                       "Which allocation better serves Pacific Life's obligations?",
-                      [("Option A â€” the 25% return last year makes it clearly better", False,
+                      [("Option A — the 25% return last year makes it clearly better", False,
                         "Past performance doesn't predict future returns. A 25% one-year "
                         "return often involves significant risk that mismatches a 20-year liability."),
-                       ("Option B â€” infrastructure provides long-duration, stable income matching "
+                       ("Option B — infrastructure provides long-duration, stable income matching "
                         "the 20-year liability, with bonds adding liquidity and stability", True,
                         "Correct. Infrastructure and bonds match Pacific Life's long duration "
                         "while maintaining liquidity. A single hedge fund allocation "
                         "is undiversified, illiquid, and risk-inappropriate."),
-                       ("Neither â€” Pacific Life should keep all assets in cash", False,
+                       ("Neither — Pacific Life should keep all assets in cash", False,
                         "Cash returns are far below what is needed to fund future claims "
                         "at competitive premium rates."),
                        ]),
@@ -1873,7 +1873,7 @@ def _build_ch3(course_id):
         "Unit Investment Trusts hold fixed portfolios. Capital markets are where long-term "
         "securities are issued (primary market) and traded after issuance (secondary market).",
         "BlackRock's iShares TIPS Bond ETF allows an insurer to buy inflation-protected "
-        "Treasuries in a single liquid instrument trading on the NYSE â€” with the diversification "
+        "Treasuries in a single liquid instrument trading on the NYSE — with the diversification "
         "of 40+ individual TIPS bonds but the simplicity of buying one stock ticker.",
         [
             "Mutual funds: pooled investment, professionally managed, priced daily at NAV",
@@ -1884,22 +1884,22 @@ def _build_ch3(course_id):
         ],
         [
             "Confusing primary market (new issuance) with secondary market (existing securities trading)",
-            "Thinking ETFs and mutual funds are identical â€” ETFs trade intraday; mutual funds price once per day",
+            "Thinking ETFs and mutual funds are identical — ETFs trade intraday; mutual funds price once per day",
         ],
         [
             _intro("Pooled Investing and the Markets Where It Happens",
                    "Why buy individual stocks when you can own 500 companies at once? "
                    "Investment funds make diversification accessible. And every transaction "
-                   "happens in a capital market â€” let's understand the entire ecosystem."),
+                   "happens in a capital market — let's understand the entire ecosystem."),
             _teach("Investment Fund Types: Mutual Funds, ETFs, and UITs",
                    "Mutual funds pool money from many investors to buy a diversified portfolio "
                    "of securities managed by professional portfolio managers. They are priced "
-                   "once per day at their Net Asset Value (NAV) â€” total portfolio value divided "
+                   "once per day at their Net Asset Value (NAV) — total portfolio value divided "
                    "by shares outstanding. ETFs (Exchange-Traded Funds) are similar to mutual "
                    "funds but trade on stock exchanges throughout the day like individual "
                    "stocks. ETFs typically track an index (passive management) and have lower "
                    "fees than actively managed mutual funds. Unit Investment Trusts (UITs) hold "
-                   "a fixed portfolio of securities with a defined maturity date â€” there is "
+                   "a fixed portfolio of securities with a defined maturity date — there is "
                    "no active management; the portfolio is set at creation and held to termination.",
                    [
                        "Mutual fund: daily NAV pricing, can be active or passive, no intraday trading",
@@ -1915,17 +1915,17 @@ def _build_ch3(course_id):
                    "or issues new bonds, it happens in the primary market. The issuer receives "
                    "the capital directly. The secondary market is where already-issued securities "
                    "trade BETWEEN INVESTORS. The New York Stock Exchange (NYSE) and NASDAQ are "
-                   "secondary markets â€” when you buy Apple stock on the NYSE, Apple receives "
+                   "secondary markets — when you buy Apple stock on the NYSE, Apple receives "
                    "no money; you buy from another investor. Securities exchanges are organized "
                    "secondary markets with listing requirements and regulated trading.",
                    [
-                       "Primary market: new issuance â€” issuer receives capital (IPO, bond offering)",
+                       "Primary market: new issuance — issuer receives capital (IPO, bond offering)",
                        "Secondary market: trading existing securities between investors",
                        "NYSE, NASDAQ: secondary market exchanges with listing standards",
                        "OTC: over-the-counter market for bonds and derivatives (less regulated)",
                        "Liquidity: secondary markets make primary market investing possible",
                    ]),
-            _example("Boeing Issues New Bonds â€” A Primary and Secondary Market Journey",
+            _example("Boeing Issues New Bonds — A Primary and Secondary Market Journey",
                      "In January 2024, Boeing issues $5 billion in new 10-year bonds at 6% "
                      "coupon to fund operations (PRIMARY MARKET transaction). Investment banks "
                      "Goldman Sachs and JPMorgan underwrite the offering, selling the bonds "
@@ -1934,12 +1934,12 @@ def _build_ch3(course_id):
                      "cash. Three months later, Lincoln's portfolio manager decides to sell "
                      "$50M of these Boeing bonds to raise cash (SECONDARY MARKET transaction). "
                      "Another insurer, Principal Life, buys the bonds from Lincoln on the "
-                     "OTC bond market at the current market price. Boeing is uninvolved â€” "
+                     "OTC bond market at the current market price. Boeing is uninvolved — "
                      "this is purely between Lincoln and Principal.",
                      "Understanding primary vs. secondary market is fundamental: "
                      "the issuer only gets money in the primary market."),
             _flash("In which market does the issuer of a security DIRECTLY receive proceeds?",
-                   "The PRIMARY market â€” when securities are first issued (IPO or bond offering). "
+                   "The PRIMARY market — when securities are first issued (IPO or bond offering). "
                    "In secondary markets, trading occurs between investors and the issuer receives nothing."),
             _mcq("How does an ETF differ from a mutual fund in terms of trading?",
                  ["ETFs are only available to institutional investors",
@@ -1957,12 +1957,12 @@ def _build_ch3(course_id):
                   "Primary market through an Initial Public Offering (IPO)",
                   "Money market"],
                  2,
-                 "An IPO is a primary market event â€” the company issues new shares for the first "
+                 "An IPO is a primary market event — the company issues new shares for the first "
                  "time and receives the capital directly from investors."),
             _mcq("After an IPO, investors trade the company's shares among themselves on the "
                  "NYSE. What is this?",
                  ["Another primary market transaction",
-                  "A secondary market transaction â€” investors trade existing shares; "
+                  "A secondary market transaction — investors trade existing shares; "
                   "the company receives no proceeds",
                   "An over-the-counter transaction",
                   "A money market transaction"],
@@ -1975,17 +1975,17 @@ def _build_ch3(course_id):
                   "UITs trade on exchanges throughout the day",
                   "UITs only invest in government bonds"],
                  1,
-                 "UITs are unmanaged â€” the portfolio is fixed at creation and not actively "
+                 "UITs are unmanaged — the portfolio is fixed at creation and not actively "
                  "traded. They have a defined end date unlike open-ended mutual funds."),
             _mcq("COMMON MISTAKE: After buying Boeing stock on the NYSE, an investor thinks "
                  "Boeing just received $10,000. Why is this wrong?",
-                 ["It is correct â€” Boeing receives money every time its stock is traded",
+                 ["It is correct — Boeing receives money every time its stock is traded",
                   "Boeing only receives money when it issues NEW shares (primary market). "
-                  "NYSE trades are secondary market â€” money flows between investors, not to Boeing",
+                  "NYSE trades are secondary market — money flows between investors, not to Boeing",
                   "The NYSE keeps all the money from stock trades",
                   "Boeing receives half of every trade's proceeds"],
                  1,
-                 "Secondary market trades transfer money between buyers and sellers â€” "
+                 "Secondary market trades transfer money between buyers and sellers — "
                  "the issuing company is completely uninvolved and receives nothing."),
             _scenario("Nationwide Insurance needs to invest $1B quickly and wants broad "
                       "equity market exposure, the ability to sell within hours if needed, "
@@ -1999,7 +1999,7 @@ def _build_ch3(course_id):
                         "(can sell 'within hours'), and typically have very low fees (0.03-0.10%)."),
                        ("Purchase $1B in individual stocks across 500 companies", False,
                         "Trading 500 individual stocks would take enormous time and incur "
-                        "significant transaction costs â€” impractical for same-day deployment."),
+                        "significant transaction costs — impractical for same-day deployment."),
                        ]),
         ],
     )
@@ -2009,7 +2009,7 @@ def _build_ch3(course_id):
     return ch
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 def _build_ch4(course_id):
@@ -2020,7 +2020,7 @@ def _build_ch4(course_id):
         "description": "How investors earn returns through capital gains and income, what factors drive those returns, how to measure them using total return and standard deviation, and how to classify the risks every investor faces.",
     }
 
-    # â”€â”€ Module 1: Investment Returns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 1: Investment Returns ──────────────────────────────────────────
     m1_id = _id()
     m1 = {"id": m1_id, "chapter_id": ch_id, "order": 1, "title": "Investment Returns"}
 
@@ -2028,7 +2028,7 @@ def _build_ch4(course_id):
     c1 = _concept(
         m1_id, 1,
         "Types of Investment Returns: Capital Gains and Income",
-        "Identify and distinguish the two primary forms of investment return â€” capital gains and income payments â€” and explain how each is generated.",
+        "Identify and distinguish the two primary forms of investment return — capital gains and income payments — and explain how each is generated.",
         "When you invest, your money can grow in two ways. First, the investment itself can increase in value (capital gain). Second, it can pay you money along the way (income). A bond pays interest coupons. A stock pays dividends. A property pays rent. An insurer like MassMutual earns both: the bonds in its portfolio appreciate AND pay interest, contributing to the spread income that funds policyholder benefits.",
         "Pacific Life buys a $1 million corporate bond at par. Over 5 years it collects $50,000 in annual interest (income return). When interest rates later drop, the bond's market value rises to $1.1 million. If Pacific Life sells, it books a $100,000 capital gain. Total dollar return = $250,000 income + $100,000 capital gain = $350,000.",
         [
@@ -2038,9 +2038,9 @@ def _build_ch4(course_id):
             "Insurance companies prioritize income return (predictable cash flows) over capital gains to match their steady claim obligations.",
         ],
         [
-            "Confusing unrealized and realized gains â€” insurers report both but only collect cash on realized gains.",
+            "Confusing unrealized and realized gains — insurers report both but only collect cash on realized gains.",
             "Forgetting that dividends received by corporations get the Dividends-Received Deduction (DRD), making equity income tax-advantaged.",
-            "Assuming all bonds pay income â€” zero-coupon bonds pay no periodic interest but are bought at a discount and deliver a lump-sum gain at maturity.",
+            "Assuming all bonds pay income — zero-coupon bonds pay no periodic interest but are bought at a discount and deliver a lump-sum gain at maturity.",
         ],
         lessons=[
             _intro("How Does Investing Actually Make You Money?",
@@ -2051,7 +2051,7 @@ def _build_ch4(course_id):
                     "Realized gain = proceeds from sale minus purchase price (cash received).",
                     "For institutions, large unrealized gains in 'available-for-sale' portfolios affect regulatory capital calculations."]),
             _teach("Income Payments: Your Investment Pays You Along the Way",
-                   "Income payments are the periodic cash flows an investment generates while you hold it. Bonds pay interest coupons (e.g., 5% on face value annually). Stocks pay dividends declared by the board. Real estate generates rental income. For insurance companies, income return is critical because they need steady cash to pay policyholder claims â€” they cannot wait to sell assets every time a claim arrives.",
+                   "Income payments are the periodic cash flows an investment generates while you hold it. Bonds pay interest coupons (e.g., 5% on face value annually). Stocks pay dividends declared by the board. Real estate generates rental income. For insurance companies, income return is critical because they need steady cash to pay policyholder claims — they cannot wait to sell assets every time a claim arrives.",
                    ["Bond interest = coupon rate x face value, paid semi-annually for most US bonds.",
                     "Dividends are declared by the board and are NOT guaranteed (unlike bond interest).",
                     "Rental income from real property is the most inflation-resistant income form.",
@@ -2060,14 +2060,14 @@ def _build_ch4(course_id):
                      "In 2018, Pacific Life purchased a $10 million Apple corporate bond with a 4% annual coupon. For three years, Pacific Life collected $400,000 per year in coupon interest ($1.2 million total income). When the Fed cut rates in 2020, Apple's bonds became more valuable; Pacific Life's bond was now worth $10.8 million. Pacific Life sold the bond, realizing an $800,000 capital gain. Total return over three years: $1.2M income + $0.8M capital gain = $2 million on a $10M investment.",
                      "Both income and capital appreciation contribute to total return; the best institutional portfolios capture both."),
             _flash("What is a realized capital gain?",
-                   "The profit earned when an investment is actually sold â€” equal to sale price minus original purchase price. Until sold, the gain is 'unrealized.'"),
+                   "The profit earned when an investment is actually sold — equal to sale price minus original purchase price. Until sold, the gain is 'unrealized.'"),
             _mcq("Which of the following is an example of income return from a bond investment?",
                  ["Capital appreciation when interest rates fall",
                   "Semi-annual coupon payments received from the bond issuer",
                   "The difference between purchase price and par value at maturity",
                   "The increase in the bond's credit rating"],
                  1,
-                 "Coupon payments are periodic cash flows paid by the issuer â€” the definition of income return. Capital appreciation is a separate return component."),
+                 "Coupon payments are periodic cash flows paid by the issuer — the definition of income return. Capital appreciation is a separate return component."),
             _mcq("A life insurer holds a stock with an unrealized gain of $500,000. Which statement is MOST accurate?",
                  ["The insurer has received $500,000 in cash",
                   "The insurer has a paper gain that becomes cash only upon sale",
@@ -2086,7 +2086,7 @@ def _build_ch4(course_id):
                  ["Pure income return via periodic interest payments",
                   "Pure capital gain at maturity when the bond pays $1,000",
                   "Equal parts income and capital gain",
-                  "No return â€” zero-coupon bonds are risk-free instruments with no yield"],
+                  "No return — zero-coupon bonds are risk-free instruments with no yield"],
                  1,
                  "Zero-coupon bonds pay no periodic interest. The entire return is a capital gain (the difference between purchase price $743 and face value $1,000 received at maturity)."),
             _mcq("Which return component benefits most from the Dividends-Received Deduction (DRD) available to corporate investors?",
@@ -2099,11 +2099,11 @@ def _build_ch4(course_id):
             _scenario(
                 "Guardian Life's CIO is reviewing a proposed bond portfolio restructuring. The current portfolio holds bonds with $50M in unrealized gains. The new manager proposes selling all bonds to 'lock in profits' and rotating into higher-yielding bonds.",
                 "What is the PRIMARY risk of selling all bonds to lock in the unrealized gains?",
-                [("Proceed â€” unrealized gains are worthless until locked in", False,
+                [("Proceed — unrealized gains are worthless until locked in", False,
                   "While realizing gains provides cash, it also triggers a taxable event and forces reinvestment at current (potentially lower or more volatile) yields."),
-                 ("Decline â€” selling triggers a taxable gain event and forces reinvestment risk at current market prices", True,
+                 ("Decline — selling triggers a taxable gain event and forces reinvestment risk at current market prices", True,
                   "Correct. Realizing gains triggers corporate taxes on the gain. The proceeds must be reinvested at current rates, which may offer lower risk-adjusted returns than the existing portfolio."),
-                 ("Proceed â€” tax rates on realized gains are zero for insurance companies", False,
+                 ("Proceed — tax rates on realized gains are zero for insurance companies", False,
                   "Insurance companies are subject to corporate tax on realized capital gains, just like other corporations.")]
             ),
         ]
@@ -2114,17 +2114,17 @@ def _build_ch4(course_id):
         m1_id, 2,
         "Factors Influencing Returns: Interest Rates, Inflation, and the Business Cycle",
         "Explain how market interest rates, inflation, and the business cycle affect investment returns, and describe the inverse price-yield relationship for bonds.",
-        "Returns never exist in a vacuum â€” they are constantly reshaped by forces outside the investor's control. When the Federal Reserve raises interest rates, existing bond prices fall. When inflation surges, real returns erode. When the economy enters a recession, stocks tumble and credit defaults rise. A skilled institutional investor anticipates these factors to position the portfolio defensively before they strike â€” not reactively after.",
-        "In 2022, the Federal Reserve raised rates by 4.25% in one year. A $1 billion bond portfolio at Principal Financial Group, holding mostly long-duration bonds, lost about $120 million in market value as rates rose â€” because bond prices move opposite to rates. Meanwhile, inflation of 8% meant that even bonds that paid 4% coupon had negative real returns (-4%). The CIO had to decide: hold through the pain, or reallocate to shorter-duration, inflation-protected securities.",
+        "Returns never exist in a vacuum — they are constantly reshaped by forces outside the investor's control. When the Federal Reserve raises interest rates, existing bond prices fall. When inflation surges, real returns erode. When the economy enters a recession, stocks tumble and credit defaults rise. A skilled institutional investor anticipates these factors to position the portfolio defensively before they strike — not reactively after.",
+        "In 2022, the Federal Reserve raised rates by 4.25% in one year. A $1 billion bond portfolio at Principal Financial Group, holding mostly long-duration bonds, lost about $120 million in market value as rates rose — because bond prices move opposite to rates. Meanwhile, inflation of 8% meant that even bonds that paid 4% coupon had negative real returns (-4%). The CIO had to decide: hold through the pain, or reallocate to shorter-duration, inflation-protected securities.",
         [
-            "Bond price and yield move in opposite directions â€” when rates rise, existing bond prices fall.",
-            "Inflation reduces 'real return' â€” a bond yielding 5% during 8% inflation has a real return of roughly -3%.",
+            "Bond price and yield move in opposite directions — when rates rise, existing bond prices fall.",
+            "Inflation reduces 'real return' — a bond yielding 5% during 8% inflation has a real return of roughly -3%.",
             "The business cycle (expansion, peak, recession, trough) drives equity returns, credit spreads, and asset allocation decisions.",
             "Market interest rates are the single most powerful external factor for fixed-income portfolios.",
         ],
         [
-            "Thinking higher interest rates are always bad â€” they hurt existing bondholders but benefit new investors buying at higher yields.",
-            "Confusing nominal return (stated %) with real return (after inflation) â€” both are key concepts in any finance certification.",
+            "Thinking higher interest rates are always bad — they hurt existing bondholders but benefit new investors buying at higher yields.",
+            "Confusing nominal return (stated %) with real return (after inflation) — both are key concepts in any finance certification.",
             "Ignoring reinvestment risk: when rates fall, coupon payments get reinvested at lower yields, reducing total return.",
         ],
         lessons=[
@@ -2132,18 +2132,18 @@ def _build_ch4(course_id):
                    "Even a perfectly constructed portfolio can underperform if the macro environment shifts. Interest rates, inflation, and the business cycle are forces every institutional investor must understand and anticipate."),
             _teach("The Price-Yield Relationship: Bond Prices and Interest Rates",
                    "There is an iron law in fixed income: when interest rates (yields) rise, existing bond prices fall, and when rates fall, bond prices rise. Here's why: if you hold a bond paying 4% and new bonds now pay 6%, nobody wants your 4% bond unless the price drops enough to make it competitive. The longer the bond's maturity, the bigger the price swing for a given rate change. This sensitivity is measured by 'duration.'",
-                   ["Price-yield relationship is inverse â€” rates up = prices down.",
+                   ["Price-yield relationship is inverse — rates up = prices down.",
                     "Long-duration bonds are more price-sensitive to rate changes than short-duration bonds.",
                     "Duration measures how much a bond's price changes for a 1% change in yield.",
                     "Insurance ALM teams actively manage portfolio duration to control interest rate risk."]),
             _teach("Inflation and the Business Cycle",
-                   "Inflation erodes purchasing power â€” a 5% nominal return during 6% inflation is actually a -1% real return. Real return = Nominal return - Inflation rate (simplified Fisher equation). The business cycle moves through four phases: Expansion (rising GDP, strong earnings, equities outperform), Peak (growth slows, rates high), Recession (GDP falls, credit spreads widen, equities decline, treasuries outperform), and Trough (recovery begins, equities lead). Each phase rewards different asset classes.",
+                   "Inflation erodes purchasing power — a 5% nominal return during 6% inflation is actually a -1% real return. Real return = Nominal return - Inflation rate (simplified Fisher equation). The business cycle moves through four phases: Expansion (rising GDP, strong earnings, equities outperform), Peak (growth slows, rates high), Recession (GDP falls, credit spreads widen, equities decline, treasuries outperform), and Trough (recovery begins, equities lead). Each phase rewards different asset classes.",
                    ["Real Return = Nominal Return - Inflation Rate.",
                     "Expansion: equities and credit outperform. Recession: treasuries and high-grade bonds outperform.",
                     "Inflation above 3-4% significantly erodes fixed-rate bond returns.",
                     "TIPS (Treasury Inflation-Protected Securities) adjust principal with CPI to protect real return."]),
             _example("Principal Financial's 2022 Duration Crisis",
-                     "Principal Financial Group held a $1.2 billion bond portfolio with an average duration of 12 years in early 2022. When the Fed began raising rates â€” 0.25% in March, then 0.50%, then 0.75% â€” four times in one year, Principal's portfolio lost roughly $144 million in market value (12 years x 1% rate rise = ~12% decline per dollar). Meanwhile, CPI hit 8.5%, meaning even Principal's highest-yielding bonds (5%) had negative real returns. Principal's ALM team shortened duration by selling long bonds and buying 3-5 year bonds to limit further damage.",
+                     "Principal Financial Group held a $1.2 billion bond portfolio with an average duration of 12 years in early 2022. When the Fed began raising rates — 0.25% in March, then 0.50%, then 0.75% — four times in one year, Principal's portfolio lost roughly $144 million in market value (12 years x 1% rate rise = ~12% decline per dollar). Meanwhile, CPI hit 8.5%, meaning even Principal's highest-yielding bonds (5%) had negative real returns. Principal's ALM team shortened duration by selling long bonds and buying 3-5 year bonds to limit further damage.",
                      "Duration risk is real and quantifiable; insurers that fail to manage it face significant balance sheet losses when rates rise sharply."),
             _flash("What is the 'real return' on a bond yielding 6% during 4% inflation?",
                    "Approximately 2% (6% nominal minus 4% inflation = 2% real return). Real return measures how much purchasing power your investment actually gained."),
@@ -2168,7 +2168,7 @@ def _build_ch4(course_id):
                   "The portfolio value is unaffected because coupon payments remain the same",
                   "The portfolio value decreases because falling rates signal recession"],
                  1,
-                 "When rates fall, existing bond prices rise (inverse relationship). A 2% rate drop on long-duration bonds (duration ~15 for 20-year bonds) could increase portfolio value by roughly 30% â€” $150M gain."),
+                 "When rates fall, existing bond prices rise (inverse relationship). A 2% rate drop on long-duration bonds (duration ~15 for 20-year bonds) could increase portfolio value by roughly 30% — $150M gain."),
             _mcq("Which of the following BEST protects a bond portfolio against rising inflation?",
                  ["Extending bond duration to capture more interest income",
                   "Allocating to long-term fixed-rate bonds at the current coupon",
@@ -2191,7 +2191,7 @@ def _build_ch4(course_id):
 
     m1["concepts"] = [c1, c2]
 
-    # â”€â”€ Module 2: Risk Measurement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 2: Risk Measurement ────────────────────────────────────────────
     m2_id = _id()
     m2 = {"id": m2_id, "chapter_id": ch_id, "order": 2, "title": "Measuring and Managing Investment Risk"}
 
@@ -2200,22 +2200,22 @@ def _build_ch4(course_id):
         m2_id, 1,
         "Measuring Returns and Volatility: Total Return, Standard Deviation, and the Risk-Return Trade-Off",
         "Calculate and interpret total return, distinguish between arithmetic and geometric mean returns, and use standard deviation to quantify investment risk.",
-        "Measuring returns sounds simple â€” but investors need to be precise. Total return captures everything (income + price change). But returns over multiple periods compound, so the geometric mean (not arithmetic average) tells you how your money actually grew. Risk is measured by how much returns fluctuate â€” standard deviation. A higher standard deviation means more volatile returns. And here is the fundamental trade-off: to earn higher returns, you must accept more risk. No free lunches in investing.",
+        "Measuring returns sounds simple — but investors need to be precise. Total return captures everything (income + price change). But returns over multiple periods compound, so the geometric mean (not arithmetic average) tells you how your money actually grew. Risk is measured by how much returns fluctuate — standard deviation. A higher standard deviation means more volatile returns. And here is the fundamental trade-off: to earn higher returns, you must accept more risk. No free lunches in investing.",
         "From 2000-2019, the S&P 500 had an arithmetic average annual return of 7.5% but a geometric mean return of only 6.1%. Why the gap? The 2001 crash (-9%) and 2008 crash (-38%) destroyed so much value that compounding worked against investors who held through. A $10M portfolio from Nationwide Insurance that earned -38% in 2008 needed to earn +61% in 2009 just to break even. The geometric mean correctly captures this compounding reality.",
         [
             "Total Return = (Income + Price Change) / Beginning Price x 100%.",
             "Arithmetic mean overstates real returns over multiple periods; geometric mean (CAGR) is the correct measure.",
-            "Standard deviation measures how widely returns fluctuate around the average â€” higher std dev = higher risk.",
+            "Standard deviation measures how widely returns fluctuate around the average — higher std dev = higher risk.",
             "The risk-return trade-off: higher expected returns require accepting higher volatility.",
         ],
         [
-            "Using arithmetic average for multi-year performance reporting â€” always use geometric mean (CAGR) for multi-period comparisons.",
-            "Assuming standard deviation fully captures risk â€” it measures volatility but not catastrophic tail events.",
-            "Thinking lower risk always means lower return â€” skill in security selection can improve the risk-return ratio.",
+            "Using arithmetic average for multi-year performance reporting — always use geometric mean (CAGR) for multi-period comparisons.",
+            "Assuming standard deviation fully captures risk — it measures volatility but not catastrophic tail events.",
+            "Thinking lower risk always means lower return — skill in security selection can improve the risk-return ratio.",
         ],
         lessons=[
             _intro("How Do We Actually Measure Investment Performance?",
-                   "Saying 'I earned 10%' sounds simple â€” but 10% of what, over what period, compared to what risk? Professional investors use precise metrics. Let's build the toolkit: total return, geometric mean, and standard deviation."),
+                   "Saying 'I earned 10%' sounds simple — but 10% of what, over what period, compared to what risk? Professional investors use precise metrics. Let's build the toolkit: total return, geometric mean, and standard deviation."),
             _teach("Total Return: The Complete Picture",
                    "Total return captures everything an investment earns: income payments PLUS any change in market value. Formula: Total Return = (Income Received + Ending Value - Beginning Value) / Beginning Value x 100%. Example: buy a bond for $1,000, receive $50 in interest, sell for $1,020. Total return = ($50 + $20) / $1,000 = 7%. This is the gold standard metric because it leaves nothing out.",
                    ["Total return includes both income (coupons, dividends) and price change (capital gain/loss).",
@@ -2223,14 +2223,14 @@ def _build_ch4(course_id):
                     "For multi-year periods, annualize total return using the geometric mean (CAGR).",
                     "Insurers report total returns to regulators, policyholders, and investment committees."]),
             _teach("Standard Deviation and the Risk-Return Trade-Off",
-                   "Standard deviation (sigma) measures how widely an investment's returns fluctuate around its average. If a bond fund averaged 5% returns with a standard deviation of 2%, you'd expect most annual returns to fall between 3% and 7% (within one sigma). An equity fund averaging 10% with a 20% standard deviation could range from -10% to +30% â€” far wider swings. The risk-return trade-off is the fundamental principle: investors demand HIGHER expected returns for accepting HIGHER risk (volatility). No rational investor accepts higher risk for the same expected return.",
+                   "Standard deviation (sigma) measures how widely an investment's returns fluctuate around its average. If a bond fund averaged 5% returns with a standard deviation of 2%, you'd expect most annual returns to fall between 3% and 7% (within one sigma). An equity fund averaging 10% with a 20% standard deviation could range from -10% to +30% — far wider swings. The risk-return trade-off is the fundamental principle: investors demand HIGHER expected returns for accepting HIGHER risk (volatility). No rational investor accepts higher risk for the same expected return.",
                    ["Standard deviation = typical size of annual return fluctuations around the mean.",
                     "Low std dev = stable, predictable returns (government bonds). High std dev = volatile returns (equities).",
                     "Risk-return trade-off: higher risk assets must offer higher expected returns to attract investors.",
-                    "The Sharpe ratio = (Return - Risk-free rate) / Standard deviation â€” measures return per unit of risk."]),
+                    "The Sharpe ratio = (Return - Risk-free rate) / Standard deviation — measures return per unit of risk."]),
             _example("Nationwide's S&P 500 vs. Bond Fund Comparison",
-                     "Nationwide Insurance compared two portfolio options. Option A: S&P 500 index fund â€” 10-year average return 9.8%, standard deviation 18%. Option B: Investment-grade bond fund â€” 10-year average return 4.2%, standard deviation 4%. The S&P fund offered more than double the return but with 4.5x the volatility. During 2008, Option A lost 38% while Option B gained 5.2%. Nationwide's ALM committee decided that given their policyholder liability profile, no more than 30% could be in equities â€” the potential for a 38% loss in any single year would threaten their solvency ratios.",
-                     "Volatility (standard deviation) must be evaluated relative to the institution's liability structure â€” not just versus other investments."),
+                     "Nationwide Insurance compared two portfolio options. Option A: S&P 500 index fund — 10-year average return 9.8%, standard deviation 18%. Option B: Investment-grade bond fund — 10-year average return 4.2%, standard deviation 4%. The S&P fund offered more than double the return but with 4.5x the volatility. During 2008, Option A lost 38% while Option B gained 5.2%. Nationwide's ALM committee decided that given their policyholder liability profile, no more than 30% could be in equities — the potential for a 38% loss in any single year would threaten their solvency ratios.",
+                     "Volatility (standard deviation) must be evaluated relative to the institution's liability structure — not just versus other investments."),
             _flash("What does a standard deviation of 15% mean for an investment averaging 8% returns?",
                    "It means annual returns typically range from roughly -7% to +23% (mean +/- one standard deviation). Approximately 68% of annual returns fall within this range, and 95% fall within two standard deviations (-22% to +38%)."),
             _mcq("An investor buys a stock for $50, collects $2 in dividends, and sells for $54. What is the total return?",
@@ -2247,10 +2247,10 @@ def _build_ch4(course_id):
             _mcq("Investment X has average return 8% with standard deviation 6%. Investment Y has average return 8% with standard deviation 12%. Which should a risk-averse institutional investor prefer?",
                  ["Investment Y, because the higher standard deviation may lead to higher peaks",
                   "Investment X, because it offers the same expected return with half the volatility",
-                  "Neither â€” both have the same return so standard deviation is irrelevant",
+                  "Neither — both have the same return so standard deviation is irrelevant",
                   "Investment Y, because higher volatility always indicates higher quality"],
                  1,
-                 "When expected returns are equal, a risk-averse investor always prefers less volatility. Investment X delivers the same 8% average with half the risk â€” it dominates Investment Y for risk-averse investors."),
+                 "When expected returns are equal, a risk-averse investor always prefers less volatility. Investment X delivers the same 8% average with half the risk — it dominates Investment Y for risk-averse investors."),
             _mcq("What does the risk-return trade-off mean for institutional investors?",
                  ["Higher returns are available by increasing trading frequency",
                   "To earn higher expected returns, investors must accept higher volatility or risk of loss",
@@ -2268,11 +2268,11 @@ def _build_ch4(course_id):
             _scenario(
                 "Lincoln Financial's investment committee reviews two bond managers. Manager A: 10-year average return 6.8%, standard deviation 8%. Manager B: 10-year average return 7.0%, standard deviation 15%. The risk-free rate is 3%.",
                 "Based on risk-adjusted return analysis, which manager should Lincoln Financial prefer?",
-                [("Manager B â€” the 0.2% higher return justifies the extra risk", False,
+                [("Manager B — the 0.2% higher return justifies the extra risk", False,
                   "A 0.2% return improvement with nearly double the volatility is poor risk-adjusted trade-off. Sharpe ratio for B = (7.0-3.0)/15 = 0.27, far below Manager A."),
-                 ("Manager A â€” better Sharpe ratio means more return per unit of risk", True,
+                 ("Manager A — better Sharpe ratio means more return per unit of risk", True,
                   "Correct. Manager A Sharpe = (6.8-3.0)/8 = 0.475. Manager B Sharpe = (7.0-3.0)/15 = 0.267. Manager A delivers significantly more return per unit of risk taken."),
-                 ("Neither â€” Sharpe ratio does not apply to bond managers", False,
+                 ("Neither — Sharpe ratio does not apply to bond managers", False,
                   "Sharpe ratio applies to all investment managers. It is one of the most widely used risk-adjusted performance metrics in institutional investing.")]
             ),
         ]
@@ -2283,77 +2283,77 @@ def _build_ch4(course_id):
         m2_id, 2,
         "Investment Risks: Systematic and Specific Risks",
         "Classify investment risks as systematic (market-wide) or specific (security-level), describe the major risk types in each category, and explain why diversification eliminates specific but not systematic risk.",
-        "Risk is not one thing â€” it is many. When the stock market crashes, ALL stocks tend to fall â€” this is systematic risk you cannot escape by diversification. But when a single company goes bankrupt, only its bondholders suffer â€” this is specific risk you CAN eliminate by holding many securities. Mastering these distinctions is essential for any finance professional. Insurance companies face ALL of these risks and use sophisticated risk management frameworks to control them.",
-        "In 2008, Lehman Brothers' collapse illustrated both risk types simultaneously. Systematic risk: the entire credit market froze, corporate bond prices crashed everywhere â€” no diversification could prevent this. Specific risk: investors who held ONLY Lehman bonds lost 90 cents on the dollar, while those who had diversified across 50 issuers lost only their 2% Lehman allocation. Hartford Financial, which held a diversified bond portfolio of 300+ issuers, survived with losses 80% smaller than those that concentrated in mortgage-backed securities.",
+        "Risk is not one thing — it is many. When the stock market crashes, ALL stocks tend to fall — this is systematic risk you cannot escape by diversification. But when a single company goes bankrupt, only its bondholders suffer — this is specific risk you CAN eliminate by holding many securities. Mastering these distinctions is essential for any finance professional. Insurance companies face ALL of these risks and use sophisticated risk management frameworks to control them.",
+        "In 2008, Lehman Brothers' collapse illustrated both risk types simultaneously. Systematic risk: the entire credit market froze, corporate bond prices crashed everywhere — no diversification could prevent this. Specific risk: investors who held ONLY Lehman bonds lost 90 cents on the dollar, while those who had diversified across 50 issuers lost only their 2% Lehman allocation. Hartford Financial, which held a diversified bond portfolio of 300+ issuers, survived with losses 80% smaller than those that concentrated in mortgage-backed securities.",
         [
-            "Systematic risks affect all investments in a market â€” they CANNOT be eliminated by diversification.",
-            "Specific risks affect individual securities â€” they CAN be reduced through diversification.",
+            "Systematic risks affect all investments in a market — they CANNOT be eliminated by diversification.",
+            "Specific risks affect individual securities — they CAN be reduced through diversification.",
             "Key systematic risks: market risk, interest rate risk, inflation risk, currency risk, political/regulatory risk.",
             "Key specific risks: credit/default risk, liquidity risk, concentration risk, prepayment risk, reinvestment risk.",
         ],
         [
-            "Thinking diversification eliminates ALL risk â€” it eliminates specific risk but not systematic risk.",
+            "Thinking diversification eliminates ALL risk — it eliminates specific risk but not systematic risk.",
             "Confusing interest rate risk (a systematic risk) with credit risk (a specific risk).",
-            "Assuming low-rated bonds always fail â€” they have higher DEFAULT PROBABILITY, not certainty.",
+            "Assuming low-rated bonds always fail — they have higher DEFAULT PROBABILITY, not certainty.",
         ],
         lessons=[
             _intro("The Two Great Categories of Investment Risk",
                    "Some risks strike everything at once. Others strike only one company or sector. Understanding this difference determines how you build a portfolio, how you diversify, and how you protect against catastrophic losses."),
             _teach("Systematic Risks: The Risks You Cannot Escape",
-                   "Systematic risks (also called market risks) affect the entire market or a broad segment of it simultaneously. No amount of diversification eliminates them because when they strike, everything moves together. The major systematic risks are: (1) Market risk â€” overall market declines; (2) Interest rate risk â€” rising rates hurt bond prices universally; (3) Inflation risk â€” rising prices erode ALL fixed-rate investment returns; (4) Currency risk â€” for international investments, exchange rate moves affect all foreign holdings; (5) Political/regulatory risk â€” laws or political instability that affect entire industries or markets.",
+                   "Systematic risks (also called market risks) affect the entire market or a broad segment of it simultaneously. No amount of diversification eliminates them because when they strike, everything moves together. The major systematic risks are: (1) Market risk — overall market declines; (2) Interest rate risk — rising rates hurt bond prices universally; (3) Inflation risk — rising prices erode ALL fixed-rate investment returns; (4) Currency risk — for international investments, exchange rate moves affect all foreign holdings; (5) Political/regulatory risk — laws or political instability that affect entire industries or markets.",
                    ["Market risk: systemic decline in equity or bond markets.",
                     "Interest rate risk: single biggest systematic risk for fixed-income insurers.",
                     "Inflation risk: erodes real return on all fixed-rate investments.",
                     "Currency risk: affects all foreign-currency-denominated investments simultaneously.",
                     "Diversification does NOT eliminate systematic risk."]),
             _teach("Specific Risks: The Risks You Can Manage",
-                   "Specific risks (also called unsystematic or idiosyncratic risks) are tied to a particular company, sector, or security. They can be substantially reduced through diversification. Key specific risks: (1) Credit/Default risk â€” the issuer fails to pay interest or principal; (2) Liquidity risk â€” difficulty selling the investment at fair value quickly; (3) Concentration risk â€” too much exposure to one issuer, sector, or asset class; (4) Prepayment risk â€” mortgages are repaid early when rates fall, reducing expected income; (5) Reinvestment risk â€” cash flows must be reinvested at lower future rates.",
-                   ["Credit risk: the #1 specific risk for bond investors â€” issuer defaults.",
+                   "Specific risks (also called unsystematic or idiosyncratic risks) are tied to a particular company, sector, or security. They can be substantially reduced through diversification. Key specific risks: (1) Credit/Default risk — the issuer fails to pay interest or principal; (2) Liquidity risk — difficulty selling the investment at fair value quickly; (3) Concentration risk — too much exposure to one issuer, sector, or asset class; (4) Prepayment risk — mortgages are repaid early when rates fall, reducing expected income; (5) Reinvestment risk — cash flows must be reinvested at lower future rates.",
+                   ["Credit risk: the #1 specific risk for bond investors — issuer defaults.",
                     "Liquidity risk: some assets (private equity, real estate) cannot be sold quickly.",
                     "Concentration risk: violates the principle of diversification.",
-                    "Prepayment risk: specific to mortgage-backed securities â€” borrowers refinance in falling rate environments."]),
+                    "Prepayment risk: specific to mortgage-backed securities — borrowers refinance in falling rate environments."]),
             _example("Hartford Financial's 2008 Stress Test: Diversification Saves the Day",
-                     "In 2008, Hartford Financial Services held a $28 billion bond portfolio. Hartford's risk committee had enforced a strict rule: no single issuer could exceed 1.5% of the portfolio. When Lehman Brothers filed for bankruptcy in September 2008, Hartford's Lehman exposure was $420 million (1.5%) â€” painful but survivable. AIG's near-collapse similarly cost Hartford $315 million in AIG bonds. Total specific losses: ~$750 million. However, the systematic interest rate and credit spread widening cost Hartford approximately $3.2 billion in mark-to-market losses on the entire portfolio â€” proving that diversification handled specific risk but could not touch systematic risk.",
+                     "In 2008, Hartford Financial Services held a $28 billion bond portfolio. Hartford's risk committee had enforced a strict rule: no single issuer could exceed 1.5% of the portfolio. When Lehman Brothers filed for bankruptcy in September 2008, Hartford's Lehman exposure was $420 million (1.5%) — painful but survivable. AIG's near-collapse similarly cost Hartford $315 million in AIG bonds. Total specific losses: ~$750 million. However, the systematic interest rate and credit spread widening cost Hartford approximately $3.2 billion in mark-to-market losses on the entire portfolio — proving that diversification handled specific risk but could not touch systematic risk.",
                      "Diversification eliminates specific risk (Lehman, AIG concentration) but systematic risk (credit market freeze) was unavoidable for ALL fixed-income investors."),
             _flash("What is the difference between systematic and specific risk?",
-                   "Systematic risk affects all investments in a market (cannot be diversified away â€” e.g., interest rate risk, inflation). Specific risk affects individual securities (CAN be reduced by diversification â€” e.g., credit risk, liquidity risk)."),
+                   "Systematic risk affects all investments in a market (cannot be diversified away — e.g., interest rate risk, inflation). Specific risk affects individual securities (CAN be reduced by diversification — e.g., credit risk, liquidity risk)."),
             _mcq("Which of the following is a SYSTEMATIC risk?",
                  ["A corporate bond issuer defaults on its interest payments",
                   "A real estate investment becomes illiquid and cannot be sold",
                   "Rising interest rates cause all existing bond prices to fall",
                   "An individual company's earnings decline due to poor management"],
                  2,
-                 "Rising interest rates affect ALL bond prices simultaneously â€” this is a market-wide (systematic) risk that no diversification can eliminate. The other options are specific risks affecting individual issuers or assets."),
+                 "Rising interest rates affect ALL bond prices simultaneously — this is a market-wide (systematic) risk that no diversification can eliminate. The other options are specific risks affecting individual issuers or assets."),
             _mcq("An insurer holds 100 different corporate bonds across 20 industries. Which risk is MOST reduced by this diversification?",
                  ["Interest rate risk", "Inflation risk", "Credit/default risk", "Market risk"],
                  2,
-                 "Credit/default risk is a specific risk â€” if one issuer defaults, the loss is isolated to that bond. Holding 100 different issuers across 20 industries substantially reduces this specific risk. Interest rate, inflation, and market risk are systematic and cannot be diversified away."),
+                 "Credit/default risk is a specific risk — if one issuer defaults, the loss is isolated to that bond. Holding 100 different issuers across 20 industries substantially reduces this specific risk. Interest rate, inflation, and market risk are systematic and cannot be diversified away."),
             _mcq("Prepayment risk is MOST relevant to which type of investment?",
                  ["Corporate bonds with fixed coupons",
                   "Common equity with variable dividends",
                   "Mortgage-backed securities where underlying borrowers may repay early",
                   "Treasury bills with 90-day maturities"],
                  2,
-                 "Prepayment risk is the risk that mortgage borrowers will repay their loans early (refinancing when rates fall). This collapses MBS cash flows and forces reinvestment at lower rates â€” a specific risk unique to mortgage-related instruments."),
+                 "Prepayment risk is the risk that mortgage borrowers will repay their loans early (refinancing when rates fall). This collapses MBS cash flows and forces reinvestment at lower rates — a specific risk unique to mortgage-related instruments."),
             _mcq("An insurance company holds 40% of its bond portfolio in bonds from one issuer. Which risk is MOST elevated?",
                  ["Inflation risk", "Concentration risk", "Interest rate risk", "Market risk"],
                  1,
-                 "Concentration risk â€” having 40% in one issuer â€” creates massive specific risk exposure. If that issuer defaults or is downgraded, the portfolio suffers a catastrophic, avoidable loss. Regulatory guidelines typically limit single-issuer exposure to 2-5%."),
+                 "Concentration risk — having 40% in one issuer — creates massive specific risk exposure. If that issuer defaults or is downgraded, the portfolio suffers a catastrophic, avoidable loss. Regulatory guidelines typically limit single-issuer exposure to 2-5%."),
             _mcq("Which statement BEST describes how diversification affects systematic vs. specific risk?",
                  ["Diversification eliminates both systematic and specific risk equally",
                   "Diversification cannot reduce any type of investment risk",
                   "Diversification reduces specific risk but has no effect on systematic risk",
                   "Diversification eliminates systematic risk but worsens specific risk"],
                  2,
-                 "Diversification across many securities reduces specific risk because individual company events offset each other. Systematic risk (market-wide events) affects all securities simultaneously â€” diversification is powerless against it."),
+                 "Diversification across many securities reduces specific risk because individual company events offset each other. Systematic risk (market-wide events) affects all securities simultaneously — diversification is powerless against it."),
             _scenario(
-                "Protective Life's fixed-income portfolio manager is concerned about two separate risks: (1) The Federal Reserve may raise interest rates by 2% next quarter. (2) Three of the insurer's holdings â€” small regional bank bonds â€” are showing signs of potential credit deterioration.",
+                "Protective Life's fixed-income portfolio manager is concerned about two separate risks: (1) The Federal Reserve may raise interest rates by 2% next quarter. (2) Three of the insurer's holdings — small regional bank bonds — are showing signs of potential credit deterioration.",
                 "Which risk management strategy addresses each concern appropriately?",
                 [("Diversify into more bonds to reduce interest rate risk; sell the bank bonds to reduce systematic risk", False,
                   "Interest rate risk is systematic and cannot be diversified away. Credit risk is specific and CAN be managed by selling or reducing the troubled positions."),
                  ("Shorten portfolio duration to reduce interest rate risk; diversify away from the three bank bonds to reduce credit risk", True,
-                  "Correct. Shortening duration limits price sensitivity to rate increases (systematic risk management). Reducing concentration in the troubled bank bonds manages specific credit risk â€” precisely the right tools for each risk type."),
-                 ("Hold all positions â€” both risks will eventually reverse themselves", False,
+                  "Correct. Shortening duration limits price sensitivity to rate increases (systematic risk management). Reducing concentration in the troubled bank bonds manages specific credit risk — precisely the right tools for each risk type."),
+                 ("Hold all positions — both risks will eventually reverse themselves", False,
                   "Passivity in the face of identified, manageable risks is not sound risk management. Both risks are real, foreseeable, and require active mitigation.")]
             ),
         ]
@@ -2374,7 +2374,7 @@ def _build_ch5(course_id):
         "description": "How insurance companies set investment goals (return, solvency, liquidity), the constraints they operate under (regulatory capital, rating requirements), what goes into an Investment Policy Statement, and how asset allocation decisions are made.",
     }
 
-    # â”€â”€ Module 1: Investment Goals and IPS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 1: Investment Goals and IPS ───────────────────────────────────
     m1_id = _id()
     m1 = {"id": m1_id, "chapter_id": ch_id, "order": 1,
           "title": "Investment Objectives and Policy Statements"}
@@ -2383,23 +2383,23 @@ def _build_ch5(course_id):
     c1 = _concept(
         m1_id, 1,
         "Basic Investment Goals: Return, Solvency, and Liquidity",
-        "Identify the three fundamental investment goals of institutional investors â€” earning investment income, maintaining solvency, and ensuring liquidity â€” and explain how they interact and sometimes conflict.",
-        "Every institutional investment portfolio begins with three non-negotiable goals. First, earn investment income to generate the spread that funds the business. Second, maintain solvency â€” assets must always exceed liabilities so policyholders can be paid. Third, ensure liquidity â€” cash must be available to pay claims when they arise. These three goals often pull in different directions. The highest-yielding investment might be illiquid. The most liquid investment might earn almost nothing. The art of institutional investment management is finding the optimal balance.",
+        "Identify the three fundamental investment goals of institutional investors — earning investment income, maintaining solvency, and ensuring liquidity — and explain how they interact and sometimes conflict.",
+        "Every institutional investment portfolio begins with three non-negotiable goals. First, earn investment income to generate the spread that funds the business. Second, maintain solvency — assets must always exceed liabilities so policyholders can be paid. Third, ensure liquidity — cash must be available to pay claims when they arise. These three goals often pull in different directions. The highest-yielding investment might be illiquid. The most liquid investment might earn almost nothing. The art of institutional investment management is finding the optimal balance.",
         "Northwestern Mutual, one of the largest US life insurers, manages $290 billion in assets with these three goals in mind simultaneously. To earn income, it holds long-duration corporate bonds yielding 5-6%. To maintain solvency, it keeps its Risk-Based Capital (RBC) ratio above 400% of the regulatory minimum. To ensure liquidity, it holds 5% in money market instruments that can be converted to cash within 48 hours to pay any surge in claims. When Hurricane Katrina struck in 2005, Northwestern's liquidity buffer allowed it to pay $500M in claims within 72 hours without selling any long-term holdings.",
         [
             "Three fundamental goals: investment income (spread), solvency (assets > liabilities), liquidity (cash for claims).",
-            "Solvency is non-negotiable â€” insurer must meet liabilities even in stress scenarios.",
+            "Solvency is non-negotiable — insurer must meet liabilities even in stress scenarios.",
             "Liquidity requirement is driven by liability structure: term life claims are unpredictable; annuities are more predictable.",
-            "Higher yield typically means lower liquidity and/or higher credit risk â€” goals tension must be actively managed.",
+            "Higher yield typically means lower liquidity and/or higher credit risk — goals tension must be actively managed.",
         ],
         [
-            "Thinking all three goals can be maximized simultaneously â€” in practice, they trade off against each other.",
+            "Thinking all three goals can be maximized simultaneously — in practice, they trade off against each other.",
             "Confusing solvency (assets > liabilities on balance sheet) with liquidity (having cash for immediate payments).",
-            "Assuming investment income is always the top priority â€” solvency constraints come first for regulated insurers.",
+            "Assuming investment income is always the top priority — solvency constraints come first for regulated insurers.",
         ],
         lessons=[
             _intro("What Is an Insurance Company Actually Trying to Achieve with Its Investments?",
-                   "An insurer isn't just trying to earn the highest return. It has three competing goals that define every investment decision â€” and the balance between them is what separates great investment managers from mediocre ones."),
+                   "An insurer isn't just trying to earn the highest return. It has three competing goals that define every investment decision — and the balance between them is what separates great investment managers from mediocre ones."),
             _teach("Goal 1: Earning Investment Income",
                    "Insurance companies collect premiums upfront and pay claims later. The time gap between collecting premiums and paying claims creates an opportunity: those funds can be invested to earn returns. This 'spread' income is critical to profitability. A life insurer that guarantees 3% on whole life policies must earn at least 3.5-4% on its investment portfolio to cover expenses and generate profit. Investment income is the engine of insurance company profitability.",
                    ["Investment income = the return earned on policyholder premiums between collection and claim payment.",
@@ -2407,13 +2407,13 @@ def _build_ch5(course_id):
                     "Life insurers with long-duration liabilities (30-year policies) can invest in longer-duration, higher-yielding assets.",
                     "P&C insurers with short-duration liabilities must hold more liquid, shorter-duration assets."]),
             _teach("Goals 2 and 3: Solvency and Liquidity",
-                   "Solvency means assets exceed liabilities at all times â€” an insurer cannot pay claims if it becomes insolvent. Regulators require minimum capital levels (Risk-Based Capital, or RBC) to ensure solvency. Liquidity means having enough cash or near-cash assets to pay claims as they arise. These two goals constrain investment income: to maintain solvency, insurers limit risky assets (equities, junk bonds); to maintain liquidity, they hold low-yielding cash and short-term instruments. The tradeoff: more solvency protection and liquidity = less yield.",
+                   "Solvency means assets exceed liabilities at all times — an insurer cannot pay claims if it becomes insolvent. Regulators require minimum capital levels (Risk-Based Capital, or RBC) to ensure solvency. Liquidity means having enough cash or near-cash assets to pay claims as they arise. These two goals constrain investment income: to maintain solvency, insurers limit risky assets (equities, junk bonds); to maintain liquidity, they hold low-yielding cash and short-term instruments. The tradeoff: more solvency protection and liquidity = less yield.",
                    ["Solvency: total assets must exceed total liabilities (policyholder reserves + debt + other obligations).",
                     "Regulatory capital (RBC) requirements limit how much risk an insurer can take.",
                     "Liquidity: cash needed to pay near-term claims without forcing asset sales at bad prices.",
                     "Liquidity stress: if a natural disaster triggers 1,000 simultaneous claims, can the insurer pay without fire sales?"]),
             _example("Northwestern Mutual's Katrina Test",
-                     "When Hurricane Katrina devastated New Orleans in August 2005, Northwestern Mutual faced an unprecedented surge in claims. In the first week after Katrina, Northwestern received $318 million in homeowners and life insurance claims â€” double the average weekly claim volume. Northwestern's CIO had maintained a 5% liquidity reserve ($14.5 billion total assets at the time), equivalent to $725 million in T-bills and money market funds. This buffer was drawn down to $480 million as claims were paid â€” without selling a single long-term bond. By month's end, the reserve was rebuilt through premium inflows. Solvency ratio remained at 420% RBC throughout the event.",
+                     "When Hurricane Katrina devastated New Orleans in August 2005, Northwestern Mutual faced an unprecedented surge in claims. In the first week after Katrina, Northwestern received $318 million in homeowners and life insurance claims — double the average weekly claim volume. Northwestern's CIO had maintained a 5% liquidity reserve ($14.5 billion total assets at the time), equivalent to $725 million in T-bills and money market funds. This buffer was drawn down to $480 million as claims were paid — without selling a single long-term bond. By month's end, the reserve was rebuilt through premium inflows. Solvency ratio remained at 420% RBC throughout the event.",
                      "Adequate liquidity reserves allow insurers to honor claims without distress selling, protecting both policyholders and the investment portfolio's long-term return."),
             _flash("What is the 'spread' in insurance investment management?",
                    "The spread is the difference between the return earned on investments and the interest rate guaranteed or credited to policyholders. A positive spread is the source of insurance company investment profit."),
@@ -2449,11 +2449,11 @@ def _build_ch5(course_id):
             _scenario(
                 "Allstate's CIO is reviewing the portfolio: current yield is 4.8% and the 5-year T-bill rate is 4.2%. The CIO proposes shifting 20% of the portfolio from T-bills into 30-year BBB corporate bonds yielding 6.5% to increase investment income. Allstate writes primarily homeowners and auto insurance with 12-month policy terms.",
                 "What is the MOST significant concern with this proposal?",
-                [("The proposal is ideal â€” higher yield always improves the spread", False,
+                [("The proposal is ideal — higher yield always improves the spread", False,
                   "Higher yield comes with higher risk. The specific concern here is duration mismatch: Allstate has 12-month liabilities but would hold 30-year bonds."),
                  ("The 30-year bonds create a severe duration and liquidity mismatch with Allstate's short-term P&C liabilities", True,
                   "Correct. Allstate's P&C claims are short-term. Holding 30-year BBB bonds is both illiquid (hard to sell in a claims surge) and exposes the portfolio to enormous interest rate risk over a 30-year horizon that doesn't match Allstate's business model."),
-                 ("BBB bonds are too high-quality for a P&C insurer â€” junk bonds would earn more", False,
+                 ("BBB bonds are too high-quality for a P&C insurer — junk bonds would earn more", False,
                   "BBB bonds are investment-grade and appropriate quality-wise. The issue is duration and liquidity mismatch with short-term P&C liabilities, not credit quality.")]
             ),
         ]
@@ -2464,7 +2464,7 @@ def _build_ch5(course_id):
         m1_id, 2,
         "Investment Policy Statements and Asset Allocation",
         "Describe the purpose and key components of an Investment Policy Statement (IPS), and explain how strategic asset allocation is determined for institutional portfolios.",
-        "An Investment Policy Statement (IPS) is the master governing document for an investment portfolio. It defines who can invest what, in what amounts, under what rules, and how performance will be measured. Without an IPS, portfolio managers have no guidelines and boards have no governance. Asset allocation â€” how much goes into equities, bonds, real estate, and alternatives â€” is the single most important investment decision, responsible for over 90% of long-run portfolio returns according to research by Brinson, Hood, and Beebower.",
+        "An Investment Policy Statement (IPS) is the master governing document for an investment portfolio. It defines who can invest what, in what amounts, under what rules, and how performance will be measured. Without an IPS, portfolio managers have no guidelines and boards have no governance. Asset allocation — how much goes into equities, bonds, real estate, and alternatives — is the single most important investment decision, responsible for over 90% of long-run portfolio returns according to research by Brinson, Hood, and Beebower.",
         "The California Public Employees' Retirement System (CalPERS) manages $460 billion with a comprehensive IPS. Its Strategic Asset Allocation targets: 42% global equities, 28% fixed income, 15% private equity, 10% real assets, 5% inflation-sensitive. Each allocation has a benchmark, a policy range (e.g., fixed income: 24-32%), and a review trigger if weights deviate more than 3% from target. Every investment decision made by CalPERS's 200+ investment professionals must conform to this IPS. Boards review the IPS annually and must vote to change any policy allocation.",
         [
             "The IPS is the governing document defining investment objectives, constraints, and allowed activities.",
@@ -2473,28 +2473,28 @@ def _build_ch5(course_id):
             "Performance measurement: each asset class has a benchmark (e.g., S&P 500 for US equities).",
         ],
         [
-            "Thinking the IPS is just administrative paperwork â€” it is the highest-level governance document for institutional investing.",
+            "Thinking the IPS is just administrative paperwork — it is the highest-level governance document for institutional investing.",
             "Confusing strategic asset allocation (long-term target mix) with tactical asset allocation (short-term tilts).",
-            "Assuming all insurers have the same IPS â€” it must be customized to each institution's liabilities, risk tolerance, and regulatory context.",
+            "Assuming all insurers have the same IPS — it must be customized to each institution's liabilities, risk tolerance, and regulatory context.",
         ],
         lessons=[
             _intro("The Master Blueprint: What Is an Investment Policy Statement?",
-                   "Imagine building a skyscraper without blueprints. Every institutional investment portfolio needs its equivalent â€” an Investment Policy Statement that defines what the portfolio is for, what it can invest in, and how it will be measured."),
+                   "Imagine building a skyscraper without blueprints. Every institutional investment portfolio needs its equivalent — an Investment Policy Statement that defines what the portfolio is for, what it can invest in, and how it will be measured."),
             _teach("Investment Policy Statement: Components and Purpose",
-                   "An IPS is a formal written document that establishes the framework for all investment decisions. Its key components are: (1) Portfolio Objectives â€” target return, risk tolerance; (2) Investment Constraints â€” what cannot be held, maximum exposures; (3) Strategic Asset Allocation â€” target percentages in each asset class with policy ranges; (4) Performance Benchmarks â€” what each asset class is measured against; (5) Rebalancing Guidelines â€” when/how to return to target weights; (6) Governance â€” who approves what decisions. The IPS is approved by the board and reviewed at least annually.",
+                   "An IPS is a formal written document that establishes the framework for all investment decisions. Its key components are: (1) Portfolio Objectives — target return, risk tolerance; (2) Investment Constraints — what cannot be held, maximum exposures; (3) Strategic Asset Allocation — target percentages in each asset class with policy ranges; (4) Performance Benchmarks — what each asset class is measured against; (5) Rebalancing Guidelines — when/how to return to target weights; (6) Governance — who approves what decisions. The IPS is approved by the board and reviewed at least annually.",
                    ["IPS is a board-level governance document, not day-to-day management guidance.",
                     "Target return should be net of fees and aligned with liability obligations.",
                     "Policy ranges (e.g., equities 35-45%) allow flexibility without constant board approval.",
                     "Benchmarks enable performance attribution: did the manager add value versus the index?"]),
             _teach("Strategic Asset Allocation: The Most Important Decision",
-                   "Strategic asset allocation (SAA) determines the long-term target percentage of the portfolio in each asset class (e.g., 40% bonds, 35% equities, 15% real estate, 10% alternatives). Research shows SAA accounts for over 90% of a portfolio's long-run return variation. SAA is set based on the institution's return requirements, risk tolerance, liability profile, and time horizon. It changes rarely â€” only when the institution's fundamental situation changes. Tactical asset allocation (TAA) is the short-term deviation from SAA to exploit market opportunities.",
-                   ["SAA is the long-term target mix â€” rarely changes.",
+                   "Strategic asset allocation (SAA) determines the long-term target percentage of the portfolio in each asset class (e.g., 40% bonds, 35% equities, 15% real estate, 10% alternatives). Research shows SAA accounts for over 90% of a portfolio's long-run return variation. SAA is set based on the institution's return requirements, risk tolerance, liability profile, and time horizon. It changes rarely — only when the institution's fundamental situation changes. Tactical asset allocation (TAA) is the short-term deviation from SAA to exploit market opportunities.",
+                   ["SAA is the long-term target mix — rarely changes.",
                     "TAA is short-term deviation from SAA within the IPS policy ranges.",
                     "SAA determines over 90% of long-run portfolio returns (Brinson, Hood, Beebower 1986/1991).",
                     "Rebalancing restores portfolio to SAA when market movements cause drift."]),
             _example("CalPERS Strategic Asset Allocation in Practice",
                      "CalPERS, managing $460 billion for California public employees, sets its SAA in a 4-year Asset-Liability Management study. The 2022 study concluded: given that benefits payments will grow 4.5% annually, CalPERS needs a 7% net return assumption. To achieve 7%: 42% global equities (expected return 9.5%), 28% fixed income (4.5%), 15% private equity (11%), 10% real assets (7%), 5% inflation-sensitive (6%). Each asset class has a 3-percentage-point policy range. If equities surge to 50% of the portfolio, the team rebalances back toward 42% by selling equities and buying other asset classes.",
-                     "SAA is not a guess â€” it is derived from liability requirements, return assumptions for each asset class, and long-term risk tolerance of the institution."),
+                     "SAA is not a guess — it is derived from liability requirements, return assumptions for each asset class, and long-term risk tolerance of the institution."),
             _flash("What is the difference between strategic and tactical asset allocation?",
                    "Strategic asset allocation (SAA) is the long-term target mix (e.g., 40% bonds, 35% equities) set by the IPS. Tactical asset allocation (TAA) is a short-term deviation from SAA (within IPS ranges) to exploit market opportunities, then reverting back."),
             _mcq("Which of the following is the PRIMARY purpose of an Investment Policy Statement?",
@@ -2503,13 +2503,13 @@ def _build_ch5(course_id):
                   "To guarantee minimum portfolio returns to stakeholders",
                   "To replace the need for professional investment managers"],
                  1,
-                 "The IPS is a governance framework document. It sets objectives, constraints, and allocation guidelines â€” but does NOT specify individual securities or guarantee returns. Investment managers operate within the IPS boundaries."),
+                 "The IPS is a governance framework document. It sets objectives, constraints, and allocation guidelines — but does NOT specify individual securities or guarantee returns. Investment managers operate within the IPS boundaries."),
             _mcq("Research by Brinson, Hood, and Beebower found that strategic asset allocation explains what percentage of long-run portfolio return variation?",
                  ["About 25%", "About 50%", "More than 90%", "Exactly 100%"],
                  2,
                  "The landmark Brinson, Hood, and Beebower studies found that strategic asset allocation policy explains more than 90% of the variation in long-run portfolio returns. Individual security selection and market timing account for less than 10% combined."),
             _mcq("An insurance company's IPS specifies that equity investments must remain between 20% and 30% of the portfolio. Currently equities have risen to 34%. What action is required?",
-                 ["No action â€” the IPS is a guideline, not a binding rule",
+                 ["No action — the IPS is a guideline, not a binding rule",
                   "Immediately liquidate all equity positions",
                   "Rebalance by selling equities until the allocation returns within the 20-30% policy range",
                   "Increase the policy range to 20-40% to accommodate the current allocation"],
@@ -2544,7 +2544,7 @@ def _build_ch5(course_id):
 
     m1["concepts"] = [c1, c2]
 
-    # â”€â”€ Module 2: Life Insurer Constraints â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 2: Life Insurer Constraints ───────────────────────────────────
     m2_id = _id()
     m2 = {"id": m2_id, "chapter_id": ch_id, "order": 2,
           "title": "Investment Constraints for Life Insurers"}
@@ -2553,9 +2553,9 @@ def _build_ch5(course_id):
     c3 = _concept(
         m2_id, 1,
         "Investment Objectives for Life Insurers: Income, Risk-Adjusted Returns, and Solvency",
-        "Describe the specific investment objectives of life insurers â€” investment income adequacy, risk-adjusted return targets, solvency maintenance, and supporting liquidity â€” and explain why each is prioritized.",
-        "Life insurance investment management is not about maximum returns â€” it is about surviving and thriving over a 30-50 year horizon while honoring every policyholder commitment. This means: earning enough investment income to cover guaranteed credited rates plus expenses, generating risk-adjusted (not absolute) returns, maintaining solvency ratios well above regulatory minimums, and keeping enough liquid assets to handle any conceivable claims scenario. Each objective feeds into the others â€” fail any one and the entire enterprise is at risk.",
-        "MetLife, with $450 billion in general account assets, publishes specific investment objectives in its IPS: (1) Earn investment income to achieve a 1.5% net spread after credited rates; (2) Maintain risk-adjusted return above 7.5% on invested assets; (3) Keep RBC ratio above 400% (regulatory minimum is 200%); (4) Hold 8% of assets in cash/liquid instruments at all times. In 2020, when COVID caused a credit market disruption, MetLife's 400% RBC target proved critical â€” they absorbed $1.8 billion in credit losses without breaching solvency thresholds.",
+        "Describe the specific investment objectives of life insurers — investment income adequacy, risk-adjusted return targets, solvency maintenance, and supporting liquidity — and explain why each is prioritized.",
+        "Life insurance investment management is not about maximum returns — it is about surviving and thriving over a 30-50 year horizon while honoring every policyholder commitment. This means: earning enough investment income to cover guaranteed credited rates plus expenses, generating risk-adjusted (not absolute) returns, maintaining solvency ratios well above regulatory minimums, and keeping enough liquid assets to handle any conceivable claims scenario. Each objective feeds into the others — fail any one and the entire enterprise is at risk.",
+        "MetLife, with $450 billion in general account assets, publishes specific investment objectives in its IPS: (1) Earn investment income to achieve a 1.5% net spread after credited rates; (2) Maintain risk-adjusted return above 7.5% on invested assets; (3) Keep RBC ratio above 400% (regulatory minimum is 200%); (4) Hold 8% of assets in cash/liquid instruments at all times. In 2020, when COVID caused a credit market disruption, MetLife's 400% RBC target proved critical — they absorbed $1.8 billion in credit losses without breaching solvency thresholds.",
         [
             "Life insurer primary objective: earn investment income exceeding the guaranteed credited rate to policyholders.",
             "Risk-adjusted return (Sharpe ratio or return per unit of risk) is more important than raw return.",
@@ -2563,41 +2563,41 @@ def _build_ch5(course_id):
             "Liquidity objective: sufficient cash reserves to pay claims without forced asset sales.",
         ],
         [
-            "Confusing total return with investment income â€” life insurers primarily need cash income (coupons, dividends) not just mark-to-market appreciation.",
-            "Thinking solvency and liquidity are the same â€” solvency is a balance sheet concept; liquidity is a cash flow concept.",
-            "Assuming the investment income objective is fixed â€” it changes as the insurer writes new business with different credited rates.",
+            "Confusing total return with investment income — life insurers primarily need cash income (coupons, dividends) not just mark-to-market appreciation.",
+            "Thinking solvency and liquidity are the same — solvency is a balance sheet concept; liquidity is a cash flow concept.",
+            "Assuming the investment income objective is fixed — it changes as the insurer writes new business with different credited rates.",
         ],
         lessons=[
             _intro("Life Insurance Investing: A 50-Year Business Requiring Precision",
-                   "When someone buys a whole life policy at age 30, their insurer makes a promise to pay a death benefit in perhaps 50 years. Managing investments to honor that promise â€” while earning a spread to stay profitable â€” demands extraordinary discipline and clear objectives."),
+                   "When someone buys a whole life policy at age 30, their insurer makes a promise to pay a death benefit in perhaps 50 years. Managing investments to honor that promise — while earning a spread to stay profitable — demands extraordinary discipline and clear objectives."),
             _teach("Investment Income Objective: The Spread Must Be Positive",
-                   "A life insurer's most fundamental investment objective is earning enough income to cover its cost of funds. The 'cost of funds' is the interest rate guaranteed or credited to policyholders. If policyholders are credited 3.5% and the insurer earns 5%, the spread is 1.5% â€” the source of profit. If interest rates fall and the portfolio now only earns 3%, but policyholders are still guaranteed 3.5%, the spread is -0.5% â€” the insurer is losing money on every policy. This is why life insurers invest heavily in long-duration bonds that lock in yields matching their long-term obligations.",
+                   "A life insurer's most fundamental investment objective is earning enough income to cover its cost of funds. The 'cost of funds' is the interest rate guaranteed or credited to policyholders. If policyholders are credited 3.5% and the insurer earns 5%, the spread is 1.5% — the source of profit. If interest rates fall and the portfolio now only earns 3%, but policyholders are still guaranteed 3.5%, the spread is -0.5% — the insurer is losing money on every policy. This is why life insurers invest heavily in long-duration bonds that lock in yields matching their long-term obligations.",
                    ["Investment income objective: earn a positive spread above the credited/guaranteed rate.",
                     "Spread = investment income yield - credited rate - operating expenses.",
                     "Negative spread (earned less than credited) is financially destructive for a life insurer.",
                     "Long-duration bonds lock in yields over the same horizon as long-term life policies."]),
             _teach("Risk-Adjusted Returns, Solvency, and Liquidity Objectives",
-                   "Beyond income, life insurers target risk-adjusted returns â€” maximizing return per unit of risk taken. They use metrics like the Sharpe ratio and return on risk-adjusted capital (RORAC) to evaluate investment decisions. Solvency objectives translate to maintaining RBC ratios well above regulatory minimums â€” most life insurers target 350-450% of the 200% minimum. Liquidity objectives are quantified as a percentage of assets that must be held in cash or instruments convertible to cash within 5 business days without significant price concession.",
+                   "Beyond income, life insurers target risk-adjusted returns — maximizing return per unit of risk taken. They use metrics like the Sharpe ratio and return on risk-adjusted capital (RORAC) to evaluate investment decisions. Solvency objectives translate to maintaining RBC ratios well above regulatory minimums — most life insurers target 350-450% of the 200% minimum. Liquidity objectives are quantified as a percentage of assets that must be held in cash or instruments convertible to cash within 5 business days without significant price concession.",
                    ["Risk-adjusted return = return earned per unit of risk; prevents chasing yield without risk awareness.",
                     "RBC ratio target: 350-450% vs. regulatory minimum of 200%.",
                     "Liquidity reserve: typically 5-10% of general account assets in highly liquid instruments.",
                     "Liquidity stress testing: can the insurer survive a 10x normal claim week without forced selling?"]),
             _example("MetLife's COVID-19 Solvency Test",
-                     "In March 2020, COVID-19 triggered a credit market dislocation. Corporate bond spreads widened 300 basis points in three weeks, causing mark-to-market losses across all corporate bond portfolios. MetLife's $450 billion general account held 55% in investment-grade corporate bonds. The spread widening caused roughly $22 billion in unrealized mark-to-market losses. MetLife's RBC ratio, which had stood at 418% in December 2019, fell to 385% by March 2020 â€” still well above MetLife's internal 350% target. Because MetLife had maintained its solvency buffer, it had the luxury of holding positions through the crisis. By December 2020, spreads recovered and the portfolio had fully recovered its value.",
+                     "In March 2020, COVID-19 triggered a credit market dislocation. Corporate bond spreads widened 300 basis points in three weeks, causing mark-to-market losses across all corporate bond portfolios. MetLife's $450 billion general account held 55% in investment-grade corporate bonds. The spread widening caused roughly $22 billion in unrealized mark-to-market losses. MetLife's RBC ratio, which had stood at 418% in December 2019, fell to 385% by March 2020 — still well above MetLife's internal 350% target. Because MetLife had maintained its solvency buffer, it had the luxury of holding positions through the crisis. By December 2020, spreads recovered and the portfolio had fully recovered its value.",
                      "Maintaining RBC ratios well above regulatory minimums creates the 'staying power' to hold through credit dislocations without being forced to crystallize losses."),
             _flash("What is Risk-Based Capital (RBC) ratio and why do insurers target above 300%?",
                    "RBC ratio = actual capital / risk-weighted minimum capital required by regulators. Minimum is 200%; below 150% triggers regulatory takeover. Insurers target 350-450% to create a buffer absorbing unexpected losses (credit events, catastrophes) without triggering regulatory action."),
             _mcq("A life insurer's portfolio earns 4.8%. It guarantees policyholders a 4.0% credited rate and has 0.5% operating expenses. What is the net investment spread?",
                  ["4.8%", "0.8%", "0.3%", "4.3%"],
                  2,
-                 "Net spread = Investment income - Credited rate - Expenses = 4.8% - 4.0% - 0.5% = 0.3%. This thin spread means the insurer earns only 0.3 cents of profit per dollar of policy in force â€” a very slim margin that illustrates why interest rate management is critical."),
+                 "Net spread = Investment income - Credited rate - Expenses = 4.8% - 4.0% - 0.5% = 0.3%. This thin spread means the insurer earns only 0.3 cents of profit per dollar of policy in force — a very slim margin that illustrates why interest rate management is critical."),
             _mcq("Why do life insurers prioritize investment income return over capital gains?",
                  ["Capital gains are prohibited by life insurance regulations",
                   "Investment income (coupons, dividends) provides predictable cash to pay claims; capital gains require selling assets",
                   "Capital gains are taxed at 100% for life insurers",
                   "Investment income always exceeds capital gains in bond portfolios"],
                  1,
-                 "Life insurers need cash to pay claims â€” they cannot wait to sell assets to generate cash. Investment income (bond coupons, dividends) provides a steady, predictable cash stream. Capital gains only generate cash when assets are sold."),
+                 "Life insurers need cash to pay claims — they cannot wait to sell assets to generate cash. Investment income (bond coupons, dividends) provides a steady, predictable cash stream. Capital gains only generate cash when assets are sold."),
             _mcq("Which statement about Risk-Based Capital (RBC) requirements is MOST accurate?",
                  ["RBC is a voluntary guideline that insurers may choose to follow",
                   "An insurer with RBC below 150% of the minimum faces regulatory takeover",
@@ -2618,16 +2618,16 @@ def _build_ch5(course_id):
                   "The insurer cannot pay claims and must seek regulatory assistance",
                   "The insurer uses only new premium income to pay claims"],
                  1,
-                 "$200B x 8% = $16B in liquid assets. The $20B claim surge would draw down the full liquid reserve plus require an additional $4B from asset sales. This is a stress scenario â€” most liquidity objectives are calibrated for normal variability, with contingency plans (credit lines, reinsurance) for catastrophic events."),
+                 "$200B x 8% = $16B in liquid assets. The $20B claim surge would draw down the full liquid reserve plus require an additional $4B from asset sales. This is a stress scenario — most liquidity objectives are calibrated for normal variability, with contingency plans (credit lines, reinsurance) for catastrophic events."),
             _scenario(
                 "Lincoln National's CIO reviews the quarterly investment report. The portfolio earns 5.2% investment income. Credited rate to policyholders: 4.5%. Operating expense ratio: 0.4%. RBC ratio: 310% (target: 400%). Liquidity reserve: 6% (policy: 8% minimum). Two credit rating downgrades are pending in the corporate bond portfolio.",
                 "Which issue requires the MOST URGENT attention?",
-                [("The investment income spread of 0.3% â€” this must be immediately increased to 2%+", False,
+                [("The investment income spread of 0.3% — this must be immediately increased to 2%+", False,
                   "A 0.3% net spread (5.2% - 4.5% - 0.4%) is thin but positive. While improvement is needed, this is a medium-term strategic concern, not an immediate crisis."),
                  ("The liquidity reserve at 6% is below the 8% minimum policy requirement", True,
                   "Correct. The liquidity reserve is below the minimum policy threshold. With two credit downgrades pending (which could trigger accelerated policy surrenders), liquidity must be immediately restored to policy minimum. An asset fire sale risk exists if claims surge while liquidity is deficient."),
                  ("The RBC ratio of 310% is below the 200% regulatory minimum and requires emergency capital injection", False,
-                  "310% RBC is ABOVE the 200% regulatory minimum. It is below Lincoln National's internal target of 400%, which is a medium-term concern requiring a capital restoration plan â€” but it is not an immediate regulatory crisis.")]
+                  "310% RBC is ABOVE the 200% regulatory minimum. It is below Lincoln National's internal target of 400%, which is a medium-term concern requiring a capital restoration plan — but it is not an immediate regulatory crisis.")]
             ),
         ]
     )
@@ -2636,29 +2636,29 @@ def _build_ch5(course_id):
     c4 = _concept(
         m2_id, 2,
         "Investment Constraints for Life Insurers: Regulatory and Rating Requirements",
-        "Identify the key investment constraints facing life insurers â€” including regulatory capital charges, asset eligibility rules, single-issuer limits, and rating agency requirements â€” and explain how each constrains portfolio construction.",
+        "Identify the key investment constraints facing life insurers — including regulatory capital charges, asset eligibility rules, single-issuer limits, and rating agency requirements — and explain how each constrains portfolio construction.",
         "Life insurers do not have unlimited freedom to invest. State insurance regulators impose strict constraints: minimum credit quality, maximum exposure to any single issuer, limits on equity and alternative investments, and capital charges for risky assets. On top of regulatory constraints, rating agencies (S&P, Moody's, A.M. Best) impose their own capital models that penalize risky investments with higher capital requirements. A portfolio that looks attractive from a pure return perspective may be disqualified by regulatory rules or rating constraints.",
-        "New York Life, the largest US mutual life insurer, operates under New York Insurance Law Section 1407, which limits equity investments to 20% of admitted assets, caps any single issuer at 5% of admitted assets, prohibits below-investment-grade bonds from exceeding 20% of the bond portfolio, and requires 50% of bonds to be rated A or higher by NRSRO. Additionally, A.M. Best requires New York Life to hold 8% more capital for every dollar of BB-rated bonds than for A-rated bonds. These constraints mean New York Life's CIO cannot simply buy the highest-yielding assets â€” the regulatory and rating costs must be calculated into every investment decision.",
+        "New York Life, the largest US mutual life insurer, operates under New York Insurance Law Section 1407, which limits equity investments to 20% of admitted assets, caps any single issuer at 5% of admitted assets, prohibits below-investment-grade bonds from exceeding 20% of the bond portfolio, and requires 50% of bonds to be rated A or higher by NRSRO. Additionally, A.M. Best requires New York Life to hold 8% more capital for every dollar of BB-rated bonds than for A-rated bonds. These constraints mean New York Life's CIO cannot simply buy the highest-yielding assets — the regulatory and rating costs must be calculated into every investment decision.",
         [
             "Insurance regulators impose: maximum single-issuer concentration (typically 3-5%), limits on equity (10-20%), caps on below-investment-grade bonds.",
             "Rating agencies (S&P, Moody's, A.M. Best) impose capital charges on risky assets that function as additional constraints.",
-            "NAIC designates bond quality (1-6) â€” bonds rated below NAIC-2 (BBB) face increasing capital charges.",
+            "NAIC designates bond quality (1-6) — bonds rated below NAIC-2 (BBB) face increasing capital charges.",
             "Asset eligibility rules determine what can be counted as 'admitted assets' on an insurer's balance sheet.",
         ],
         [
-            "Confusing regulatory capital charges with credit quality â€” they are related but not identical (some AAA structured products had high capital charges post-2008).",
-            "Assuming constraints apply uniformly â€” New York-domiciled insurers face different rules than Texas-domiciled insurers.",
-            "Thinking constraints only reduce returns â€” they also protect policyholders and maintain market confidence in the industry.",
+            "Confusing regulatory capital charges with credit quality — they are related but not identical (some AAA structured products had high capital charges post-2008).",
+            "Assuming constraints apply uniformly — New York-domiciled insurers face different rules than Texas-domiciled insurers.",
+            "Thinking constraints only reduce returns — they also protect policyholders and maintain market confidence in the industry.",
         ],
         lessons=[
             _intro("Why Can't an Insurer Just Buy the Highest-Yielding Investments?",
-                   "A life insurer sits at the intersection of two powerful forces: market opportunities and regulatory constraints. Understanding what insurers CANNOT do is just as important as understanding what they can do â€” because constraints shape the entire portfolio."),
+                   "A life insurer sits at the intersection of two powerful forces: market opportunities and regulatory constraints. Understanding what insurers CANNOT do is just as important as understanding what they can do — because constraints shape the entire portfolio."),
             _teach("Regulatory Investment Constraints: What Insurers Must Follow",
-                   "State insurance regulators impose mandatory investment constraints to protect policyholders. Key constraints: (1) Eligible investment rules â€” insurers can only hold 'admitted assets' (bonds, mortgages, some equities, real estate); (2) Single-issuer limits â€” typically 3-5% maximum exposure to any one issuer; (3) Asset quality limits â€” minimum credit rating requirements (most states require investment grade for at least 75-80% of bonds); (4) Concentration limits â€” equity cannot exceed 10-20% of assets; alternatives capped at 3-5%; (5) NAIC designation system â€” assigns quality ratings 1-6, with higher designations triggering capital charges.",
+                   "State insurance regulators impose mandatory investment constraints to protect policyholders. Key constraints: (1) Eligible investment rules — insurers can only hold 'admitted assets' (bonds, mortgages, some equities, real estate); (2) Single-issuer limits — typically 3-5% maximum exposure to any one issuer; (3) Asset quality limits — minimum credit rating requirements (most states require investment grade for at least 75-80% of bonds); (4) Concentration limits — equity cannot exceed 10-20% of assets; alternatives capped at 3-5%; (5) NAIC designation system — assigns quality ratings 1-6, with higher designations triggering capital charges.",
                    ["Admitted assets are investments eligible to count toward meeting policyholder obligations.",
                     "NAIC-1 = AAA/AA, NAIC-2 = A/BBB (investment grade), NAIC-3 to NAIC-6 = below investment grade (increasing charges).",
                     "Single-issuer limits prevent catastrophic concentration if one issuer defaults.",
-                    "Each state sets its own rules â€” New York (strictest), California, Texas have specific requirements."]),
+                    "Each state sets its own rules — New York (strictest), California, Texas have specific requirements."]),
             _teach("Rating Agency Capital Models: The Second Layer of Constraints",
                    "Beyond regulatory constraints, rating agencies (S&P, Moody's, A.M. Best) run their own capital adequacy models for insurers seeking high ratings. These models impose risk charges: equities are assigned 35-50% capital charge (must hold $0.35-0.50 capital per $1 of equities), below-investment-grade bonds carry 5-15% charges, real estate carries 8-10% charges. An insurer targeting an A.M. Best 'A' rating must hold enough capital to pass A.M. Best's stress test. This means holding more capital against risky assets, which reduces the portfolio's effective return on equity.",
                    ["Rating agency capital charges are in ADDITION to regulatory capital requirements.",
@@ -2666,14 +2666,14 @@ def _build_ch5(course_id):
                     "Insurers targeting top ratings (A+ or better) have tighter effective investment constraints than lower-rated peers.",
                     "Capital charges vary by asset type: equities > real estate > below-IG bonds > IG bonds > government bonds."]),
             _example("New York Life's Constraint Matrix in Action",
-                     "New York Life's CIO considers buying $500 million of BB-rated telecom bonds yielding 7.5%, compared to A-rated telecom bonds yielding 5.5%. The yield pickup of 2% seems attractive. But the analysis shows: (1) Regulatory: BB bonds count as NAIC-3, requiring New York Life to hold $75M additional capital vs. only $15M for A-rated bonds ($60M capital difference). (2) A.M. Best: BB bonds require 8% capital charge vs. 2% for A-rated bonds â€” another $30M of capital tied up. (3) Concentration: already at 4% single-issuer limit; would need to reduce other telecom holdings. After accounting for the capital cost of holding the extra $90M in required capital (at 8% cost of capital = $7.2M annual cost), the effective yield advantage of the BB bonds falls from 2% to just 0.5% â€” not enough for the added credit risk.",
+                     "New York Life's CIO considers buying $500 million of BB-rated telecom bonds yielding 7.5%, compared to A-rated telecom bonds yielding 5.5%. The yield pickup of 2% seems attractive. But the analysis shows: (1) Regulatory: BB bonds count as NAIC-3, requiring New York Life to hold $75M additional capital vs. only $15M for A-rated bonds ($60M capital difference). (2) A.M. Best: BB bonds require 8% capital charge vs. 2% for A-rated bonds — another $30M of capital tied up. (3) Concentration: already at 4% single-issuer limit; would need to reduce other telecom holdings. After accounting for the capital cost of holding the extra $90M in required capital (at 8% cost of capital = $7.2M annual cost), the effective yield advantage of the BB bonds falls from 2% to just 0.5% — not enough for the added credit risk.",
                      "Regulatory and rating constraints transform investment decisions from simple yield comparisons into comprehensive capital cost analyses."),
             _flash("What is the NAIC designation system for bond investments?",
-                   "NAIC-1 = highest quality (AAA/AA), NAIC-2 = investment grade (A/BBB), NAIC-3 to NAIC-6 = below investment grade with progressively higher capital charges. Most states require insurers to hold minimum capital proportional to NAIC designation â€” lower quality bonds require more capital."),
+                   "NAIC-1 = highest quality (AAA/AA), NAIC-2 = investment grade (A/BBB), NAIC-3 to NAIC-6 = below investment grade with progressively higher capital charges. Most states require insurers to hold minimum capital proportional to NAIC designation — lower quality bonds require more capital."),
             _mcq("Which type of investment typically faces the HIGHEST regulatory capital charge for a life insurer?",
                  ["US Treasury bonds", "AAA-rated corporate bonds", "Investment-grade municipal bonds", "Common equity investments"],
                  3,
-                 "Equities (common stocks) carry the highest regulatory capital charges â€” typically 30-50% in NAIC's risk-based capital framework. This reflects their higher volatility and potential for significant loss in market downturns, compared to bonds which have more predictable cash flows."),
+                 "Equities (common stocks) carry the highest regulatory capital charges — typically 30-50% in NAIC's risk-based capital framework. This reflects their higher volatility and potential for significant loss in market downturns, compared to bonds which have more predictable cash flows."),
             _mcq("Why do state insurance regulators impose single-issuer concentration limits?",
                  ["To prevent insurers from earning too high a return on any one investment",
                   "To protect policyholders from catastrophic loss if a single major issuer defaults",
@@ -2699,12 +2699,12 @@ def _build_ch5(course_id):
             _scenario(
                 "Transamerica Life's investment team identifies an opportunity: $1 billion of single-B rated private placement bonds yielding 9.5%. The current portfolio yield is 5.2%, and the target is 5.8%. The bonds are from a single healthcare issuer. Current equity allocation: 18% (regulatory limit: 20%). Current single-issuer maximum: already at 4.5% for this issuer.",
                 "Why should Transamerica decline this investment?",
-                [("The 9.5% yield is too high â€” it signals the bonds are mispriced and overvalued", False,
+                [("The 9.5% yield is too high — it signals the bonds are mispriced and overvalued", False,
                   "High yield signals high risk, not overvaluation. The actual constraints here are regulatory and concentration related."),
                  ("Single-B bonds would breach NAIC quality standards and the issuer exposure already at the single-issuer maximum", True,
-                  "Correct. Single-B is NAIC-5 (near default category) â€” most insurer IPS prohibit or severely limit NAIC-4/5 bonds. Additionally, adding $1B to a healthcare issuer where Transamerica already has 4.5% exposure would likely breach the 5% single-issuer limit, creating dangerous concentration risk."),
+                  "Correct. Single-B is NAIC-5 (near default category) — most insurer IPS prohibit or severely limit NAIC-4/5 bonds. Additionally, adding $1B to a healthcare issuer where Transamerica already has 4.5% exposure would likely breach the 5% single-issuer limit, creating dangerous concentration risk."),
                  ("The 9.5% yield exceeds the IPS target return, making it ineligible", False,
-                  "Exceeding the return target is not a reason to decline. The issues are credit quality (single-B = NAIC-5) and concentration (already at 4.5% single-issuer limit) â€” regulatory and IPS violations.")]
+                  "Exceeding the return target is not a reason to decline. The issues are credit quality (single-B = NAIC-5) and concentration (already at 4.5% single-issuer limit) — regulatory and IPS violations.")]
             ),
         ]
     )
@@ -2724,7 +2724,7 @@ def _build_ch6(course_id):
         "description": "Enterprise Risk Management frameworks, Asset-Liability Management (ALM) systems and organization, portfolio segmentation, cash-flow testing, and ALM investment strategies including immunization, dedication, and interest-rate anticipation.",
     }
 
-    # â”€â”€ Module 1: ERM and ALM Framework â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 1: ERM and ALM Framework ──────────────────────────────────────
     m1_id = _id()
     m1 = {"id": m1_id, "chapter_id": ch_id, "order": 1,
           "title": "Enterprise Risk Management and Asset-Liability Management"}
@@ -2734,8 +2734,8 @@ def _build_ch6(course_id):
         m1_id, 1,
         "Enterprise Risk Management and Asset-Liability Management",
         "Define Enterprise Risk Management (ERM) and Asset-Liability Management (ALM), explain how they relate to each other, and describe the organizational structure that supports both functions at a life insurance company.",
-        "Enterprise Risk Management (ERM) is the company-wide framework for identifying, measuring, managing, and monitoring ALL risks â€” including investment risk, insurance underwriting risk, operational risk, and strategic risk. Asset-Liability Management (ALM) is the specific subprocess within ERM that focuses on coordinating assets with liabilities to manage interest rate risk and ensure the company can meet its obligations. ERM is the umbrella; ALM is one critical function under it. Together, they prevent the most dangerous scenario for an insurer: a mismatch between what it owes policyholders and what its investments will deliver.",
-        "Prudential Financial's ERM framework encompasses 15 risk categories managed by a Chief Risk Officer and Risk Committee. Within ERM, the ALM function manages $350 billion in general account assets against $320 billion in actuarially determined liabilities. The ALM committee meets monthly to review duration gaps (assets vs. liabilities), convexity mismatches, and cash-flow projections under 12 interest rate scenarios. In 2013, when the 10-year Treasury rose from 1.6% to 3.0% in 6 months, Prudential's ALM team had already shortened asset duration in Q1 â€” resulting in only $2.1 billion unrealized loss vs. an estimated $8 billion if they had been passively matched.",
+        "Enterprise Risk Management (ERM) is the company-wide framework for identifying, measuring, managing, and monitoring ALL risks — including investment risk, insurance underwriting risk, operational risk, and strategic risk. Asset-Liability Management (ALM) is the specific subprocess within ERM that focuses on coordinating assets with liabilities to manage interest rate risk and ensure the company can meet its obligations. ERM is the umbrella; ALM is one critical function under it. Together, they prevent the most dangerous scenario for an insurer: a mismatch between what it owes policyholders and what its investments will deliver.",
+        "Prudential Financial's ERM framework encompasses 15 risk categories managed by a Chief Risk Officer and Risk Committee. Within ERM, the ALM function manages $350 billion in general account assets against $320 billion in actuarially determined liabilities. The ALM committee meets monthly to review duration gaps (assets vs. liabilities), convexity mismatches, and cash-flow projections under 12 interest rate scenarios. In 2013, when the 10-year Treasury rose from 1.6% to 3.0% in 6 months, Prudential's ALM team had already shortened asset duration in Q1 — resulting in only $2.1 billion unrealized loss vs. an estimated $8 billion if they had been passively matched.",
         [
             "ERM = company-wide risk framework covering investment, underwriting, operational, and strategic risks.",
             "ALM = subset of ERM focused on coordinating assets with liabilities to manage interest rate risk.",
@@ -2744,70 +2744,70 @@ def _build_ch6(course_id):
         ],
         [
             "Confusing ERM (broad, all risks) with ALM (narrow, assets vs. liabilities focus).",
-            "Thinking the Risk Committee manages day-to-day investments â€” it sets policy; the ALM Unit executes.",
-            "Assuming zero duration gap is always optimal â€” some interest rate exposure may be deliberately accepted for return enhancement.",
+            "Thinking the Risk Committee manages day-to-day investments — it sets policy; the ALM Unit executes.",
+            "Assuming zero duration gap is always optimal — some interest rate exposure may be deliberately accepted for return enhancement.",
         ],
         lessons=[
             _intro("When Assets and Liabilities Clash: The Risk at the Heart of Insurance",
                    "An insurance company lives and dies by one thing: its ability to pay what it promised. When assets and liabilities get out of sync, even a healthy insurer can face crisis. Enterprise Risk Management and ALM are the systems that prevent this."),
             _teach("Enterprise Risk Management: The Big Picture",
                    "ERM is a holistic, enterprise-wide framework that identifies and manages all material risks facing an insurance company. These include: investment risk (market, credit, liquidity, ALM), insurance risk (mortality, morbidity, lapse), operational risk (systems, fraud, legal), and strategic risk (competitive, regulatory, reputational). A Chief Risk Officer (CRO) typically leads ERM, reporting to both the CEO and the board's Risk Committee. The CRO aggregates risk across all categories to ensure the total risk taken is within the board's approved risk appetite.",
-                   ["ERM covers ALL risks â€” not just investments.",
+                   ["ERM covers ALL risks — not just investments.",
                     "CRO aggregates risk exposures and reports total risk to board.",
                     "Risk appetite = maximum risk the board approves for the organization.",
                     "ERM ensures no single risk becomes existential, even if individually each seems manageable."]),
             _teach("Asset-Liability Management: Coordinating Both Sides of the Balance Sheet",
-                   "ALM is the process of coordinating investment decisions (assets) with actuarial projections (liabilities) to ensure the insurer can meet all policyholder obligations under a range of economic scenarios. The core metric is duration gap: if assets have duration 12 and liabilities have duration 15, the duration gap is -3 years â€” meaning if rates rise 1%, assets fall 12% but liabilities fall 15%, actually improving solvency. The ALM Committee (senior management) sets the allowed duration gap range. The ALM Unit (technical staff) executes trades to keep the portfolio within the gap range.",
+                   "ALM is the process of coordinating investment decisions (assets) with actuarial projections (liabilities) to ensure the insurer can meet all policyholder obligations under a range of economic scenarios. The core metric is duration gap: if assets have duration 12 and liabilities have duration 15, the duration gap is -3 years — meaning if rates rise 1%, assets fall 12% but liabilities fall 15%, actually improving solvency. The ALM Committee (senior management) sets the allowed duration gap range. The ALM Unit (technical staff) executes trades to keep the portfolio within the gap range.",
                    ["Duration gap = asset duration - liability duration.",
-                    "Positive gap: assets more interest-rate sensitive â€” insurer hurt by rising rates.",
-                    "Negative gap: liabilities more interest-rate sensitive â€” insurer benefits if rates rise.",
-                    "Zero duration gap = immunized â€” no net interest rate risk."]),
+                    "Positive gap: assets more interest-rate sensitive — insurer hurt by rising rates.",
+                    "Negative gap: liabilities more interest-rate sensitive — insurer benefits if rates rise.",
+                    "Zero duration gap = immunized — no net interest rate risk."]),
             _example("Prudential's 2013 Rate Rise and ALM Defense",
-                     "In May 2013, the Federal Reserve hinted at tapering bond purchases ('Taper Tantrum'). The 10-year Treasury yield shot from 1.6% to 3.0% over five months. Prudential's ALM team had been monitoring the duration gap quarterly. In Q1 2013, seeing the gap had drifted to +2.5 years (assets more sensitive than liabilities), the team sold $8 billion of 30-year bonds and bought $10 billion of 5-year bonds, reducing asset duration. When rates spiked, Prudential's assets fell $2.1 billion in market value â€” painful but manageable. A passive insurer with a +5 year gap would have suffered $8 billion in losses. The ALM system paid for itself many times over.",
+                     "In May 2013, the Federal Reserve hinted at tapering bond purchases ('Taper Tantrum'). The 10-year Treasury yield shot from 1.6% to 3.0% over five months. Prudential's ALM team had been monitoring the duration gap quarterly. In Q1 2013, seeing the gap had drifted to +2.5 years (assets more sensitive than liabilities), the team sold $8 billion of 30-year bonds and bought $10 billion of 5-year bonds, reducing asset duration. When rates spiked, Prudential's assets fell $2.1 billion in market value — painful but manageable. A passive insurer with a +5 year gap would have suffered $8 billion in losses. The ALM system paid for itself many times over.",
                      "Proactive duration management through ALM can save billions when interest rate environments shift unexpectedly."),
             _flash("What is a 'duration gap' in Asset-Liability Management?",
                    "Duration gap = asset duration minus liability duration. A positive gap means assets are more interest-rate sensitive than liabilities; a negative gap means liabilities are more sensitive. A zero gap means the insurer is immunized against parallel shifts in the yield curve."),
             _mcq("Which organizational body typically sets the overall risk appetite for an insurance company under an ERM framework?",
                  ["The Chief Investment Officer", "The ALM Unit", "The Board of Directors or Board Risk Committee", "The ALM Committee"],
                  2,
-                 "The Board of Directors (or its Risk Committee) sets the organization's overall risk appetite â€” the maximum risk the company is willing to take across all categories. Management (including the CRO and ALM Committee) then operates within these board-approved boundaries."),
+                 "The Board of Directors (or its Risk Committee) sets the organization's overall risk appetite — the maximum risk the company is willing to take across all categories. Management (including the CRO and ALM Committee) then operates within these board-approved boundaries."),
             _mcq("An insurer's investment portfolio has a duration of 10 years and its liabilities have a duration of 14 years. What is the duration gap and what does it imply?",
                  ["Gap = -4 years; liabilities are more interest-rate sensitive than assets",
                   "Gap = +4 years; assets are more interest-rate sensitive than liabilities",
                   "Gap = 24 years; the insurer has twice the exposure it needs",
                   "Gap = 0; the insurer is perfectly immunized"],
                  0,
-                 "Duration gap = asset duration - liability duration = 10 - 14 = -4 years. A negative gap means liabilities are more sensitive â€” when rates rise, liabilities fall more than assets, improving solvency. When rates fall, liabilities rise more, hurting solvency. The insurer is exposed to falling interest rates."),
+                 "Duration gap = asset duration - liability duration = 10 - 14 = -4 years. A negative gap means liabilities are more sensitive — when rates rise, liabilities fall more than assets, improving solvency. When rates fall, liabilities rise more, hurting solvency. The insurer is exposed to falling interest rates."),
             _mcq("What is the primary difference between the ALM Committee and the ALM Unit?",
                  ["The ALM Committee manages daily trading; the ALM Unit sets strategy",
                   "The ALM Committee sets strategy and policy; the ALM Unit executes day-to-day operations",
                   "They are the same organizational body with different names",
                   "The ALM Unit reports to the board; the ALM Committee reports to the CRO"],
                  1,
-                 "The ALM Committee (senior management) sets the strategy â€” defining acceptable duration gap ranges, approved investment strategies, and ALM benchmarks. The ALM Unit (technical staff, including quantitative analysts and portfolio managers) executes trades and analytical work to implement the committee's strategy."),
+                 "The ALM Committee (senior management) sets the strategy — defining acceptable duration gap ranges, approved investment strategies, and ALM benchmarks. The ALM Unit (technical staff, including quantitative analysts and portfolio managers) executes trades and analytical work to implement the committee's strategy."),
             _mcq("Which scenario BEST demonstrates a failure of Enterprise Risk Management?",
                  ["An insurer's equities decline 10% during a market correction",
                   "An insurer's ERM framework failed to identify that its ALM duration gap had grown to +8 years before interest rates rose sharply",
                   "An insurer's CRO presents the board with the quarterly risk report",
                   "An insurer reduces its equity allocation from 20% to 15% following market volatility"],
                  1,
-                 "An undetected +8-year duration gap represents a breakdown in ERM â€” specifically, the failure to identify and report a material interest rate risk exposure in time for management to act. When rates then rise sharply, the insurer suffers unnecessary losses that a functioning ERM system would have flagged and prompted corrective action."),
+                 "An undetected +8-year duration gap represents a breakdown in ERM — specifically, the failure to identify and report a material interest rate risk exposure in time for management to act. When rates then rise sharply, the insurer suffers unnecessary losses that a functioning ERM system would have flagged and prompted corrective action."),
             _mcq("Which of the following BEST describes the goal of ALM for a life insurance company?",
                  ["To maximize investment returns at any level of risk",
                   "To ensure the company can meet all policyholder obligations under various economic scenarios by coordinating asset and liability cash flows",
                   "To eliminate all interest rate risk by holding only floating-rate securities",
                   "To maintain an investment portfolio that always outperforms the stock market"],
                  1,
-                 "ALM is about ensuring the insurer can honor its policyholder commitments â€” paying death benefits, annuity payments, and other obligations â€” across a range of interest rate environments. This requires coordinating the timing and amount of asset cash flows with projected liability cash flows."),
+                 "ALM is about ensuring the insurer can honor its policyholder commitments — paying death benefits, annuity payments, and other obligations — across a range of interest rate environments. This requires coordinating the timing and amount of asset cash flows with projected liability cash flows."),
             _scenario(
                 "Guardian Life's CIO reports to the ALM Committee that the portfolio duration gap has shifted to +5 years (asset duration 15, liability duration 10) following a rally in long-term bonds that increased their prices and reduced their yields. The ALM policy states the gap must remain between -1 and +2 years.",
                 "What action should the ALM Committee authorize?",
-                [("No action â€” a +5 year gap means higher returns when rates fall", False,
+                [("No action — a +5 year gap means higher returns when rates fall", False,
                   "While a +5 gap benefits from falling rates, it also creates massive exposure to rising rates, violating the ALM policy range. The committee cannot accept this risk without board approval."),
                  ("Shorten asset duration by selling long-duration bonds and replacing them with shorter-duration bonds until the gap returns to the allowed range", True,
                   "Correct. The duration gap must be brought back within the -1 to +2 policy range. Selling long-duration assets (high duration, sensitive to rates) and buying shorter-duration assets reduces asset duration and narrows the gap, restoring ALM compliance."),
                  ("Lengthen liability duration by modifying policyholder contracts to extend their terms", False,
-                  "Liability duration is determined by existing policyholder contracts â€” an insurer cannot unilaterally change policy terms to manage ALM. Assets must be adjusted to match the fixed liability profile.")]
+                  "Liability duration is determined by existing policyholder contracts — an insurer cannot unilaterally change policy terms to manage ALM. Assets must be adjusted to match the fixed liability profile.")]
             ),
         ]
     )
@@ -2817,7 +2817,7 @@ def _build_ch6(course_id):
         m1_id, 2,
         "Portfolio Segmentation and Investment Income Allocation",
         "Explain why insurance companies segment their investment portfolios by product line, describe how investment income is allocated across segments, and understand the integrated portfolio benchmarking model.",
-        "A large life insurance company sells many different products â€” term life, whole life, fixed annuities, variable annuities, disability income. Each product has a different liability profile: different duration, different cash flow pattern, different interest rate sensitivity. To manage ALM precisely, insurers segment their general account investment portfolio by product line, matching each segment's assets to that product's specific liabilities. Investment income earned in each segment is then allocated back to that product line, allowing accurate pricing and profitability analysis.",
+        "A large life insurance company sells many different products — term life, whole life, fixed annuities, variable annuities, disability income. Each product has a different liability profile: different duration, different cash flow pattern, different interest rate sensitivity. To manage ALM precisely, insurers segment their general account investment portfolio by product line, matching each segment's assets to that product's specific liabilities. Investment income earned in each segment is then allocated back to that product line, allowing accurate pricing and profitability analysis.",
         "John Hancock (Manulife) segments its $200 billion general account into 8 segments: Life Insurance, Individual Annuities, Group Insurance, Long-Term Care, Retirement Plans, and three specialty segments. The life insurance segment holds primarily long-duration corporate bonds (average duration 15 years) to match 30-year policy liabilities. The group insurance segment holds shorter-duration bonds (average 3-5 years) to match annual group policy renewals. Each segment has its own benchmark: the life segment benchmarks to the Bloomberg Long Credit Index; the group segment benchmarks to the Bloomberg 1-5 Year Credit Index. Investment income earned by each segment is credited to that product's income statement.",
         [
             "Portfolio segmentation = dividing the general account portfolio by product line to match each segment's assets to its specific liabilities.",
@@ -2826,27 +2826,27 @@ def _build_ch6(course_id):
             "Segmentation enables precise ALM, accurate product pricing, and fair performance measurement.",
         ],
         [
-            "Thinking the entire general account is managed as one portfolio â€” segmentation is standard practice at all major insurers.",
+            "Thinking the entire general account is managed as one portfolio — segmentation is standard practice at all major insurers.",
             "Confusing portfolio segmentation (within general account) with separate accounts (variable products managed separately from general account).",
-            "Assuming all segments have the same benchmark â€” each segment's benchmark must reflect that segment's liability profile.",
+            "Assuming all segments have the same benchmark — each segment's benchmark must reflect that segment's liability profile.",
         ],
         lessons=[
             _intro("One Company, Many Portfolios: Why Insurers Segment Their Investments",
-                   "A whole life policyholder and a group disability claim have nothing in common from a cash flow perspective. So why would their premium dollars be invested in exactly the same portfolio? They shouldn't â€” and that's why sophisticated insurers segment."),
+                   "A whole life policyholder and a group disability claim have nothing in common from a cash flow perspective. So why would their premium dollars be invested in exactly the same portfolio? They shouldn't — and that's why sophisticated insurers segment."),
             _teach("Portfolio Segmentation: Matching Assets to Specific Liability Groups",
                    "Portfolio segmentation divides the general account investment portfolio into sub-portfolios, each matched to a specific product line or liability group. Each segment has: (1) an asset portfolio with duration and cash flows matched to that segment's liabilities; (2) its own investment policy guidelines reflecting the risk tolerance appropriate for those liabilities; (3) performance benchmarks tied to comparable fixed-income indices with similar duration profiles. Segmentation allows the ALM team to manage interest rate risk precisely at the product level rather than averaging across dissimilar liability profiles.",
                    ["Each segment has a unique liability profile driving unique investment needs.",
-                    "Life segments: long duration â†’ long-duration corporate bonds.",
-                    "Group/P&C segments: short duration â†’ shorter-duration, higher-liquidity bonds.",
+                    "Life segments: long duration → long-duration corporate bonds.",
+                    "Group/P&C segments: short duration → shorter-duration, higher-liquidity bonds.",
                     "Segmentation is more administratively complex but enables superior ALM precision."]),
             _teach("Investment Income Allocation and the Integrated Benchmarking Model",
-                   "Investment income must be allocated back to each product segment accurately. This involves: (1) identifying assets assigned to each segment; (2) calculating actual investment income earned by those assets; (3) crediting that income to the product segment's income statement. The Integrated Portfolio Benchmarking Model creates a benchmark for each segment based on its liability profile â€” the benchmark investment policy that would perfectly match the segment's liabilities is the 'neutral position.' Managers are then measured against this neutral benchmark: outperformance = alpha generated by active management.",
+                   "Investment income must be allocated back to each product segment accurately. This involves: (1) identifying assets assigned to each segment; (2) calculating actual investment income earned by those assets; (3) crediting that income to the product segment's income statement. The Integrated Portfolio Benchmarking Model creates a benchmark for each segment based on its liability profile — the benchmark investment policy that would perfectly match the segment's liabilities is the 'neutral position.' Managers are then measured against this neutral benchmark: outperformance = alpha generated by active management.",
                    ["Investment income allocation lets actuaries price products accurately (knowing actual investment income per product line).",
                     "Integrated benchmark = the liability-matching neutral portfolio; manager alpha = actual return minus benchmark return.",
                     "Without allocation, all income pools together and pricing accuracy suffers.",
                     "Regulators require income allocation transparency for certain product lines (e.g., participating life policies)."]),
             _example("John Hancock's 8-Segment Portfolio in Practice",
-                     "John Hancock's life insurance segment has $65 billion in assets with average duration 14.2 years, benchmarked to the Bloomberg Long Credit Index. In Q3 2023, the life segment earned 5.85% investment income, outperforming its benchmark (Bloomberg Long Credit) by 0.28% â€” this 28-basis-point alpha was credited entirely to the life segment's income statement, improving life insurance product profitability. The group insurance segment ($30 billion) earned 5.10%, matching its Bloomberg 1-3 Year Credit benchmark within 5 basis points. Each segment's manager receives a performance review showing only the alpha vs. their specific benchmark â€” not the company-wide average.",
+                     "John Hancock's life insurance segment has $65 billion in assets with average duration 14.2 years, benchmarked to the Bloomberg Long Credit Index. In Q3 2023, the life segment earned 5.85% investment income, outperforming its benchmark (Bloomberg Long Credit) by 0.28% — this 28-basis-point alpha was credited entirely to the life segment's income statement, improving life insurance product profitability. The group insurance segment ($30 billion) earned 5.10%, matching its Bloomberg 1-3 Year Credit benchmark within 5 basis points. Each segment's manager receives a performance review showing only the alpha vs. their specific benchmark — not the company-wide average.",
                      "Segmentation enables accountability: each manager is measured against the benchmark appropriate for their specific segment's liabilities, not against the same company-wide index."),
             _flash("What is 'portfolio segmentation' in insurance investment management?",
                    "Portfolio segmentation divides the general account investment portfolio into sub-portfolios, each matched to a specific product line (e.g., life insurance, annuities, group insurance). Each segment has assets whose duration, cash flows, and risk profile match that product line's specific liability characteristics."),
@@ -2884,13 +2884,13 @@ def _build_ch6(course_id):
                   "Each segment has its own benchmark reflecting its specific liability duration and cash flow profile",
                   "Variable product (separate account) assets are included in general account segmentation"],
                  2,
-                 "Each segment has its own benchmark â€” the one that matches its specific liability profile. Life segments might benchmark to long-credit indices; group segments to short-credit indices. Variable product assets are in separate accounts (outside the general account) and are NOT part of general account segmentation."),
+                 "Each segment has its own benchmark — the one that matches its specific liability profile. Life segments might benchmark to long-credit indices; group segments to short-credit indices. Variable product assets are in separate accounts (outside the general account) and are NOT part of general account segmentation."),
             _scenario(
                 "Pacific Mutual manages a $50 billion general account with two major product segments: (1) Fixed Annuities: $30 billion in assets, liability duration 18 years, currently invested in 5-year bonds (duration 4.5 years). (2) Group Term Life: $20 billion, liability duration 1.5 years, currently invested in 20-year bonds (duration 14 years).",
                 "Which segment has the most critical ALM misalignment that requires immediate correction?",
-                [("Fixed Annuities â€” the 4.5-year asset duration massively undermatches the 18-year liability duration", True,
+                [("Fixed Annuities — the 4.5-year asset duration massively undermatches the 18-year liability duration", True,
                   "Correct. The Fixed Annuity segment has a duration gap of 4.5 - 18 = -13.5 years. This enormous mismatch means that when interest rates fall (likely for long-duration annuities), the liabilities increase far more than the assets, creating massive solvency risk. This is a critical ALM failure."),
-                 ("Group Term Life â€” the 14-year bonds are too long for a 1.5-year liability", False,
+                 ("Group Term Life — the 14-year bonds are too long for a 1.5-year liability", False,
                   "While the Group Term Life segment also has a mismatch (duration gap = 14 - 1.5 = +12.5 years), the risk is different. For short-duration liabilities (1.5 years), the concern is more liquidity than duration, as claims happen within 1-2 years. The Fixed Annuity mismatch is more existential."),
                  ("Both segments have equal ALM problems that require simultaneous correction", False,
                   "Both have misalignments, but the Fixed Annuity segment's -13.5-year gap (assets far shorter than liabilities) creates immediate solvency risk when rates move. This is the more critical issue requiring immediate rebalancing.")]
@@ -2900,7 +2900,7 @@ def _build_ch6(course_id):
 
     m1["concepts"] = [c1, c2]
 
-    # â”€â”€ Module 2: ALM Strategies â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    # ── Module 2: ALM Strategies ──────────────────────────────────────────────
     m2_id = _id()
     m2 = {"id": m2_id, "chapter_id": ch_id, "order": 2, "title": "ALM Strategies and Cash-Flow Testing"}
 
@@ -2909,8 +2909,8 @@ def _build_ch6(course_id):
         m2_id, 1,
         "Cash-Flow Testing and ALM Analysis Tools",
         "Describe cash-flow testing as an ALM analysis tool, explain how multiple interest rate scenarios are used, and identify the key outputs from ALM analysis that inform portfolio management decisions.",
-        "Cash-flow testing is the actuarial process of projecting both asset and liability cash flows under multiple interest rate scenarios to identify whether the insurer can meet all obligations in each scenario. Regulators require life insurers to test at least 7 specified interest rate scenarios (including large rate increases, large decreases, and curves that invert). If cash flows prove insufficient in any scenario, the insurer must hold additional reserves. Cash-flow testing is the backbone of ALM analysis â€” it transforms abstract duration gaps into concrete projections showing whether bills can be paid in 10, 20, or 30 years under different economic futures.",
-        "Nationwide Life conducts quarterly cash-flow testing using 200 stochastic interest rate scenarios generated by a calibrated economic model. Each scenario projects 30 years of investment income, policyholder claims, lapses, expense payments, and reinvestment rates. In the stress scenario of rates rising 4% immediately and staying elevated, Nationwide's models show that its fixed annuity portfolio generates $2.1 billion more in income over 30 years than the guaranteed annuity payments â€” confirming solvency. In the severe rate-drop scenario (rates fall 3% and stay low), Nationwide's models show a $340 million shortfall in year 22 â€” prompting the ALM team to buy additional long-term bonds to reduce this scenario risk.",
+        "Cash-flow testing is the actuarial process of projecting both asset and liability cash flows under multiple interest rate scenarios to identify whether the insurer can meet all obligations in each scenario. Regulators require life insurers to test at least 7 specified interest rate scenarios (including large rate increases, large decreases, and curves that invert). If cash flows prove insufficient in any scenario, the insurer must hold additional reserves. Cash-flow testing is the backbone of ALM analysis — it transforms abstract duration gaps into concrete projections showing whether bills can be paid in 10, 20, or 30 years under different economic futures.",
+        "Nationwide Life conducts quarterly cash-flow testing using 200 stochastic interest rate scenarios generated by a calibrated economic model. Each scenario projects 30 years of investment income, policyholder claims, lapses, expense payments, and reinvestment rates. In the stress scenario of rates rising 4% immediately and staying elevated, Nationwide's models show that its fixed annuity portfolio generates $2.1 billion more in income over 30 years than the guaranteed annuity payments — confirming solvency. In the severe rate-drop scenario (rates fall 3% and stay low), Nationwide's models show a $340 million shortfall in year 22 — prompting the ALM team to buy additional long-term bonds to reduce this scenario risk.",
         [
             "Cash-flow testing projects asset and liability cash flows under multiple interest rate scenarios over a long horizon (20-30 years).",
             "Regulators require minimum 7 specific scenarios; companies often test 100-500+ stochastic scenarios.",
@@ -2918,13 +2918,13 @@ def _build_ch6(course_id):
             "Cash-flow testing is required for participating life policies and annuities in most states.",
         ],
         [
-            "Thinking cash-flow testing is a one-time exercise â€” it must be repeated quarterly or annually as portfolios and economic conditions change.",
-            "Confusing cash-flow testing (regulatory tool) with stress testing (management tool) â€” they often overlap but have different scopes.",
-            "Assuming a passing result today guarantees passing in all future periods â€” the portfolio and liability profile change continuously.",
+            "Thinking cash-flow testing is a one-time exercise — it must be repeated quarterly or annually as portfolios and economic conditions change.",
+            "Confusing cash-flow testing (regulatory tool) with stress testing (management tool) — they often overlap but have different scopes.",
+            "Assuming a passing result today guarantees passing in all future periods — the portfolio and liability profile change continuously.",
         ],
         lessons=[
             _intro("Can the Insurer Pay Every Claim in Every Interest Rate Environment?",
-                   "A guarantee made to a policyholder in 2024 must be honored in 2054. Cash-flow testing is how actuaries and investment managers verify that the money will be there â€” in multiple possible futures, not just the most optimistic one."),
+                   "A guarantee made to a policyholder in 2024 must be honored in 2054. Cash-flow testing is how actuaries and investment managers verify that the money will be there — in multiple possible futures, not just the most optimistic one."),
             _teach("Cash-Flow Testing: The Process and Required Scenarios",
                    "Cash-flow testing projects all expected inflows (investment income, principal repayments, new premiums) and outflows (claims, policyholder surrenders, expenses, tax) over a 20-30 year horizon. It is repeated for multiple interest rate scenarios to reveal vulnerabilities. The NAIC (National Association of Insurance Commissioners) requires testing at minimum 7 specific scenarios: (1) level rates, (2) gradually increasing rates, (3) gradually decreasing rates, (4) increasing then decreasing, (5) decreasing then increasing, (6) immediate large increase, (7) immediate large decrease. If cash flows are insufficient in any scenario, additional actuarial reserves must be held.",
                    ["7 NAIC-specified scenarios must be tested; companies often test hundreds more stochastic scenarios.",
@@ -2932,14 +2932,14 @@ def _build_ch6(course_id):
                     "Shortfall in any scenario = must hold additional reserves to close the gap.",
                     "Stochastic testing = running 200-1,000 randomly generated rate paths to estimate probability distribution of outcomes."]),
             _teach("ALM Internal Reports and Analysis Outputs",
-                   "Cash-flow testing generates internal reports that the ALM Unit uses to manage the portfolio. Key reports include: (1) Duration Gap Report â€” shows asset duration vs. liability duration for each segment; (2) Scenario Adequacy Report â€” shows surplus/deficiency in each tested scenario; (3) Convexity Report â€” measures how duration itself changes as rates move (options embedded in liabilities, like surrender features, can cause non-linear behavior); (4) Sensitivity Analysis â€” shows P&L impact of rate changes in increments (+/-0.25%, +/-0.50%, +/-1%, etc.); (5) Reinvestment Risk Report â€” projects the yield at which portfolio cash flows must be reinvested and the impact on income.",
+                   "Cash-flow testing generates internal reports that the ALM Unit uses to manage the portfolio. Key reports include: (1) Duration Gap Report — shows asset duration vs. liability duration for each segment; (2) Scenario Adequacy Report — shows surplus/deficiency in each tested scenario; (3) Convexity Report — measures how duration itself changes as rates move (options embedded in liabilities, like surrender features, can cause non-linear behavior); (4) Sensitivity Analysis — shows P&L impact of rate changes in increments (+/-0.25%, +/-0.50%, +/-1%, etc.); (5) Reinvestment Risk Report — projects the yield at which portfolio cash flows must be reinvested and the impact on income.",
                    ["Duration gap report: centerpiece of ALM monitoring.",
-                    "Scenario adequacy: required by regulators â€” must pass all 7 NAIC scenarios.",
+                    "Scenario adequacy: required by regulators — must pass all 7 NAIC scenarios.",
                     "Convexity: measures non-linearity of price-yield relationship (especially important for MBS and callable bonds).",
                     "Reinvestment risk: cash received from maturing bonds must be reinvested at prevailing rates."]),
             _example("Nationwide's Scenario 7 Vulnerability",
                      "In Nationwide's 2023 cash-flow testing exercise, Scenario 5 (rates decrease then increase) revealed that Nationwide's fixed annuity segment would face a $340 million shortfall in year 22. Why year 22? Because many of Nationwide's fixed annuities had a guaranteed minimum surrender value; in a low-rate environment (rates down 3%), policyholders who had held policies for 20+ years would receive attractive surrender values, draining cash from the segment just as its older bonds matured. Nationwide's ALM team responded by: (1) buying $2 billion in 25-year corporate bonds to extend duration; (2) entering interest rate swaps to convert $5 billion of floating exposure to fixed; (3) buying floor options to hedge the low-rate scenario specifically. At the next quarterly test, the year-22 shortfall was eliminated.",
-                     "Cash-flow testing is not just a regulatory checkbox â€” it identifies specific vulnerabilities that guide targeted investment strategy changes."),
+                     "Cash-flow testing is not just a regulatory checkbox — it identifies specific vulnerabilities that guide targeted investment strategy changes."),
             _flash("What are the 7 NAIC interest rate scenarios required in cash-flow testing?",
                    "NAIC requires: (1) Level rates, (2) Gradually increasing, (3) Gradually decreasing, (4) Increasing then decreasing, (5) Decreasing then increasing, (6) Immediate large increase, (7) Immediate large decrease. If cash flows are insufficient in any scenario, additional reserves must be held."),
             _mcq("What is the primary purpose of cash-flow testing for a life insurance company?",
@@ -2948,7 +2948,7 @@ def _build_ch6(course_id):
                   "To calculate the quarterly earnings attributable to the investment portfolio",
                   "To identify which individual bonds should be sold from the portfolio"],
                  1,
-                 "Cash-flow testing verifies that the insurer can honor all policyholder obligations across a range of interest rate environments â€” not just in the base case. It is a multi-scenario adequacy test, not a valuation or portfolio selection tool."),
+                 "Cash-flow testing verifies that the insurer can honor all policyholder obligations across a range of interest rate environments — not just in the base case. It is a multi-scenario adequacy test, not a valuation or portfolio selection tool."),
             _mcq("How many specific interest rate scenarios does the NAIC require for cash-flow testing at minimum?",
                  ["3", "7", "12", "100"],
                  1,
@@ -2966,7 +2966,7 @@ def _build_ch6(course_id):
                   "How the duration (price sensitivity) of a bond or portfolio changes as interest rates change",
                   "The credit quality distribution of the bond portfolio"],
                  2,
-                 "Convexity measures the non-linearity of the price-yield relationship â€” how duration itself changes as rates move. For standard bonds, positive convexity means the bond price rises faster when rates fall than it falls when rates rise (a beneficial asymmetry). Callable bonds and MBS have negative convexity, making them behave unfavorably in rate-volatile environments."),
+                 "Convexity measures the non-linearity of the price-yield relationship — how duration itself changes as rates move. For standard bonds, positive convexity means the bond price rises faster when rates fall than it falls when rates rise (a beneficial asymmetry). Callable bonds and MBS have negative convexity, making them behave unfavorably in rate-volatile environments."),
             _mcq("Which ALM internal report would BEST alert management that a specific rate scenario poses unique risk to the annuity portfolio?",
                  ["Duration gap report", "Scenario adequacy report", "Convexity report", "Reinvestment risk report"],
                  1,
@@ -2974,10 +2974,10 @@ def _build_ch6(course_id):
             _scenario(
                 "Transamerica's actuaries complete the annual cash-flow test. Results: Scenario 1 (level rates): +$450M surplus. Scenario 4 (rates increase then decrease): +$180M surplus. Scenario 6 (immediate large rate increase +4%): +$320M surplus. Scenario 7 (immediate large rate decrease -3%): -$210M deficit. All other scenarios show surpluses.",
                 "What must Transamerica's management do as a result of these cash-flow test results?",
-                [("Nothing â€” passing 6 of 7 scenarios demonstrates adequate solvency", False,
+                [("Nothing — passing 6 of 7 scenarios demonstrates adequate solvency", False,
                   "Failing even one NAIC scenario requires regulatory action. A $210M deficit in Scenario 7 mandates reserve strengthening regardless of results in other scenarios."),
                  ("Hold additional actuarial reserves to cover the $210M deficit in Scenario 7", True,
-                  "Correct. Regulatory rules require Transamerica to establish additional reserves equal to or greater than the $210M shortfall identified in Scenario 7. The deficit cannot be offset by surpluses in other scenarios â€” each scenario must independently show adequacy."),
+                  "Correct. Regulatory rules require Transamerica to establish additional reserves equal to or greater than the $210M shortfall identified in Scenario 7. The deficit cannot be offset by surpluses in other scenarios — each scenario must independently show adequacy."),
                  ("Immediately close the annuity product line to prevent future losses", False,
                   "Closing a product line is an extreme action not required by a single scenario shortfall. The regulatory response is reserve strengthening, and the investment response is adjusting the portfolio to eliminate the scenario vulnerability.")]
             ),
@@ -2988,25 +2988,25 @@ def _build_ch6(course_id):
     c4 = _concept(
         m2_id, 2,
         "ALM Investment Strategies: Immunization, Dedication, and Interest-Rate Anticipation",
-        "Describe and distinguish the three primary ALM investment strategies â€” portfolio immunization, portfolio dedication, and interest-rate anticipation â€” and explain when each is most appropriate.",
-        "Insurance companies have three main strategies for managing the relationship between their assets and liabilities: (1) Immunization â€” structuring the portfolio so that asset value changes offset liability value changes when interest rates move; (2) Dedication â€” exactly matching asset cash flows to liability cash flows, eliminating ALM risk entirely; (3) Interest-Rate Anticipation â€” deliberately positioning the portfolio to benefit from expected rate changes (accepting more ALM risk for potential higher return). Each strategy sits at a different point on the risk-return spectrum: dedication is the most conservative, immunization is moderate, and interest-rate anticipation is the most aggressive.",
+        "Describe and distinguish the three primary ALM investment strategies — portfolio immunization, portfolio dedication, and interest-rate anticipation — and explain when each is most appropriate.",
+        "Insurance companies have three main strategies for managing the relationship between their assets and liabilities: (1) Immunization — structuring the portfolio so that asset value changes offset liability value changes when interest rates move; (2) Dedication — exactly matching asset cash flows to liability cash flows, eliminating ALM risk entirely; (3) Interest-Rate Anticipation — deliberately positioning the portfolio to benefit from expected rate changes (accepting more ALM risk for potential higher return). Each strategy sits at a different point on the risk-return spectrum: dedication is the most conservative, immunization is moderate, and interest-rate anticipation is the most aggressive.",
         "TIAA's ALM team manages $200 billion in fixed annuity assets with explicit strategy allocations: 60% immunization (duration-matched portfolios by segment), 30% dedication (cash-flow-matched bonds for their oldest annuity cohorts where liabilities are known precisely), and 10% interest-rate anticipation (tactical duration bets within board-approved bands of +/-2 years from neutral). In 2022, TIAA's anticipation portfolio was positioned short-duration (+1.5 years vs. neutral), correctly anticipating Fed rate hikes. This tactical position generated 1.8% excess return vs. the neutral benchmark in the anticipation sleeve, adding $360 million in value on the $20 billion allocated to that strategy.",
         [
             "Immunization: match asset duration to liability duration so rate changes have equal and offsetting impacts on both sides.",
             "Dedication (cash-flow matching): buy bonds whose principal and coupon payments exactly fund each scheduled liability payment.",
-            "Interest-rate anticipation: deliberately mismatch duration to profit from expected rate movements â€” highest risk/return.",
+            "Interest-rate anticipation: deliberately mismatch duration to profit from expected rate movements — highest risk/return.",
             "Most insurers use a combination: core dedicated/immunized plus a tactical anticipation overlay.",
         ],
         [
-            "Thinking immunization guarantees zero loss â€” it immunizes against parallel yield curve shifts but not against non-parallel shifts (e.g., yield curve flattening).",
-            "Confusing dedication (cash-flow matching) with immunization (duration matching) â€” they use different mechanisms to reduce ALM risk.",
-            "Assuming interest-rate anticipation is speculation â€” it is active management within regulatory and board-approved risk parameters.",
+            "Thinking immunization guarantees zero loss — it immunizes against parallel yield curve shifts but not against non-parallel shifts (e.g., yield curve flattening).",
+            "Confusing dedication (cash-flow matching) with immunization (duration matching) — they use different mechanisms to reduce ALM risk.",
+            "Assuming interest-rate anticipation is speculation — it is active management within regulatory and board-approved risk parameters.",
         ],
         lessons=[
             _intro("Three Ways to Manage the Asset-Liability Relationship",
                    "Every insurer must decide how tightly to link its assets to its liabilities. Dedication locks them together perfectly. Immunization creates a controlled relationship. Interest-rate anticipation deliberately creates gaps to profit from rate predictions. Understanding all three is essential for any institutional investor."),
             _teach("Portfolio Immunization: Matching Duration to Neutralize Rate Risk",
-                   "Portfolio immunization sets asset duration equal to liability duration so that when interest rates change, the change in asset value exactly offsets the change in liability value. If an insurer's liabilities have duration 10, it holds assets with duration 10. When rates rise 1%: liabilities fall ~10% (in present value), assets also fall ~10% â€” the solvency ratio stays constant. Immunization is not perfect: it only works for parallel yield curve shifts and requires rebalancing as time passes and as the portfolio changes.",
+                   "Portfolio immunization sets asset duration equal to liability duration so that when interest rates change, the change in asset value exactly offsets the change in liability value. If an insurer's liabilities have duration 10, it holds assets with duration 10. When rates rise 1%: liabilities fall ~10% (in present value), assets also fall ~10% — the solvency ratio stays constant. Immunization is not perfect: it only works for parallel yield curve shifts and requires rebalancing as time passes and as the portfolio changes.",
                    ["Immunization: set asset duration = liability duration.",
                     "Parallel shift immunity: when all rates move by the same amount, the strategy works perfectly.",
                     "Requires rebalancing: as time passes, asset and liability durations change at different rates.",
@@ -3016,12 +3016,12 @@ def _build_ch6(course_id):
                    ["Dedication = buy bonds to exactly match liability cash flows by date and amount (eliminates ALM risk).",
                     "Dedication is expensive and inflexible but eliminates reinvestment risk for covered liabilities.",
                     "Interest-rate anticipation = deliberate duration mismatch based on rate forecasts.",
-                    "Anticipation strategy requires accurate rate forecasts â€” wrong forecasts generate underperformance."]),
+                    "Anticipation strategy requires accurate rate forecasts — wrong forecasts generate underperformance."]),
             _example("TIAA's Three-Strategy ALM Approach",
-                     "TIAA manages $200 billion in retirement annuity assets. For its oldest cohort of retirees (80+ years old, highly predictable mortality tables), TIAA uses dedication: $30 billion of bonds are matched to specific monthly annuity payments for the next 15 years â€” no ALM risk for these liabilities. For its main annuity block (ages 60-79), TIAA uses immunization: $120 billion in bonds with duration matching the liability duration of 12.5 years, rebalanced quarterly. For its tactical anticipation overlay, TIAA allocates $20 billion and allows the manager to deviate +/- 2 years from the 12.5-year neutral duration based on rate forecasts. In 2022, the tactical manager went short (10.5 years vs. 12.5 neutral), earning 1.8% excess return when the Fed raised rates aggressively.",
+                     "TIAA manages $200 billion in retirement annuity assets. For its oldest cohort of retirees (80+ years old, highly predictable mortality tables), TIAA uses dedication: $30 billion of bonds are matched to specific monthly annuity payments for the next 15 years — no ALM risk for these liabilities. For its main annuity block (ages 60-79), TIAA uses immunization: $120 billion in bonds with duration matching the liability duration of 12.5 years, rebalanced quarterly. For its tactical anticipation overlay, TIAA allocates $20 billion and allows the manager to deviate +/- 2 years from the 12.5-year neutral duration based on rate forecasts. In 2022, the tactical manager went short (10.5 years vs. 12.5 neutral), earning 1.8% excess return when the Fed raised rates aggressively.",
                      "Most sophisticated insurers use all three strategies simultaneously: dedication for the most certain liabilities, immunization for the core block, and anticipation for an active return overlay."),
             _flash("What is the key difference between portfolio immunization and portfolio dedication?",
-                   "Immunization matches asset DURATION to liability duration â€” interest rate changes have equal impact on both sides. Dedication matches asset CASH FLOWS to liability payments â€” each liability payment is funded by a specific bond payment on the exact same date, eliminating reinvestment risk."),
+                   "Immunization matches asset DURATION to liability duration — interest rate changes have equal impact on both sides. Dedication matches asset CASH FLOWS to liability payments — each liability payment is funded by a specific bond payment on the exact same date, eliminating reinvestment risk."),
             _mcq("An insurer's liabilities have duration 12 years. Under a pure immunization strategy, what should be the target duration of the asset portfolio?",
                  ["6 years", "10 years", "12 years", "15 years"],
                  2,
@@ -3036,7 +3036,7 @@ def _build_ch6(course_id):
                   "Move entirely to cash to eliminate all rate risk",
                   "Increase equity allocation to reduce fixed-income exposure"],
                  1,
-                 "When rates are expected to rise, bond prices will fall. Shorter-duration bonds fall less in price than longer-duration bonds. By shortening asset duration (reducing price sensitivity), the portfolio loses less value when rates rise â€” generating positive active return vs. the neutral benchmark."),
+                 "When rates are expected to rise, bond prices will fall. Shorter-duration bonds fall less in price than longer-duration bonds. By shortening asset duration (reducing price sensitivity), the portfolio loses less value when rates rise — generating positive active return vs. the neutral benchmark."),
             _mcq("Why must an immunized portfolio be periodically rebalanced?",
                  ["Immunization is only effective for exactly one year before requiring complete reconstruction",
                   "As time passes and the portfolio changes, asset and liability durations drift at different rates, eroding the duration match",
@@ -3050,15 +3050,15 @@ def _build_ch6(course_id):
                   "If interest rate forecasts are wrong, the strategy generates underperformance vs. the immunized benchmark",
                   "It is the most conservative ALM strategy available to life insurers"],
                  2,
-                 "Interest-rate anticipation succeeds only when rate forecasts are correct. If the manager shortens duration expecting rates to rise, but rates instead fall, the short-duration portfolio underperforms the neutral benchmark â€” generating negative active return. The strategy requires accurate macro forecasting, which is inherently difficult."),
+                 "Interest-rate anticipation succeeds only when rate forecasts are correct. If the manager shortens duration expecting rates to rise, but rates instead fall, the short-duration portfolio underperforms the neutral benchmark — generating negative active return. The strategy requires accurate macro forecasting, which is inherently difficult."),
             _scenario(
-                "Lincoln Financial's ALM committee must choose a strategy for $5 billion in immediate annuity liabilities â€” payments guaranteed to specific retirees beginning immediately with known amounts for the next 20 years. The CIO presents three options: (A) Immunization targeting 15-year duration; (B) Dedication with bonds matched to each monthly payment for 20 years; (C) Interest-rate anticipation, currently positioned 2 years short of the 15-year neutral.",
+                "Lincoln Financial's ALM committee must choose a strategy for $5 billion in immediate annuity liabilities — payments guaranteed to specific retirees beginning immediately with known amounts for the next 20 years. The CIO presents three options: (A) Immunization targeting 15-year duration; (B) Dedication with bonds matched to each monthly payment for 20 years; (C) Interest-rate anticipation, currently positioned 2 years short of the 15-year neutral.",
                 "Which strategy is MOST appropriate for these specific liabilities?",
-                [("Option A: Immunization â€” matches liability duration and is easier to manage than dedication", False,
+                [("Option A: Immunization — matches liability duration and is easier to manage than dedication", False,
                   "While immunization is reasonable, it still carries reinvestment risk when portfolio bonds mature and must be reinvested at prevailing rates. For known, fixed annuity payments, dedication is superior."),
-                 ("Option B: Dedication â€” exactly matches known payment cash flows, eliminating reinvestment risk", True,
+                 ("Option B: Dedication — exactly matches known payment cash flows, eliminating reinvestment risk", True,
                   "Correct. Immediate annuities with known payment amounts and exact dates are the ideal application for portfolio dedication. Buying bonds that exactly fund each payment eliminates both ALM risk and reinvestment risk for these highly certain liabilities."),
-                 ("Option C: Interest-rate anticipation â€” the 2-year short position will generate excess returns if rates rise", False,
+                 ("Option C: Interest-rate anticipation — the 2-year short position will generate excess returns if rates rise", False,
                   "Interest-rate anticipation creates deliberate mismatch and risk for known, certain liability payments. There is no reason to take on active rate risk for liabilities that can be perfectly matched through dedication. Anticipation strategies are better suited to less certain liabilities.")]
             ),
         ]
@@ -5641,7 +5641,7 @@ def _build_ch13(course_id):
     return ch
 
 # BUILD & FLATTEN
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─────────────────────────────────────────────────────────────────────────────
 
 def build_seed():
     course_id = _id()
@@ -5652,7 +5652,7 @@ def build_seed():
         "name": "Institutional Investing",
         "title": "Institutional Investing: Principles and Practices",
         "certification": "Finance",
-        "description": "Master institutional investing from the ground up â€” asset classes, portfolio management, risk frameworks, and regulatory principles used by the world's largest investors.",
+        "description": "Master institutional investing from the ground up — asset classes, portfolio management, risk frameworks, and regulatory principles used by the world's largest investors.",
         "color": "#FF6B35",
         "icon": "Shield",
         "order": 1,

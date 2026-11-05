@@ -7,7 +7,7 @@
     "allowNavigation": ["auth.emergentagent.com", "accounts.google.com", "*.google.com", "*.googleapis.com", "*.googleusercontent.com"]
   },
   "android": {
-    "allowMixedContent": true
+    "allowMixedContent": false
   },
   "bundledWebRuntime": false
 }
