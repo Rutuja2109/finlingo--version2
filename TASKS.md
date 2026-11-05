@@ -53,9 +53,9 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [ ] Ask Lumi tutor (guardrails)
 
 ### Content
-- [x] CFA L1 Prep, chapter 1: Quantitative Methods (4 concepts, math verified). Committed locally, not pushed.
-- [ ] (you) Decide on CFA naming/trademark: CFA Institute owns "CFA". Course carries a "not affiliated" notice
-- [ ] More CFA topics (Economics, Financial Statement Analysis, Corporate Issuers, Equity, Fixed Income, Derivatives, Alternatives, Portfolio Management, Ethics)
+- [x] Investment Analysis (exam-style), chapter 1: Quantitative Methods (4 concepts, math verified). Committed locally, not pushed.
+- [x] Naming decision: neutral title (no "CFA" in the name) with a "not affiliated with CFA Institute" notice
+- [ ] More Investment Analysis topics (Economics, Financial Statement Analysis, Corporate Issuers, Equity, Fixed Income, Derivatives, Alternatives, Portfolio Management, Ethics)
 - [ ] More chapters per track
 - [ ] Sources on lessons (after your accuracy review)
 

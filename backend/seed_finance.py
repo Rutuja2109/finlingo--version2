@@ -594,6 +594,12 @@ async def seed_finance_courses(db):
         await db.courses.update_many({"slug": "loma-357"}, {"$set": {"hidden": True}})
 
     to_build = []
+    # Remove an earlier working title of the quant course (it never shipped, so no learner data is affected).
+    for old_slug in ("cfa-l1-quant-methods",):
+        old = await db.courses.find_one({"slug": old_slug})
+        if old:
+            await _delete_course_tree(db, old["id"])
+
     # Each course carries its own seed_version, so updating one course never re-seeds (and re-ids) the others.
     for course in build_finance_courses() + [build_cfa_course()]:
         existing = await db.courses.find_one({"slug": course["slug"]})
