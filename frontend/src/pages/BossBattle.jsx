@@ -43,7 +43,7 @@ export default function BossBattle() {
         <div className="text-center max-w-md">
           <Lock className="w-12 h-12 mx-auto text-[#EC4899] mb-3"/>
           <h1 className="font-[Outfit] font-black text-3xl tracking-tighter mb-2 text-white">Boss locked</h1>
-          <p className="text-zinc-400">Master all {data.concepts_total} concepts of this chapter to challenge the boss. You're at {data.concepts_done}/{data.concepts_total}.</p>
+          <p className="text-zinc-500">Master all {data.concepts_total} concepts of this chapter to challenge the boss. You're at {data.concepts_done}/{data.concepts_total}.</p>
           <button onClick={() => nav(-1)} className="mt-5 px-5 py-3 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-bold">Back</button>
         </div>
       </div>

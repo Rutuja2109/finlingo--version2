@@ -4,6 +4,7 @@ import "@/index.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import AppShell from "@/components/AppShell";
+import SlowBanner from "@/components/SlowBanner";
 import Landing from "@/pages/Landing";
 import AuthPage from "@/pages/AuthPage";
 import Dashboard from "@/pages/Dashboard";
@@ -39,6 +40,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <SlowBanner />
         <AppRouter />
       </AuthProvider>
     </BrowserRouter>

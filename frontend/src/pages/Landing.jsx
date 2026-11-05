@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Lumi from "@/components/Lumi";
+import { PRIVACY_URL } from "@/lib/api";
 import { ArrowRight, Sparkles, Target, Trophy, Brain, Layers } from "lucide-react";
 
 export default function Landing() {
@@ -69,7 +70,7 @@ export default function Landing() {
 
       <footer className="max-w-6xl mx-auto px-6 py-10 border-t border-zinc-200 text-sm text-zinc-500 flex justify-between">
         <span>© 2026 FinLearn · Master what matters.</span>
-        <span>Meet Lumi, your guide.</span>
+        <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-800 underline">Privacy policy</a>
       </footer>
     </div>
   );

@@ -63,7 +63,7 @@ export default function Admin() {
   return (
     <div className="pb-24 max-w-5xl">
       <div className="mb-7">
-        <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-400">Admin · AI Lab</p>
+        <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Admin · AI Lab</p>
         <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tighter">Generate a course from a PDF</h1>
         <p className="text-zinc-500 mt-1">Upload a textbook → we'll extract chapters and generate interactive lessons using Claude Sonnet 4.5 + GPT-5.2.</p>
       </div>
@@ -88,7 +88,7 @@ export default function Admin() {
                   <input type="radio" name="pdf" checked={selectedPdf === p.id} onChange={() => setSelectedPdf(p.id)} className="accent-[#FF6B35]"/>
                   <FileText className="w-4 h-4 text-zinc-500"/>
                   <span className="font-semibold flex-1 truncate">{p.original_name}</span>
-                  <span className="text-xs text-zinc-400">{Math.round(p.size_bytes/1024/1024)} MB</span>
+                  <span className="text-xs text-zinc-500">{Math.round(p.size_bytes/1024/1024)} MB</span>
                 </label>
               ))}
             </div>

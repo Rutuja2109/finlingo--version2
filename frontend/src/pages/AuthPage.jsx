@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
+import { PRIVACY_URL } from "@/lib/api";
 
 export default function AuthPage({ mode = "login" }) {
   const { login, register } = useAuth();
@@ -120,8 +121,15 @@ export default function AuthPage({ mode = "login" }) {
             </Link>
           </p>
 
+          {!isLogin && (
+            <p className="text-xs text-zinc-500 text-center mt-3">
+              By signing up you agree to our{" "}
+              <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#FF6B35]">privacy policy</a>.
+            </p>
+          )}
+
           {isDemo && (
-            <p className="text-xs text-zinc-400 text-center mt-3">
+            <p className="text-xs text-zinc-500 text-center mt-3">
               Demo account prefilled — just tap Log in.
             </p>
           )}

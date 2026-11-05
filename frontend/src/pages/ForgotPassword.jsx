@@ -85,7 +85,7 @@ export default function ForgotPassword() {
               Set new password <ArrowRight className="w-5 h-5"/>
             </button>
 
-            <p className="text-xs text-zinc-400 text-center mt-4">
+            <p className="text-xs text-zinc-500 text-center mt-4">
               This link expires in 1 hour.
             </p>
           </>

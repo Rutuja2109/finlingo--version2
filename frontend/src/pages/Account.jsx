@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { LogOut, Trash2 } from "lucide-react";
+import { LogOut, Trash2, Shield } from "lucide-react";
+import { PRIVACY_URL } from "@/lib/api";
 
 export default function Account() {
   const { user, logout, deleteAccount } = useAuth();
@@ -33,6 +34,17 @@ export default function Account() {
         >
           <LogOut className="w-4 h-4" /> Log out
         </button>
+      </div>
+
+      <div className="bg-white border border-zinc-200 rounded-3xl p-6 mb-4">
+        <p className="uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 mb-2">About</p>
+        <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" data-testid="account-privacy"
+          className="inline-flex items-center gap-2 font-[Outfit] font-bold text-[#FF6B35] hover:underline">
+          <Shield className="w-4 h-4" /> Privacy policy
+        </a>
+        <p className="text-xs text-zinc-500 mt-3">
+          FinLearn is for education only and is not financial advice.
+        </p>
       </div>
 
       {user?.role !== "admin" && (

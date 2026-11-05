@@ -17,7 +17,7 @@ export default function CoursePath() {
   if (!course) return (
     <div className="flex flex-col items-center justify-center py-20 gap-3">
       <Lumi size={80} mood="happy" className="lumi-float" />
-      <p className="text-zinc-400 font-semibold">Loading your path…</p>
+      <p className="text-zinc-500 font-semibold">Loading your path…</p>
     </div>
   );
 
@@ -96,7 +96,7 @@ function ChapterBanner({ ch, ci, color }) {
     <div className="relative z-10 flex justify-center my-6">
       <div className="px-5 py-3 rounded-2xl text-center shadow-lg border border-white"
         style={{ background: `linear-gradient(135deg, ${color}20, ${color}08)`, borderColor: `${color}30` }}>
-        <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-400">Chapter {ci + 1}</p>
+        <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-500">Chapter {ci + 1}</p>
         <p className="font-[Outfit] font-black text-base tracking-tight text-zinc-900">{ch.title}</p>
       </div>
     </div>
@@ -133,7 +133,7 @@ function ConceptNode({ concept, color, side, index, onClick }) {
             : `0 14px 28px -10px ${color}70`,
         }}
       >
-        {isLocked && <Lock className="w-6 h-6 text-zinc-400" />}
+        {isLocked && <Lock className="w-6 h-6 text-zinc-500" />}
         {isDone && <Check className="w-8 h-8 text-white" strokeWidth={3} />}
         {isAvailable && <Lumi size={48} mood="happy" />}
 
@@ -156,7 +156,7 @@ function ConceptNode({ concept, color, side, index, onClick }) {
 
       {/* Label card */}
       <div className={`flex-1 ${side === "right" ? "text-right pr-2" : "pl-2"}`}>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">Concept {index}</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Concept {index}</p>
         <p className="font-[Outfit] font-bold text-[15px] tracking-tight text-zinc-900 leading-tight">{concept.title}</p>
         {!isLocked && (
           <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{concept.learning_objective}</p>
@@ -176,20 +176,20 @@ function BossNode({ ch, bossReady, done, total, onPress }) {
         className={`w-full max-w-xs rounded-3xl p-5 flex items-center gap-4 transition-all duration-200 shadow-xl
           ${bossReady
             ? "bg-gradient-to-br from-zinc-950 via-zinc-900 to-[#1a0a2e] text-white hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98]"
-            : "bg-zinc-100 text-zinc-400 cursor-not-allowed"}`}
+            : "bg-zinc-100 text-zinc-500 cursor-not-allowed"}`}
       >
         <div className={`w-14 h-14 rounded-2xl grid place-items-center shrink-0
-          ${bossReady ? "bg-[#EC4899]/25 text-[#EC4899]" : "bg-zinc-200 text-zinc-400"}`}>
+          ${bossReady ? "bg-[#EC4899]/25 text-[#EC4899]" : "bg-zinc-200 text-zinc-500"}`}>
           {bossReady ? <Skull className="w-7 h-7" /> : <Lock className="w-6 h-6" />}
         </div>
         <div className="text-left">
-          <p className={`text-[9px] uppercase tracking-[0.35em] font-bold ${bossReady ? "text-[#EC4899]" : "text-zinc-400"}`}>
+          <p className={`text-[9px] uppercase tracking-[0.35em] font-bold ${bossReady ? "text-[#EC4899]" : "text-zinc-500"}`}>
             Boss Battle
           </p>
           <p className="font-[Outfit] font-black text-base leading-tight">
             {bossReady ? "Challenge the Boss" : "Complete all concepts first"}
           </p>
-          <p className={`text-xs mt-0.5 ${bossReady ? "text-white/60" : "text-zinc-400"}`}>
+          <p className={`text-xs mt-0.5 ${bossReady ? "text-white/60" : "text-zinc-500"}`}>
             {bossReady
               ? "20 mixed questions · +200 XP"
               : `${done} / ${total} concepts done`}

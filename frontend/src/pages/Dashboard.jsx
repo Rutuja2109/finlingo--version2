@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api } from "@/lib/api";
+import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
-import { ArrowRight, Sparkles, Target, Flame, Repeat } from "lucide-react";
+import { ArrowRight, Sparkles, Target, Flame, Repeat, Snowflake } from "lucide-react";
 import { trackCourseEnrolled } from "@/lib/firebase";
+
+const FREEZE_COST = 30;
+const FREEZE_MAX = 2;
 
 const ICONS_SVG = {
   Wallet: "M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4",
@@ -15,7 +18,7 @@ const ICONS_SVG = {
 };
 
 export default function Dashboard() {
-  const { user, stats } = useAuth();
+  const { user, stats, refreshStats } = useAuth();
   const [courses, setCourses] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
   const [dueCount, setDueCount] = useState(0);
@@ -42,6 +45,21 @@ export default function Dashboard() {
     const e = await api.get("/enrollments/me");
     setEnrolled(e.data);
     setBusy((b) => ({ ...b, [courseId]: false }));
+  };
+
+  const [buying, setBuying] = useState(false);
+  const [freezeMsg, setFreezeMsg] = useState("");
+  const freezes = stats?.streak_freezes || 0;
+  const buyFreeze = async () => {
+    setBuying(true); setFreezeMsg("");
+    try {
+      await api.post("/shop/streak-freeze");
+      await refreshStats();
+      setFreezeMsg("Streak freeze added.");
+    } catch (e) {
+      setFreezeMsg(formatApiError(e));
+    }
+    setBuying(false);
   };
 
   const isEnrolled = (id) => enrolled.some((c) => c.id === id);
@@ -111,7 +129,20 @@ export default function Dashboard() {
           <Flame className="w-8 h-8 text-[#FF5C00] mb-2"/>
           <p className="font-[Outfit] font-black text-4xl tabular-nums">{stats?.streak_days || 0}</p>
           <p className="text-sm text-zinc-500">Day streak</p>
-          <p className="text-xs text-zinc-400 mt-2">Practice every day to keep the flame.</p>
+          <p className="text-xs text-zinc-500 mt-2">Practice every day to keep the flame.</p>
+          <div className="mt-4 w-full border-t border-zinc-100 pt-4">
+            <p className="text-xs font-semibold text-zinc-600 flex items-center justify-center gap-1.5">
+              <Snowflake className="w-4 h-4 text-[#2563EB]" aria-hidden="true"/>
+              Streak freezes: <span data-testid="freeze-count">{freezes}</span>/{FREEZE_MAX}
+            </p>
+            <button onClick={buyFreeze} disabled={buying || freezes >= FREEZE_MAX || (stats?.coins || 0) < FREEZE_COST}
+              data-testid="btn-buy-freeze"
+              className="mt-2 w-full py-2.5 rounded-xl bg-[#2563EB]/10 text-[#2563EB] text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#2563EB]/15 transition">
+              {freezes >= FREEZE_MAX ? "Max freezes held" : `Get one · ${FREEZE_COST} coins`}
+            </button>
+            {freezeMsg && <p className="text-xs mt-2 text-zinc-500" role="status">{freezeMsg}</p>}
+            <p className="text-[11px] text-zinc-500 mt-2">A freeze saves your streak if you miss one day.</p>
+          </div>
         </div>
       </section>
 

@@ -60,6 +60,7 @@ export default function AppShell({ children }) {
             <button
               onClick={() => { logout(); window.location.replace("/login"); }}
               data-testid="btn-logout"
+              aria-label="Log out"
               className="ml-2 w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition"
               title={user?.name}
             >
@@ -68,6 +69,7 @@ export default function AppShell({ children }) {
             <Link
               to="/account"
               data-testid="btn-account"
+              aria-label="Account and settings"
               className="w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition"
               title="Account"
             >

@@ -18,6 +18,7 @@ from typing import List, Optional, Any, Dict
 
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Response, UploadFile, File, Form, BackgroundTasks, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, EmailStr, Field
 import httpx
@@ -589,13 +590,21 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
     stats = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0}) or {}
     last_date = stats.get("last_active_date")
     streak = stats.get("streak_days", 0)
+    freezes = stats.get("streak_freezes", 0)
     if last_date != today:
         if last_date:
             try:
                 last = datetime.fromisoformat(last_date).date()
                 today_d = datetime.now(timezone.utc).date()
                 delta = (today_d - last).days
-                streak = streak + 1 if delta == 1 else 1
+                if delta == 1:
+                    streak += 1
+                elif delta == 2 and freezes > 0:
+                    # exactly one missed day: a streak freeze covers it
+                    streak += 1
+                    freezes -= 1
+                else:
+                    streak = 1
             except Exception:
                 streak = 1
         else:
@@ -635,7 +644,7 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
         {"user_id": user["id"]},
         {"$set": {
             "total_xp": new_xp, "level": new_level, "coins": new_coins,
-            "streak_days": streak, "last_active_date": today,
+            "streak_days": streak, "last_active_date": today, "streak_freezes": freezes,
             "concepts_mastered": concepts_mastered, "lessons_completed": lessons_completed,
             "achievements": achievements,
             **_xp_today_fields(stats, xp_earned),
@@ -670,7 +679,32 @@ async def my_stats(user: dict = Depends(get_current_user)):
     today = datetime.now(timezone.utc).date().isoformat()
     s["xp_today"] = s.get("xp_today", 0) if s.get("xp_today_date") == today else 0
     s.pop("xp_today_date", None)
+    s.setdefault("streak_freezes", 0)
     return s
+
+
+STREAK_FREEZE_COST = 30
+STREAK_FREEZE_MAX = 2
+
+
+@api.post("/shop/streak-freeze")
+async def buy_streak_freeze(user: dict = Depends(get_current_user)):
+    """Spend coins on a streak freeze, which protects the streak from one missed day."""
+    s = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0}) or {}
+    owned = s.get("streak_freezes", 0)
+    if owned >= STREAK_FREEZE_MAX:
+        raise HTTPException(status_code=400, detail=f"You can hold at most {STREAK_FREEZE_MAX} streak freezes")
+    # Atomic: only deducts if the user still has enough coins and room for another freeze.
+    res = await db.user_stats.update_one(
+        {"user_id": user["id"], "coins": {"$gte": STREAK_FREEZE_COST},
+         "streak_freezes": {"$lt": STREAK_FREEZE_MAX}} if owned else
+        {"user_id": user["id"], "coins": {"$gte": STREAK_FREEZE_COST}},
+        {"$inc": {"coins": -STREAK_FREEZE_COST, "streak_freezes": 1}},
+    )
+    if res.modified_count == 0:
+        raise HTTPException(status_code=400, detail=f"You need {STREAK_FREEZE_COST} coins for a streak freeze")
+    s = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0})
+    return {"coins": s["coins"], "streak_freezes": s["streak_freezes"]}
 
 
 @api.get("/progress/me")
@@ -1035,6 +1069,23 @@ async def health():
 
 
 # ---------- MOUNT ----------
+PRIVACY_UPDATED = "5 November 2026"
+
+
+def _privacy_page() -> str:
+    """Public privacy policy. Operator name and contact email come from environment variables."""
+    import html
+    operator = html.escape(os.environ.get("PRIVACY_OPERATOR", "").strip() or "[operator name not set yet]")
+    email = html.escape(os.environ.get("PRIVACY_EMAIL", "").strip() or "[support email not set yet]")
+    text = (ROOT_DIR / "privacy.html").read_text(encoding="utf-8")
+    return text.replace("{{OPERATOR}}", operator).replace("{{EMAIL}}", email).replace("{{UPDATED}}", PRIVACY_UPDATED)
+
+
+@app.get("/privacy", response_class=HTMLResponse, include_in_schema=False)
+async def privacy_policy():
+    return HTMLResponse(_privacy_page())
+
+
 app.include_router(api)
 
 # CORS — open for mobile app (Capacitor sends null origin)

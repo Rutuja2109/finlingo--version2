@@ -34,9 +34,10 @@ export default function LessonPlayer() {
 
   useEffect(() => {
     api.get(`/concepts/${conceptId}`).then(({ data }) => {
-      setConcept(data);
+      const lessons = expandIntro(data);
+      setConcept({ ...data, lessons });
       // Initialize queue with all lesson indices in order
-      setQueue((data.lessons || []).map((_, i) => i));
+      setQueue(lessons.map((_, i) => i));
     });
   }, [conceptId]);
 
@@ -128,7 +129,7 @@ export default function LessonPlayer() {
   return (
     <div className="max-w-3xl mx-auto pb-24">
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => nav(-1)} data-testid="lesson-exit" className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 grid place-items-center">
+        <button onClick={() => nav(-1)} data-testid="lesson-exit" aria-label="Exit lesson" className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 grid place-items-center">
           <ChevronLeft className="w-5 h-5"/>
         </button>
         <div className="flex-1 h-2.5 rounded-full bg-zinc-100 overflow-hidden">
@@ -138,13 +139,13 @@ export default function LessonPlayer() {
         </div>
         <div className="flex flex-col items-center">
           <Lumi key={lumiKey} size={42} mood={lumiMood} className={lumiAnim} />
-          <span className="text-[10px] font-bold tabular-nums text-zinc-400 -mt-1">
+          <span className="text-[10px] font-bold tabular-nums text-zinc-500 -mt-1">
             {Math.max(1, initialQueueLen - queue.length + 1)}/{initialQueueLen}{queue.length > initialQueueLen ? "+" : ""}
           </span>
         </div>
       </div>
 
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-zinc-400">Concept</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-zinc-500">Concept</p>
       <h1 className="font-[Outfit] font-black text-2xl md:text-3xl tracking-tight mb-6">{concept.title}</h1>
 
       {/* Re-queue indicator: shown when user is on a repeat question */}
@@ -156,6 +157,7 @@ export default function LessonPlayer() {
 
       <div data-testid="lesson-card" className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 min-h-[320px]">
         {current.type === "intro" && <IntroLesson l={current} concept={concept}/>}
+        {current.type === "info" && <InfoLesson l={current}/>}
         {current.type === "teach" && <TeachLesson l={current}/>}
         {current.type === "example" && <ExampleLesson l={current}/>}
         {current.type === "case_study" && <CaseStudyLesson l={current} conceptId={conceptId} onShown={() => { if (!answered) handleAnswer(true); }}/>}
@@ -166,7 +168,7 @@ export default function LessonPlayer() {
       </div>
 
       <div className="mt-6 flex justify-between items-center">
-        <span className="text-xs text-zinc-400">
+        <span className="text-xs text-zinc-500">
           {wrongFirstTry.size > 0 && `${wrongFirstTry.size} question${wrongFirstTry.size>1?"s":""} to revisit`}
         </span>
         <button
@@ -232,35 +234,64 @@ function IntroLesson({ l, concept }) {
     <div className="text-center fade-up">
       <div className="flex justify-center mb-5"><Lumi size={120} mood="happy"/></div>
       <h2 className="font-[Outfit] font-black text-3xl tracking-tighter mb-3">{l.content.heading}</h2>
-      <p className="text-zinc-600 max-w-xl mx-auto text-lg leading-relaxed mb-6">{l.content.body}</p>
+      <p className="text-zinc-600 max-w-xl mx-auto text-lg leading-relaxed">{l.content.body}</p>
+    </div>
+  );
+}
 
-      {concept?.simple_explanation && (
-        <div className="bg-gradient-to-br from-[#FF6B35]/5 to-[#EC4899]/5 border border-[#FF6B35]/15 rounded-2xl p-5 text-left max-w-xl mx-auto mb-4">
-          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#FF6B35] mb-2">In plain English</p>
-          <p className="text-zinc-700 leading-relaxed">{concept.simple_explanation}</p>
-        </div>
-      )}
+// The intro's extra material (plain-English summary, real-world example, takeaways) is shown as its own
+// short card after the intro, so each screen carries one idea.
+function expandIntro(concept) {
+  const out = [];
+  for (const l of concept.lessons || []) {
+    out.push(l);
+    if (l.type !== "intro") continue;
+    if (concept.simple_explanation) {
+      out.push({ id: `${l.id}-plain`, type: "info", content: { kind: "plain", text: concept.simple_explanation } });
+    }
+    if (concept.real_world_example) {
+      out.push({ id: `${l.id}-example`, type: "info", content: { kind: "example", text: concept.real_world_example } });
+    }
+    if (concept.key_takeaways?.length > 0) {
+      out.push({ id: `${l.id}-takeaways`, type: "info", content: { kind: "takeaways", items: concept.key_takeaways } });
+    }
+  }
+  return out;
+}
 
-      {concept?.real_world_example && (
-        <div className="bg-[#2563EB]/5 border-l-4 border-[#2563EB] p-4 rounded-r-2xl text-left max-w-xl mx-auto mb-4">
-          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#2563EB] mb-1">Real-world example</p>
-          <p className="text-zinc-700 text-sm">{concept.real_world_example}</p>
+function InfoLesson({ l }) {
+  const c = l.content;
+  if (c.kind === "plain") {
+    return (
+      <div className="fade-up">
+        <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#FF6B35] mb-2">In plain English</p>
+        <div className="bg-gradient-to-br from-[#FF6B35]/5 to-[#EC4899]/5 border border-[#FF6B35]/15 rounded-2xl p-5">
+          <p className="text-zinc-800 text-lg leading-relaxed">{c.text}</p>
         </div>
-      )}
-
-      {concept?.key_takeaways?.length > 0 && (
-        <div className="text-left max-w-xl mx-auto">
-          <p className="text-xs uppercase tracking-[0.25em] font-bold text-zinc-500 mb-2">Key takeaways</p>
-          <ul className="space-y-1.5">
-            {concept.key_takeaways.map((k, i) => (
-              <li key={i} className="flex gap-2 text-sm text-zinc-700">
-                <Check className="w-4 h-4 text-[#10B981] mt-0.5 shrink-0"/>
-                <span>{k}</span>
-              </li>
-            ))}
-          </ul>
+      </div>
+    );
+  }
+  if (c.kind === "example") {
+    return (
+      <div className="fade-up">
+        <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">Real-life example</p>
+        <div className="bg-[#2563EB]/5 border-l-4 border-[#2563EB] p-5 rounded-r-2xl">
+          <p className="text-zinc-800 text-lg leading-relaxed">{c.text}</p>
         </div>
-      )}
+      </div>
+    );
+  }
+  return (
+    <div className="fade-up">
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#10B981] mb-2">Key takeaways</p>
+      <ul className="space-y-3">
+        {(c.items || []).map((k, i) => (
+          <li key={i} className="flex gap-3 text-zinc-800 leading-relaxed">
+            <Check className="w-5 h-5 text-[#10B981] mt-0.5 shrink-0"/>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -327,7 +358,7 @@ function FlashLesson({ l, onShown }) {
         className="cursor-pointer bg-gradient-to-br from-zinc-50 to-white border-2 border-zinc-200 rounded-3xl p-10 min-h-[220px] grid place-items-center text-center hover:border-[#FF6B35] transition"
       >
         <div>
-          <p className="uppercase text-[10px] tracking-[0.3em] font-bold text-zinc-400 mb-3">
+          <p className="uppercase text-[10px] tracking-[0.3em] font-bold text-zinc-500 mb-3">
             {flipped ? "Answer" : "Question · tap to reveal"}
           </p>
           <p className="font-[Outfit] font-bold text-xl md:text-2xl tracking-tight">
@@ -414,7 +445,7 @@ function CaseStudyLesson({ l, onShown, conceptId }) {
     <div className="fade-up">
       <div className="flex items-center gap-2 mb-3">
         <span className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#8B5CF6]">Case Study</span>
-        <span className="text-[10px] text-zinc-400 font-bold">{step + 1} / {steps.length}</span>
+        <span className="text-[10px] text-zinc-500 font-bold">{step + 1} / {steps.length}</span>
       </div>
 
       {step === 0 && (
@@ -468,7 +499,7 @@ function OutcomeBars({ outcome }) {
   const lost = aVal < bVal;
   return (
     <div className="mt-4 bg-white border border-zinc-200 rounded-2xl p-4 fade-up" data-testid="scenario-outcome">
-      <p className="uppercase tracking-[0.2em] text-[10px] font-bold text-zinc-400 mb-3">What happened next</p>
+      <p className="uppercase tracking-[0.2em] text-[10px] font-bold text-zinc-500 mb-3">What happened next</p>
       <div className="flex justify-between text-sm mb-1"><span>{bLabel}</span><b className="font-[Outfit]">{rupees(bVal)}</b></div>
       <div className="h-3 rounded-full bg-zinc-100 overflow-hidden mb-3">
         <div className="h-full rounded-full bg-zinc-300 transition-all duration-700" style={{ width: `${(bVal / max) * 100}%` }} />
@@ -613,7 +644,7 @@ function ResultScreen({ result, concept, onAgain }) {
 function Pill({ label, value, color }) {
   return (
     <div className="bg-white border border-zinc-200 rounded-2xl p-4">
-      <p className="text-xs uppercase tracking-[0.2em] font-bold text-zinc-400">{label}</p>
+      <p className="text-xs uppercase tracking-[0.2em] font-bold text-zinc-500">{label}</p>
       <p className="font-[Outfit] font-black text-2xl tabular-nums" style={{ color }}>{value}</p>
     </div>
   );

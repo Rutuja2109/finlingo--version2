@@ -118,7 +118,7 @@ export default function Revision() {
 function Header() {
   return (
     <div className="mb-6">
-      <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-400">Daily Revision</p>
+      <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Daily Revision</p>
       <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tighter flex items-center gap-2">
         <Repeat className="w-7 h-7 text-[#FF6B35]"/> Reinforce
       </h1>

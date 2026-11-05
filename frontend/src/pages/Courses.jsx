@@ -54,7 +54,7 @@ export default function Courses() {
   return (
     <div className="pb-28">
       <div className="mb-8">
-        <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-400">Learning Path</p>
+        <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Learning Path</p>
         <h1 className="font-[Outfit] font-black text-3xl tracking-tighter">Your Journey</h1>
         <p className="text-zinc-500 text-sm mt-1">Start with Money Basics, then move on to stocks and crypto. One concept at a time.</p>
       </div>
@@ -105,7 +105,7 @@ function CourseNode({ node, idx, isEnrolled, busy, onEnroll, onContinue }) {
         style={nodeStyle}
       >
         {isLocked ? (
-          <Lock className="w-7 h-7 text-zinc-400" />
+          <Lock className="w-7 h-7 text-zinc-500" />
         ) : (
           <svg viewBox="0 0 24 24" width="28" height="28" fill="none"
             stroke={isActive ? "white" : "white"} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -138,10 +138,10 @@ function CourseNode({ node, idx, isEnrolled, busy, onEnroll, onContinue }) {
           onClick={() => !isLocked && setExpanded((x) => !x)}
           className="w-full text-left"
         >
-          <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-zinc-400">{node.certification || "Coming Soon"}</p>
+          <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-zinc-500">{node.certification || "Coming Soon"}</p>
           <p className="font-[Outfit] font-black text-[17px] tracking-tight text-zinc-900 leading-tight">{node.name}</p>
           <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{node.title}</p>
-          {isLocked && <p className="text-[10px] text-zinc-400 mt-1 font-semibold">🔒 Coming soon</p>}
+          {isLocked && <p className="text-[10px] text-zinc-500 mt-1 font-semibold">🔒 Coming soon</p>}
           {isActive && <p className="text-[10px] text-[#10B981] mt-1 font-bold">IN PROGRESS →</p>}
           {node.status === "available" && <p className="text-[10px] text-zinc-500 mt-1 font-semibold">Tap to start</p>}
         </button>
