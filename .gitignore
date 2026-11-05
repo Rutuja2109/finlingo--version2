@@ -86,3 +86,10 @@ android-sdk/
 credentials.json
 *.key
 .credentials
+
+# Build outputs and signing secrets
+*.apk
+*.aab
+*.jks
+*.keystore
+keystore.properties

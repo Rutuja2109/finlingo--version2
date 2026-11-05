@@ -1,0 +1,97 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FinLearn lesson demo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --page:#f4f4f2;--surface-2:#ffffff;--surface-1:#f3f2ee;
+  --border:#e2e0d8;--border-strong:#c9c6bb;
+  --text-primary:#1d1d1b;--text-secondary:#5f5e5a;--text-muted:#8a8880;
+  --text-accent:#185fa5;--bg-accent:#e6f1fb;--border-accent:#378add;
+  --text-success:#27500a;--bg-success:#eaf3de;
+  --text-danger:#791f1f;--bg-danger:#fcebeb;
+  --text-warning:#633806;--bg-warning:#faeeda;
+}
+@media (prefers-color-scheme:dark){:root{
+  --page:#161614;--surface-2:#222220;--surface-1:#2c2c29;
+  --border:#3a3a36;--border-strong:#55534d;
+  --text-primary:#f1efe8;--text-secondary:#b4b2a9;--text-muted:#888780;
+  --text-accent:#85b7eb;--bg-accent:#0c447c;--border-accent:#378add;
+  --text-success:#c0dd97;--bg-success:#27500a;
+  --text-danger:#f7c1c1;--bg-danger:#791f1f;
+  --text-warning:#fac775;--bg-warning:#633806;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--text-primary);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 12px}
+.note{max-width:360px;margin:0 auto 14px;font-size:13px;color:var(--text-secondary);text-align:center}
+.ph{max-width:360px;margin:0 auto;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:28px;padding:14px 14px 18px}
+.bar{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;background:var(--surface-1);border-radius:99px;padding:4px 10px}
+.prog{flex:1;height:8px;border-radius:99px;background:var(--surface-1);overflow:hidden}
+.prog>div{height:100%;background:var(--text-accent);border-radius:99px;transition:width .4s}
+.card{background:var(--surface-1);border-radius:16px;padding:14px;margin:0 0 10px}
+.tag{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary);margin:0 0 4px}
+button{font:inherit;color:inherit;cursor:pointer;background:var(--surface-2);border:1px solid var(--border-strong)}
+button:hover{background:var(--surface-1)}
+.ch{display:block;width:100%;text-align:left;margin:0 0 8px;padding:11px 12px;border-radius:12px;font-size:14px;line-height:1.45}
+.fb{border-radius:12px;padding:11px 12px;font-size:14px;line-height:1.55;margin:0 0 10px}
+.big{font-size:15px;font-weight:600;margin:0 0 6px}
+.mut{font-size:13px;color:var(--text-secondary);margin:0}
+.trk{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:0 0 8px;padding:11px 12px;border-radius:12px}
+.ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.cta{width:100%;padding:12px;border-radius:12px;font-weight:600;font-size:15px;margin-top:4px;background:var(--text-primary);color:var(--surface-2);border:0}
+.cta:hover{background:var(--text-primary);opacity:.9}
+.row{display:flex;justify-content:space-between;font-size:13px;margin:0 0 4px}
+.bk{height:14px;border-radius:6px;background:var(--surface-2);overflow:hidden;margin:0 0 8px}
+.bk>div{height:100%;transition:width .6s}
+</style>
+</head>
+<body>
+<p class="note">Demo of one FinLearn lesson. Tap "Bitcoin and crypto" and play it on a phone-sized screen.</p>
+<div class="ph"><div id="app"></div></div>
+<script>
+(function(){
+window.onerror=function(m,s,l){var a=document.getElementById('app');if(a)a.innerHTML='<p style=\"color:#a32d2d;padding:12px\">Demo error: '+m+' (line '+l+')</p>'};
+var S={scr:'map',hearts:3,xp:0,c1:null,c2:null};
+var C1={
+a:{k:'bad',t:'Put all Rs 12,000 in before it is too late',h:'Wrong. This is FOMO (fear of missing out).',w:'The people shouting "10x by Friday" cannot know that. If they are selling or promoting the coin, your money is how they make theirs. All-in on one unknown coin is the fastest way to lose a month of stipend.',xp:0,after:12000*0.3,note:'If the coin crashed 70% by Friday: Rs 12,000 becomes Rs 3,600.'},
+b:{k:'good',t:'Keep rent and food money safe. Put only Rs 1,000 (money he can afford to lose) after checking who is promoting it',h:'Right. This is the smart move.',w:'You split money into buckets: needs first, risky money last and small. You also asked who benefits from the hype. Even if the coin had gone up, this is still the better decision. A good decision and a lucky result are not the same thing.',xp:20,after:11300,note:'Same 70% crash: only Rs 700 lost. Wallet is Rs 11,300 and he can still pay rent.'},
+c:{k:'ok',t:'Ignore it completely and leave everything in the wallet',h:'Safe, but not the best.',w:'You did not lose money, and that is fine. But money sitting idle loses value to inflation, and you skipped the chance to learn how risk works with a tiny amount. The goal is not to avoid risk. It is to size it.',xp:10,after:12000,note:'Wallet stays Rs 12,000. Nothing lost, nothing learned.'}
+};
+var C2={
+a:{k:'bad',t:'Panic and sell everything now',h:'Wrong.',w:'Selling just because the price dropped turns a paper loss into a real one. Prices move up and down. What matters is whether your original reason still holds, not how scary the red number looks.',xp:0},
+b:{k:'bad',t:'Borrow from the rent money to buy more and average down',h:'Wrong.',w:'Never add money you need for essentials to a falling price. If it keeps falling you lose rent money too. Averaging down only works with money you can truly afford to lose.',xp:0},
+c:{k:'good',t:'Check why he bought, stick to his Rs 1,000 limit, and not add more',h:'Right.',w:'You decide with a plan, not with emotion. A Rs 1,000 loss hurts, but it does not break your month. That is what position sizing buys you: you stay calm and in control.',xp:20}
+};
+function hearts(){var h='';for(var i=0;i<3;i++){h+='<i class="ti ti-heart" style="font-size:16px;color:'+(i<S.hearts?'var(--text-danger)':'var(--text-muted)')+'"></i>'}return h}
+function topBar(){var step={map:0,s1:1,f1:2,s2:3,f2:4,end:5}[S.scr];return '<div class="bar"><div class="prog"><div style="width:'+(step/5*100)+'%"></div></div><span class="pill">'+hearts()+'</span><span class="pill"><i class="ti ti-bolt" style="font-size:16px;color:var(--text-warning)"></i>'+S.xp+'</span></div>'}
+function fbBox(k,h,w){var m={good:['var(--bg-success)','var(--text-success)','ti-circle-check'],bad:['var(--bg-danger)','var(--text-danger)','ti-circle-x'],ok:['var(--bg-warning)','var(--text-warning)','ti-info-circle']}[k];return '<div class="fb" style="background:'+m[0]+';color:'+m[1]+'"><div style="display:flex;gap:6px;align-items:center;font-weight:600;margin:0 0 4px"><i class="ti '+m[2]+'" style="font-size:18px"></i>'+h+'</div><div>'+w+'</div></div>'}
+function bars(a){var pc=Math.round(a.after/12000*100);return '<div class="card"><p class="tag">Friday check-in</p><div class="row"><span>Wallet before</span><span>Rs 12,000</span></div><div class="bk"><div style="width:100%;background:var(--text-muted)"></div></div><div class="row"><span>Wallet after the crash</span><span>Rs '+Math.round(a.after).toLocaleString('en-IN')+'</span></div><div class="bk"><div style="width:'+pc+'%;background:'+(a.after<12000?'var(--text-danger)':'var(--text-success)')+'"></div></div><p class="mut">'+a.note+'</p></div>'}
+function render(){var el=document.getElementById('app'),h=topBar();
+if(S.scr==='map'){h+='<p class="tag">Choose your track</p><p class="big" style="font-size:17px">What do you want to get good at?</p>';
+var t=[['ti-wallet','Money basics','Budget, save, first salary','var(--bg-success)','var(--text-success)',0],['ti-chart-line','Stock market','Shares, SIPs, index funds','var(--bg-accent)','var(--text-accent)',0],['ti-currency-bitcoin','Bitcoin and crypto','Hype, risk, scams, wallets','var(--bg-warning)','var(--text-warning)',1],['ti-shield-check','LOMA','Insurance and investing exams','var(--surface-1)','var(--text-secondary)',0]];
+t.forEach(function(x){h+='<button class="trk" onclick="'+(x[5]?"go('s1')":"soon()")+'" style="'+(x[5]?'border:2px solid var(--border-accent)':'')+'"><span class="ic" style="background:'+x[3]+';color:'+x[4]+'"><i class="ti '+x[0]+'"></i></span><span><span style="display:block;font-weight:600;font-size:14px">'+x[1]+(x[5]?' <span style="font-size:11px;color:var(--text-accent)">Try this lesson</span>':'')+'</span><span class="mut">'+x[2]+'</span></span></button>'});
+h+='<p class="mut" id="soon" style="min-height:18px;text-align:center"></p>'}
+if(S.scr==='s1'){h+='<div class="card"><p class="tag">Lesson 1 - The group chat tip</p><p class="big">Rohan is 20. His first stipend, Rs 12,000, just landed.</p><p style="font-size:14px;line-height:1.6;margin:0 0 10px">Rent of Rs 5,000 is due next week. Then his college group chat blows up:</p><div style="background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5"><span style="font-size:12px;color:var(--text-secondary)">Group chat, 11:42 pm</span><br>"Bro this new coin will 10x by Friday. Everyone is buying. Last chance!"</div></div><p class="big">What should Rohan do?</p>';
+['a','b','c'].forEach(function(k){h+='<button class="ch" onclick="pick1(\''+k+'\')">'+C1[k].t+'</button>'})}
+if(S.scr==='f1'){var a=C1[S.c1];h+=fbBox(a.k,a.h,a.w)+bars(a)+'<button class="cta" onclick="go(\'s2\')">Continue</button>'}
+if(S.scr==='s2'){h+='<div class="card"><p class="tag">Lesson 1 - Plot twist</p><p class="big">Monday morning. The coin is down 30%.</p><p style="font-size:14px;line-height:1.6;margin:0">Rohan put in Rs 1,000. It is now worth Rs 700. The group chat is panicking. Rent is still due Friday.</p></div><p class="big">What now?</p>';
+['a','b','c'].forEach(function(k){h+='<button class="ch" onclick="pick2(\''+k+'\')">'+C2[k].t+'</button>'})}
+if(S.scr==='f2'){var b=C2[S.c2];h+=fbBox(b.k,b.h,b.w)+'<button class="cta" onclick="go(\'end\')">Finish lesson</button>'}
+if(S.scr==='end'){var perfect=S.hearts===3;h+='<div style="text-align:center;padding:6px 0 10px"><div class="ic" style="width:64px;height:64px;border-radius:50%;background:var(--bg-success);color:var(--text-success);font-size:32px;margin:0 auto 10px"><i class="ti ti-trophy"></i></div><p class="big" style="font-size:18px">Lesson complete</p><p class="mut">'+(perfect?'Badge unlocked: FOMO-proof':'Replay to unlock the FOMO-proof badge')+'</p></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 0 10px"><div class="card" style="margin:0;text-align:center"><p class="mut">XP</p><p class="big" style="margin:0">'+S.xp+'</p></div><div class="card" style="margin:0;text-align:center"><p class="mut">Hearts</p><p class="big" style="margin:0">'+S.hearts+'/3</p></div><div class="card" style="margin:0;text-align:center"><p class="mut">Streak</p><p class="big" style="margin:0">3 days</p></div></div><div class="card"><p class="tag">What you learned</p><ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.7"><li>Hype is not research. Ask who gains if you buy.</li><li>Cover needs first. Risk only money you can lose.</li><li>A good decision can still lose. Judge the plan, not the luck.</li></ul></div><button class="cta" onclick="reset()">Replay</button>'}
+el.innerHTML=h}
+function go(s){S.scr=s;render()}
+function soon(){document.getElementById('soon').textContent='Coming in the full app. Try the Bitcoin lesson.'}
+function pick1(k){S.c1=k;var a=C1[k];S.xp+=a.xp;if(a.k==='bad')S.hearts--;S.scr='f1';render()}
+function pick2(k){S.c2=k;var b=C2[k];S.xp+=b.xp;if(b.k==='bad')S.hearts--;S.scr='f2';render()}
+function reset(){S={scr:'map',hearts:3,xp:0,c1:null,c2:null};render()}
+window.go=go;window.soon=soon;window.pick1=pick1;window.pick2=pick2;window.reset=reset;
+render();
+})();
+</script>
+</body>
+</html>
+
