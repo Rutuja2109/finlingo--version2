@@ -1,8 +1,25 @@
 apply plugin: 'com.android.application'
 
+// Release signing: reads keystore.properties (git-ignored) if present, so the key never lives in the repo.
+def keystoreProps = new Properties()
+def keystoreFile = rootProject.file('keystore.properties')
+if (keystoreFile.exists()) {
+    keystoreFile.withInputStream { keystoreProps.load(it) }
+}
+
 android {
     namespace "com.finlearn.app"
     compileSdk rootProject.ext.compileSdkVersion
+    signingConfigs {
+        release {
+            if (keystoreProps.containsKey('storeFile')) {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
     defaultConfig {
         applicationId "com.finlearn.app"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -18,6 +35,9 @@ android {
     }
     buildTypes {
         release {
+            if (keystoreProps.containsKey('storeFile')) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

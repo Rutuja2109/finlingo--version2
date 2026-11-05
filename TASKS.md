@@ -1,42 +1,46 @@
 # FinLearn task tracker
 
-Legend: [x] done, [~] in progress, [ ] to do, (you) = needs you
+Legend: [x] done, [~] in progress, [ ] to do, (you) = needs you. Updated 2026-11-05.
+Nothing below is pushed to GitHub or deployed yet unless it says "live".
 
 ## Decisions made
 - [x] Currency: rupees (India)
-- [x] App name: FinLearn
+- [x] App name: FinLearn (package com.finlearn.app: confirm it is free when you create the app in Play Console)
 - [x] LOMA: one course only ("Institutional Investing", the rebranded one); stale "LOMA 357" copy hidden
 
-## Go live
+## Live on the server
 - [x] Backend on Render + MongoDB Atlas, login works
 - [x] Old public admin account removed
-- [x] New version deployed (finance tracks, Account page, daily XP fix) and verified
+- [x] Finance tracks, Account page, daily XP fix, choice lessons (deployed 2026-11-05)
+
+## Built, committed locally, NOT pushed yet (push as one batch)
+- [x] Hide duplicate LOMA 357 course
+- [x] Garbled characters fixed in source and repaired in the database at startup
+- [x] Android: https only, no mixed content, backups off, exact-alarm permission removed
+- [x] Privacy policy served at /privacy and linked from landing, sign-up and Account
+- [x] Lesson intro split into short cards
+- [x] Accessibility: contrast, button labels, reduced motion
+- [x] "Waking up" banner and 90 second request timeout
+- [x] Streak freeze (30 coins, holds 2): coins now have a purpose
+- [x] Release signing set up (key stored outside the repo)
+- [x] Store listing text, data-safety and content-rating notes (docs/STORE_LISTING.md)
+- [x] Store assets: icon, feature graphic, 7 screenshots (design/store/out)
+- [~] Signed release bundle (AAB) build
+
+## You need to do (see the list in chat)
 - [ ] (you) Change ADMIN_PASSWORD in Render
-- [ ] Deploy the LOMA tidy-up (committed, not pushed)
-- [ ] Rebuild APK against live server, test on phone (you)
-
-## Before Play Store
+- [ ] (you) Set PRIVACY_OPERATOR and PRIVACY_EMAIL in Render, then check /privacy
+- [ ] (you) Back up C:\Users\Admin\finlearn-keys (two places)
 - [ ] (you) Decide on LOMA book rights: loma.pdf is in the public repo
-- [ ] Remove loma.pdf from the repo, or make the repo private
-- [ ] Verify package id com.finlearn.app is free (shown when creating the app in Play Console)
-- [ ] Privacy policy: fill name + support email, host it, link in app
-- [ ] Always-on Render plan (you)
-- [ ] Signed release bundle (AAB) + keystore backup (you)
-- [ ] Turn off cleartext traffic / mixed content
-- [ ] Review SCHEDULE_EXACT_ALARM permission
-- [ ] Store listing: icon, feature graphic, screenshots, description
-- [ ] Data safety form, content rating, reviewer test login
-- [ ] (you) Play Console account ($25), 12 testers for 14 days if required
+- [ ] (you) Always-on Render plan
+- [ ] (you) Google Play Console account ($25), then create the app, upload AAB, fill the forms
+- [ ] (you) 12 testers for 14 days, if your account type requires it
+- [ ] (you) Test the APK on your phone
+- [ ] (you) Review all lessons for accuracy
 
-## Fix and clean
-- [ ] Garbled characters in LOMA lessons
-- [ ] Give coins a purpose or remove them
-- [ ] Split long lesson intros into short cards
-- [ ] Accessibility pass
-- [ ] Friendly "waking up" message while server starts
-
-## Features
-- [ ] Daily quests + streak freeze
+## Still to build
+### Features (each: demo, your approval, then build)
+- [ ] Daily quests
 - [ ] Calculators: SIP, EMI, emergency fund
 - [ ] First-time setup + placement quiz
 - [ ] Practice portfolio (virtual Rs 1,00,000) + replay the crash
@@ -47,8 +51,10 @@ Legend: [x] done, [~] in progress, [ ] to do, (you) = needs you
 - [ ] Badges and certificates
 - [ ] Ask Lumi tutor (guardrails)
 
-## Content
-- [x] Money Basics, Stock Market, Bitcoin and Crypto (1 chapter each)
-- [ ] (you) Review all lessons for accuracy
+### Content
 - [ ] More chapters per track
-- [ ] "Last reviewed" dates and sources on lessons
+- [ ] Sources on lessons (after your accuracy review)
+
+## Known risks
+- Google sign-in uses an external service (auth.emergentagent.com). Test it, it may not work outside the original platform.
+- data/loma.pdf (a copyrighted book) is in the public repo.
