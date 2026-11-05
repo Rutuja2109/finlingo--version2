@@ -1,7 +1,7 @@
 # FinLearn task tracker
 
 Legend: [x] done, [~] in progress, [ ] to do, (you) = needs you. Updated 2026-11-05.
-Nothing below is pushed to GitHub or deployed yet unless it says "live".
+All "built" items below were pushed and are live on the server as of commit 5a2c257 (verified).
 
 ## Decisions made
 - [x] Currency: rupees (India)
@@ -13,7 +13,7 @@ Nothing below is pushed to GitHub or deployed yet unless it says "live".
 - [x] Old public admin account removed
 - [x] Finance tracks, Account page, daily XP fix, choice lessons (deployed 2026-11-05)
 
-## Built, committed locally, NOT pushed yet (push as one batch)
+## Built and live (server) or ready (files)
 - [x] Hide duplicate LOMA 357 course
 - [x] Garbled characters fixed in source and repaired in the database at startup
 - [x] Android: https only, no mixed content, backups off, exact-alarm permission removed
@@ -25,7 +25,8 @@ Nothing below is pushed to GitHub or deployed yet unless it says "live".
 - [x] Release signing set up (key stored outside the repo)
 - [x] Store listing text, data-safety and content-rating notes (docs/STORE_LISTING.md)
 - [x] Store assets: icon, feature graphic, 7 screenshots (design/store/out)
-- [~] Signed release bundle (AAB) build
+- [x] Signed release bundle (AAB) and installable release APK built (finlearn-release.aab / .apk in repo root, git-ignored)
+- [x] Verified live: single LOMA course, /privacy page, streak-freeze route, no garbled text in 64 concepts, old admin rejected
 
 ## You need to do (see the list in chat)
 - [ ] (you) Change ADMIN_PASSWORD in Render
