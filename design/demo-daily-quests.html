@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FinLearn daily quests demo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#FAFAFA;color:#18181b;font-family:Manrope,system-ui,sans-serif;padding:20px 10px 40px}
+.note{max-width:390px;margin:0 auto 12px;font-size:13px;color:#71717a;text-align:center}
+.ph{max-width:390px;margin:0 auto;background:#FAFAFA;border:1px solid #e4e4e7;border-radius:36px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.2)}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(255,255,255,.8);border-bottom:1px solid #e4e4e7}
+.chips{display:flex;align-items:center;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:4px;font-family:Outfit,sans-serif;font-weight:800;font-size:13px;background:#f4f4f5;border-radius:99px;padding:5px 10px}
+.main{padding:14px 14px 16px}
+.ot{font-family:Outfit,sans-serif}
+.tag{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#71717a;margin:0 0 4px}
+.card{background:#fff;border:1px solid #e4e4e7;border-radius:24px;padding:16px;margin:0 0 12px}
+.hero{background:linear-gradient(135deg,#FF6B35,#FF8A4C,#EC4899);border-radius:24px;padding:18px;color:#fff;position:relative;overflow:hidden;margin:0 0 12px}
+.hero h1{font-family:Outfit,sans-serif;font-weight:900;font-size:24px;letter-spacing:-.02em;line-height:1.15;margin:0 0 4px;max-width:70%}
+.pg{height:12px;border-radius:99px;background:rgba(255,255,255,.3);overflow:hidden;margin-top:12px}
+.pg>div{height:100%;background:#fff;border-radius:99px;transition:width .6s}
+.q{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #f4f4f5}
+.q:first-of-type{border-top:0}
+.qi{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;flex:none}
+.bar{height:8px;border-radius:99px;background:#f4f4f5;overflow:hidden;margin-top:6px}
+.bar>div{height:100%;border-radius:99px;transition:width .6s}
+.btn{border:0;border-radius:12px;padding:8px 14px;font-family:Outfit,sans-serif;font-weight:800;font-size:13px;cursor:pointer;background:#FF6B35;color:#fff;white-space:nowrap}
+.btn:active{transform:scale(.96)}
+.btn[disabled]{background:#f4f4f5;color:#a1a1aa;cursor:default}
+.done{color:#10B981;font-size:22px}
+.chest{display:flex;align-items:center;gap:14px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px;text-align:center;font-size:11px;font-weight:700;color:#71717a}
+.dot{height:30px;border-radius:50%;display:grid;place-items:center;margin:4px auto 0;width:30px;font-size:16px;background:#f4f4f5;color:#a1a1aa}
+.dot.on{background:#FF6B35;color:#fff}
+.dot.today{outline:2px solid #FF6B35;outline-offset:2px}
+.sim{border:2px dashed #d4d4d8;border-radius:20px;padding:14px;margin:6px 0 0;background:#fff}
+.sim button{display:block;width:100%;text-align:left;margin:0 0 8px;padding:11px 12px;border-radius:12px;border:1px solid #e4e4e7;background:#fafafa;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.sim button:hover{border-color:#FF6B35}
+.toast{position:absolute;left:14px;right:14px;bottom:70px;background:#18181b;color:#fff;border-radius:16px;padding:12px 14px;font-size:14px;font-weight:700;display:none}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.92);border-top:1px solid #e4e4e7;padding:6px 0 10px}
+.nav div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;color:#71717a;padding:4px}
+.nav i{font-size:22px}.nav .on{color:#FF6B35}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.b{animation:bounce .5s ease 2}
+@keyframes pop{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .4s ease both}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<p class="note">Demo of daily quests in the real FinLearn style. The dashed box at the bottom is demo-only, to simulate your day.</p>
+<div class="ph" style="position:relative">
+  <div class="hdr"><div id="logo"></div><div class="chips" id="chips"></div></div>
+  <div class="main" id="app"></div>
+  <div class="toast" id="toast" role="status"></div>
+  <div class="nav">
+    <div class="on"><i class="ti ti-home"></i>Home</div><div><i class="ti ti-book"></i>Courses</div>
+    <div><i class="ti ti-trophy"></i>Rank</div><div><i class="ti ti-award"></i>Awards</div>
+  </div>
+</div>
+<script>
+(function(){
+window.onerror=function(m,s,l){var a=document.getElementById('app');if(a)a.innerHTML='<p style="color:#b91c1c;padding:12px">Demo error: '+m+' (line '+l+')</p>'};
+var S={xp:0,lessons:0,revs:0,coins:92,totalXp:204,claimed:[false,false,false],chestOpen:false,mood:'happy'};
+var Q=[
+ {id:'xp',icon:'ti-bolt',bg:'#fffbeb',fg:'#f59e0b',title:'Earn 30 XP',goal:30,reward:5,get:function(){return S.xp}},
+ {id:'lesson',icon:'ti-book-2',bg:'#eff6ff',fg:'#2563EB',title:'Finish 1 lesson',goal:1,reward:5,get:function(){return S.lessons}},
+ {id:'rev',icon:'ti-repeat',bg:'#ecfdf5',fg:'#10B981',title:'Revise 3 concepts',goal:3,reward:5,get:function(){return S.revs}}
+];
+function lumi(size,mood,cls){
+  var eyes=(mood==='cheer')?'<path d="M 27 53 Q 37 44 47 53" stroke="#1C1C2E" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M 53 53 Q 63 44 73 53" stroke="#1C1C2E" stroke-width="4.5" fill="none" stroke-linecap="round"/><ellipse cx="28" cy="62" rx="9" ry="5.5" fill="#FB7185" opacity="0.32"/><ellipse cx="72" cy="62" rx="9" ry="5.5" fill="#FB7185" opacity="0.32"/>':'<circle cx="37" cy="54" r="10" fill="white" stroke="#1C1C2E" stroke-width="2"/><circle cx="63" cy="54" r="10" fill="white" stroke="#1C1C2E" stroke-width="2"/><circle cx="37" cy="54" r="7" fill="#06B6D4"/><circle cx="63" cy="54" r="7" fill="#06B6D4"/><circle cx="37" cy="54" r="4.5" fill="#1C1C2E"/><circle cx="63" cy="54" r="4.5" fill="#1C1C2E"/><circle cx="40" cy="51" r="2.2" fill="white"/><circle cx="66" cy="51" r="2.2" fill="white"/>';
+  var mouth=(mood==='cheer')?'<path d="M 39 72 Q 50 82 61 72" stroke="#1C1C2E" stroke-width="2.8" fill="none" stroke-linecap="round"/>':'<path d="M 43 72 Q 50 79 57 72" stroke="#1C1C2E" stroke-width="2.8" fill="none" stroke-linecap="round"/>';
+  return '<svg class="'+(cls||'')+'" width="'+size+'" height="'+size+'" viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="32" cy="21" rx="11" ry="25" fill="#FFFBF5" stroke="#1C1C2E" stroke-width="3" transform="rotate(-8 32 21)"/><ellipse cx="32" cy="23" rx="6" ry="17" fill="#FDA4AF" transform="rotate(-8 32 23)"/><ellipse cx="68" cy="21" rx="11" ry="25" fill="#FFFBF5" stroke="#1C1C2E" stroke-width="3" transform="rotate(8 68 21)"/><ellipse cx="68" cy="23" rx="6" ry="17" fill="#FDA4AF" transform="rotate(8 68 23)"/><ellipse cx="50" cy="90" rx="22" ry="14" fill="#FFFBF5" stroke="#1C1C2E" stroke-width="3"/><ellipse cx="28" cy="86" rx="10" ry="7" fill="#FFFBF5" stroke="#1C1C2E" stroke-width="2.5"/><ellipse cx="72" cy="86" rx="10" ry="7" fill="#FFFBF5" stroke="#1C1C2E" stroke-width="2.5"/><circle cx="50" cy="57" r="32" fill="#FFFBF5" stroke="#1C1C2E" stroke-width="3"/>'+eyes+'<ellipse cx="50" cy="67" rx="4.5" ry="3.5" fill="#F472B6"/>'+mouth+'</svg>';
+}
+function allDone(){return Q.every(function(q){return q.get()>=q.goal})}
+function allClaimed(){return S.claimed.every(Boolean)}
+function doneCount(){return Q.filter(function(q){return q.get()>=q.goal}).length}
+function toast(t){var e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(function(){e.style.display='none'},2200)}
+function render(){
+  document.getElementById('logo').innerHTML=lumi(32,'happy');
+  document.getElementById('chips').innerHTML='<span class="chip"><i class="ti ti-flame" style="color:#FF5C00;font-size:16px"></i>3</span><span class="chip"><i class="ti ti-bolt" style="color:#FBBF24;font-size:16px"></i>'+S.totalXp+'</span><span class="chip"><i class="ti ti-coin" style="color:#F59E0B;font-size:16px"></i>'+S.coins+'</span>';
+  var n=doneCount(),h='';
+  h+='<div class="hero"><div style="position:absolute;right:-6px;top:-4px;opacity:.35">'+lumi(110,S.mood==='cheer'?'cheer':'happy')+'</div><p class="tag" style="color:rgba(255,255,255,.9);position:relative"><i class="ti ti-target" style="margin-right:4px"></i>Daily quests</p><h1>'+(allClaimed()&&S.chestOpen?'All done. See you tomorrow!':n===3?'All quests done. Claim your chest!':n+' of 3 done today')+'</h1><div class="pg"><div style="width:'+Math.round(n/3*100)+'%"></div></div><p style="margin:8px 0 0;font-size:12px;opacity:.9;position:relative">Resets in 5h 12m</p></div>';
+  h+='<div class="card">';
+  Q.forEach(function(q,i){
+    var v=Math.min(q.get(),q.goal),done=q.get()>=q.goal,pct=Math.round(v/q.goal*100);
+    var right=S.claimed[i]?'<i class="ti ti-circle-check done" aria-label="Claimed"></i>':done?'<button class="btn pop" onclick="Demo.claim('+i+')">Claim +'+q.reward+'</button>':'<span class="chip" style="font-size:12px"><i class="ti ti-coin" style="color:#F59E0B"></i>+'+q.reward+'</span>';
+    h+='<div class="q"><div class="qi" style="background:'+q.bg+';color:'+q.fg+'"><i class="ti '+q.icon+'"></i></div><div style="flex:1;min-width:0"><div class="ot" style="font-weight:800;font-size:15px">'+q.title+'</div><div class="bar"><div style="width:'+pct+'%;background:'+q.fg+'"></div></div><div style="font-size:12px;color:#71717a;margin-top:4px">'+v+' / '+q.goal+'</div></div>'+right+'</div>';
+  });
+  h+='</div>';
+  var chestReady=allDone()&&allClaimed()&&!S.chestOpen;
+  h+='<div class="card chest"><div class="qi" style="width:64px;height:64px;border-radius:20px;font-size:34px;background:'+(S.chestOpen?'#ecfdf5':'#fff7ed')+';color:'+(S.chestOpen?'#10B981':'#FF6B35')+'"><i class="ti '+(S.chestOpen?'ti-gift-off':'ti-gift')+'"></i></div><div style="flex:1"><div class="ot" style="font-weight:800;font-size:16px">Daily chest</div><div style="font-size:13px;color:#71717a">'+(S.chestOpen?'Opened: +15 coins':'Finish and claim all 3 quests to open it for +15 coins')+'</div></div>'+(chestReady?'<button class="btn pop" onclick="Demo.chest()">Open</button>':S.chestOpen?'<i class="ti ti-circle-check done"></i>':'<i class="ti ti-lock" style="font-size:20px;color:#a1a1aa" aria-label="Locked"></i>')+'</div>';
+  h+='<div class="card"><p class="tag">This week</p><div class="week">'+['M','T','W','T','F','S','S'].map(function(d,i){var on=i<3||(i===3&&n>0);return '<div>'+d+'<div class="dot'+(on?' on':'')+(i===3?' today':'')+'">'+(on?'<i class="ti ti-check"></i>':'')+'</div></div>'}).join('')+'</div><p style="font-size:12px;color:#71717a;margin:12px 0 0">Do at least one quest each day to keep your streak. Streak freezes cover one missed day.</p></div>';
+  h+='<div class="sim"><p class="tag">Demo only: simulate your day</p><button onclick="Demo.lesson()"><i class="ti ti-book-2"></i> Finish a lesson (+22 XP)</button><button onclick="Demo.rev()"><i class="ti ti-repeat"></i> Revise one concept (+5 XP)</button><button onclick="Demo.reset()"><i class="ti ti-refresh"></i> Start a new day</button></div>';
+  document.getElementById('app').innerHTML=h;
+}
+window.Demo={
+  lesson:function(){S.lessons++;S.xp+=22;S.totalXp+=22;S.mood='cheer';toast('+22 XP');render()},
+  rev:function(){S.revs++;S.xp+=5;S.totalXp+=5;S.mood='cheer';toast('+5 XP');render()},
+  claim:function(i){S.claimed[i]=true;S.coins+=Q[i].reward;S.mood='cheer';toast('+'+Q[i].reward+' coins');render()},
+  chest:function(){S.chestOpen=true;S.coins+=15;S.mood='cheer';toast('Chest opened: +15 coins');render()},
+  reset:function(){S={xp:0,lessons:0,revs:0,coins:S.coins,totalXp:S.totalXp,claimed:[false,false,false],chestOpen:false,mood:'happy'};render()}
+};
+render();
+})();
+</script>
+</body>
+</html>
