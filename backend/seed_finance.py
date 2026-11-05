@@ -587,6 +587,11 @@ async def seed_finance_courses(db):
 
     # Beginner tracks use negative orders so they always list first; LOMA and other courses keep their own order.
 
+    # The pre-rebrand "loma-357" copy duplicates "institutional-investing-101". Hide (never delete) the stale one
+    # so learners see a single course; the flag is reversible and no progress data is touched.
+    if await db.courses.find_one({"slug": "institutional-investing-101"}):
+        await db.courses.update_many({"slug": "loma-357"}, {"$set": {"hidden": True}})
+
     to_build = []
     for course in build_finance_courses():
         existing = await db.courses.find_one({"slug": course["slug"]})

@@ -469,7 +469,7 @@ def _clean(doc):
 
 @api.get("/courses")
 async def list_courses():
-    cursor = db.courses.find({}, {"_id": 0}).sort("order", 1)
+    cursor = db.courses.find({"hidden": {"$ne": True}}, {"_id": 0}).sort("order", 1)
     return await cursor.to_list(length=200)
 
 
