@@ -42,7 +42,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [x] Days now follow the learner's own timezone (streak and daily goal reset at local midnight)
 - [x] Practice trading built into the app (new Practice tab): Rs 1,00,000 virtual money, 4 simulated assets, chart with 7 timeframes, buy/sell, portfolio, history, crash replay, Lumi's 15-step tour with +15 XP. Server tests: backend/tests/test_practice.py. Phone check pending.
 - [x] My money tab: manual expense tracker with 50/30/20 split and Lumi coaching, income and expense entries by month, savings-goal planner ("save Rs X a month"). No SMS or bank access. Tests: backend/tests/test_money.py. Phone check pending.
-- [ ] SIP / EMI / emergency fund calculators
+- [x] Calculators (linked from My money): SIP (what you will get, and what to save for a target), loan EMI (with the pay-extra tip), emergency fund (can use your needs from My money). Maths checked in frontend/src/lib/calc.check.mjs. Phone check pending.
 - [ ] Make the 'coming soon' courses real: Taxes Made Simple, Insurance Basics, Hindi Lessons
 - [ ] More Investment Analysis chapters
 - [ ] Daily quests, friend streaks, weekly leagues

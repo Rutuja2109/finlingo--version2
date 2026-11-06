@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Plus, Trash2, Target, PiggyBank } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight, Plus, Trash2, Target, PiggyBank, Calculator } from "lucide-react";
 import { api, formatApiError } from "@/lib/api";
 import Lumi from "@/components/Lumi";
 
@@ -71,6 +72,9 @@ export default function Money() {
         <button onClick={() => setMonth(shiftMonth(month, 1))} aria-label="Next month" className="w-10 h-10 grid place-items-center rounded-full bg-zinc-100"><ChevronRight className="w-5 h-5" /></button>
       </div>
 
+      <Link to="/calculators" data-testid="money-calculators" className="flex items-center justify-between bg-white border border-zinc-200 rounded-2xl px-3.5 py-2.5 mb-3 text-[13px] font-bold">
+        <span className="flex items-center gap-2"><Calculator className="w-4 h-4 text-[#FF6B35]" />SIP, loan EMI and emergency fund calculators</span><ChevronRight className="w-4 h-4 text-zinc-400" />
+      </Link>
       {err && <div className="mb-2 text-[12.5px] text-red-700 bg-red-50 rounded-xl px-3 py-2">{err}</div>}
       {!data && !err && <div className="py-16 text-center text-zinc-500">Loading your money…</div>}
 
