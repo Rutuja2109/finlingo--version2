@@ -58,11 +58,24 @@ body{margin:0;background:#FAFAFA;color:#18181b;font-family:Manrope,system-ui,san
 .cancel{width:100%;border:0;background:#f4f4f5;border-radius:16px;padding:12px;font-family:Outfit,sans-serif;font-weight:800;margin-top:8px;cursor:pointer}
 .banner{background:#18181b;color:#fff;padding:9px 14px;font-size:13px;font-weight:700;display:none;align-items:center;gap:8px}
 .mut{font-size:12.5px;color:#71717a}
+#tut{position:relative;z-index:60;display:none;background:#fff;border-bottom:2px solid #FF6B35;padding:10px 14px 12px}
+#tut .tb2{display:flex;gap:10px;align-items:flex-start}
+#tut .tx{font-size:13.5px;line-height:1.5;flex:1}#tut .tx b{font-family:Outfit,sans-serif}
+#tut .acts{display:flex;gap:8px;margin-top:9px;align-items:center}
+#tut .nx{border:0;background:#FF6B35;color:#fff;border-radius:12px;padding:9px 16px;font-family:Outfit,sans-serif;font-weight:800;font-size:14px;cursor:pointer}
+#tut .nx[disabled]{background:#fdba9b;cursor:default}
+#tut .sk{border:0;background:none;color:#71717a;font-weight:700;font-size:12.5px;cursor:pointer;margin-left:auto}
+#tut .q{display:block;width:100%;text-align:left;border:2px solid #e4e4e7;background:#fff;border-radius:12px;padding:8px 10px;margin-top:6px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+#tut .q.ok{border-color:#10B981;background:#ecfdf5}#tut .q.no{border-color:#EF4444;background:#fef2f2}
+#tut .stp{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#FF6B35}
+.hl{outline:3px solid #FF6B35;outline-offset:3px;border-radius:14px;animation:hlp 1.2s ease-in-out infinite;position:relative;z-index:61}
+@keyframes hlp{0%,100%{outline-color:#FF6B35}50%{outline-color:#FF6B3555}}
+.link{border:0;background:none;color:#FF6B35;font-weight:800;font-size:12.5px;cursor:pointer;display:block;margin:8px auto 0}
 .crash{border:2px solid #EF4444;background:#fff;color:#b91c1c;border-radius:14px;padding:8px 12px;font-family:Outfit,sans-serif;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;margin:10px auto 0}
 </style>
 </head>
 <body>
-<p class="note">Demo of practice trading in FinLearn. Prices are simulated, and so is the money. Tap an asset, buy, and watch.</p>
+<p class="note">Demo of practice trading in FinLearn. Lumi teaches you first, step by step. Prices are simulated, and so is the money.</p>
 <div class="ph" id="ph">
   <div class="hd">
     <button class="hb" id="reset"><i class="ti ti-refresh"></i>Reset</button>
@@ -70,6 +83,7 @@ body{margin:0;background:#FAFAFA;color:#18181b;font-family:Manrope,system-ui,san
     <button class="ic" id="hist" aria-label="Trade history"><i class="ti ti-history"></i></button>
   </div>
   <div class="banner" id="banner"></div>
+  <div id="tut"></div>
   <div class="body" id="body"></div>
   <div class="nav">
     <button data-v="trade" class="on"><i class="ti ti-chart-line"></i>Trade</button>
@@ -90,7 +104,7 @@ var A=[
  {id:'rkt',name:'Rocket Tech (a made-up stock)',short:'RKT',base:1280,vol:.0027,icon:'ti-rocket',col:'#EC4899',why:'One company can jump or fall on a single news item. That is the risk of owning just one stock.'}
 ];
 var START=100000, N_HIST=900, TF={'1MIN':30,'5MIN':60,'15MIN':110,'30MIN':200,'1H':340,'1D':560,'1W':880};
-var S={cash:START,pos:{},log:[],sel:'nifty',tf:'1MIN',view:'trade',hist:{},crash:null,crashBase:null,msg:null,boughtTypes:{}};
+var S={cash:START,pos:{},log:[],sel:'gold',tf:'1MIN',view:'trade',hist:{},crash:null,crashBase:null,msg:null,boughtTypes:{},tut:{i:0,quiz:null},f:{},bias:0,lastPnl:0};
 function gauss(){var u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
 A.forEach(function(a){var p=a.base,arr=[];for(var i=0;i<N_HIST;i++){p*=Math.exp(a.vol*gauss());arr.push(p)}var k=a.base*(0.94+Math.random()*0.12)/arr[arr.length-1];S.hist[a.id]=arr.map(function(x){return x*k})});
 function price(id){var h=S.hist[id];return h[h.length-1]}
@@ -102,6 +116,7 @@ var CRASH={nifty:-.014,gold:.004,btc:-.034,rkt:-.03};
 function tick(){
   A.forEach(function(a){var h=S.hist[a.id],p=h[h.length-1],drift=0;
     if(S.crash){var step=S.crash.step; drift=step<25?CRASH[a.id]:(a.id==='gold'?-.002:Math.abs(CRASH[a.id])*.55)}
+    if(S.bias&&S.pos[a.id])drift+=S.bias;
     p*=Math.exp(a.vol*gauss()*(S.crash?.5:1)+drift);h.push(p);if(h.length>1800)h.shift()});
   if(S.crash){S.crash.step++;if(S.crash.step>=50)endCrash()}
   draw(true)
@@ -134,8 +149,9 @@ function tradeView(){
   var btns=A.map(function(x){return '<button class="as'+(x.id===S.sel?' on':'')+'" data-a="'+x.id+'"><div class="c" style="background:'+x.col+'"><i class="ti '+x.icon+'"></i></div><span>'+x.short+'</span></button>'}).join('');
   var tf=Object.keys(TF).map(function(k){return '<button data-t="'+k+'"'+(k===S.tf?' class="on"':'')+'>'+k+'</button>'}).join('');
   var has=!!S.pos[a.id];
-  return '<div class="assets">'+btns+'</div><div class="pr"><div><div class="n">'+a.name+'</div><div class="p">'+inr(price(a.id),price(a.id)<1000?2:0)+'</div></div><span class="chg '+(upc?'up':'dn')+'">'+(upc?'+':'')+pc.toFixed(2)+'%</span></div><div class="chart" id="chart">'+chartSvg()+'</div><div class="tf">'+tf+'</div><div class="tb"><button class="sell" id="sellb"'+(has?'':' disabled')+'><i class="ti ti-arrow-down"></i>Sell</button><button class="buy" id="buyb"><i class="ti ti-arrow-up"></i>Buy</button></div>'+coachBox()+(S.crash?'':'<button class="crash" id="crashb"><i class="ti ti-flame"></i>Replay a market crash</button>')
+  return '<div class="assets">'+btns+'</div><div class="pr"><div><div class="n">'+a.name+'</div><div class="p">'+inr(price(a.id),price(a.id)<1000?2:0)+'</div></div><span class="chg '+(upc?'up':'dn')+'">'+(upc?'+':'')+pc.toFixed(2)+'%</span></div><div class="chart" id="chart">'+chartSvg()+'</div><div class="tf">'+tf+'</div><div id="mypos" class="mut" style="margin:0 4px 8px">'+posLine()+'</div><div class="tb"><button class="sell" id="sellb"'+(has?'':' disabled')+'><i class="ti ti-arrow-down"></i>Sell</button><button class="buy" id="buyb"><i class="ti ti-arrow-up"></i>Buy</button></div>'+coachBox()+(S.crash?'':'<button class="crash" id="crashb"><i class="ti ti-flame"></i>Replay a market crash</button>')+(S.tut?'':'<button class="link" id="replayt">Replay Lumi’s tutorial</button>')
 }
+function posLine(){var a=asset(S.sel),p=S.pos[a.id];if(!p)return 'You do not own any '+a.short+' yet.';var v=posVal(a.id),g=v-p.cost;return 'You hold <b>'+inr(v)+'</b> of '+a.short+' &middot; profit/loss <b style="color:'+(g>=0?'#047857':'#b91c1c')+'">'+(g>=0?'+':'')+inr(g)+'</b>'}
 function portView(){
   var t=total(),pnl=t-START,ids=Object.keys(S.pos),h='';
   var segs=[['Cash',S.cash,'#d4d4d8']].concat(ids.map(function(id){return [asset(id).short,posVal(id),asset(id).col]}));
@@ -160,22 +176,24 @@ function draw(soft){
   if(soft&&S.view==='trade'&&document.getElementById('chart')){
     var a=asset(S.sel),d=S.hist[a.id].slice(-TF[S.tf]),c=d[d.length-1]-d[0];
     document.getElementById('chart').innerHTML=chartSvg();
+    var mp=document.getElementById('mypos');if(mp)mp.innerHTML=posLine();
     var pe=b.querySelector('.p'),ch=b.querySelector('.chg');pe.textContent=inr(price(a.id),price(a.id)<1000?2:0);ch.className='chg '+(c>=0?'up':'dn');ch.textContent=(c>=0?'+':'')+(c/d[0]*100).toFixed(2)+'%';
     if(S.crash){var bt=document.getElementById('bt');if(bt)bt.textContent='Market crash replay: day '+Math.min(10,Math.ceil(S.crash.step/5))+' of 10. Hold your nerve.'}
     return}
   b.innerHTML=S.view==='trade'?tradeView():S.view==='port'?portView():logView();
-  wire()
+  wire();tutRefresh()
 }
 function wire(){
   var b=document.getElementById('body');
   b.querySelectorAll('[data-a]').forEach(function(e){e.onclick=function(){S.sel=e.getAttribute('data-a');S.msg=null;draw()}});
   b.querySelectorAll('[data-t]').forEach(function(e){e.onclick=function(){S.tf=e.getAttribute('data-t');draw()}});
   var bb=document.getElementById('buyb'),sb=document.getElementById('sellb'),cb=document.getElementById('crashb');
-  if(bb)bb.onclick=function(){openSheet('buy')};if(sb&&!sb.disabled)sb.onclick=function(){openSheet('sell')};if(cb)cb.onclick=startCrash
+  if(bb)bb.onclick=function(){openSheet('buy')};if(sb&&!sb.disabled)sb.onclick=function(){openSheet('sell')};if(cb)cb.onclick=startCrash;
+  var rp=document.getElementById('replayt');if(rp)rp.onclick=function(){S.tut={i:0,quiz:null};S.f={};S.cash=START;S.pos={};S.log=[];S.msg=null;S.bias=0;S.sel='gold';S.tf='1MIN';S.view='trade';setNav();draw()}
 }
 var T={mode:'buy',amt:10000};
 function openSheet(mode){
-  T.mode=mode;var a=asset(S.sel);T.amt=mode==='buy'?Math.min(10000,Math.floor(S.cash)):100;renderSheet();document.getElementById('sheet').style.display='flex'
+  T.mode=mode;var a=asset(S.sel);T.amt=mode==='buy'?Math.min(10000,Math.floor(S.cash)):100;if(mode==='buy')S.f.sheetBuy=true;else S.f.sheetSell=true;renderSheet();document.getElementById('sheet').style.display='flex';tutRefresh()
 }
 function renderSheet(){
   var a=asset(S.sel),buy=T.mode==='buy',opts=buy?[5000,10000,25000,50000]:[25,50,100],held=posVal(a.id);
@@ -184,25 +202,63 @@ function renderSheet(){
   var err=buy&&T.amt>S.cash?'You only have '+inr(S.cash)+' of practice money.':'';
   document.getElementById('sin').innerHTML='<h3>'+(buy?'Buy ':'Sell ')+a.name+'</h3><div class="mut">Price now '+inr(price(a.id),price(a.id)<1000?2:0)+(buy?' &middot; Cash '+inr(S.cash):' &middot; You hold '+inr(held))+'</div><div class="chips">'+chips+'</div><div class="card" style="margin:0 0 10px"><div class="row"><span>'+(buy?'You spend':'You receive')+'</span><b>'+inr(amount)+'</b></div><div class="row"><span>Units</span><b>'+units.toFixed(4)+'</b></div></div>'+(err?'<p style="color:#b91c1c;font-size:13px;margin:0 0 8px">'+err+'</p>':'')+'<button class="cta" id="go" style="background:'+(buy?'#10B981':'#EF4444')+'">Confirm '+(buy?'buy':'sell')+'</button><button class="cancel" id="cx">Cancel</button>';
   document.querySelectorAll('#sin [data-o]').forEach(function(e){e.onclick=function(){T.amt=Number(e.getAttribute('data-o'));renderSheet()}});
-  document.getElementById('cx').onclick=closeSheet;document.getElementById('go').onclick=confirmTrade
+  document.getElementById('cx').onclick=closeSheet;document.getElementById('go').onclick=confirmTrade;tutRefresh()
 }
 function closeSheet(){document.getElementById('sheet').style.display='none'}
 function confirmTrade(){
   var a=asset(S.sel),p=price(a.id),buy=T.mode==='buy';
   if(buy){if(T.amt>S.cash||T.amt<=0){renderSheet();return}
     var u=T.amt/p,pos=S.pos[a.id]||{units:0,cost:0};pos.units+=u;pos.cost+=T.amt;S.pos[a.id]=pos;S.cash-=T.amt;S.log.push({side:'buy',name:a.name,amount:T.amt,price:p});
+    S.f.bought=true;if(S.tut)S.bias=.0016;
     var t=total(),share=posVal(a.id)/t;
     S.msg=share>.4?{k:'bad',h:'Big bet on one asset',t:Math.round(share*100)+'% of your money is now in '+a.name+'. Beginners who spread their money lose less when one asset falls.'}:{k:'good',h:'Bought '+inr(T.amt),t:'You now own '+u.toFixed(4)+' units. Watch the dashed line: that is your buy price.'}}
   else{var pos2=S.pos[a.id],frac=T.amt/100,uSold=pos2.units*frac,proceeds=uSold*p,costPart=pos2.cost*frac,pnl=proceeds-costPart;
-    pos2.units-=uSold;pos2.cost-=costPart;if(pos2.units<1e-9)delete S.pos[a.id];S.cash+=proceeds;S.log.push({side:'sell',name:a.name,amount:proceeds,price:p,pnl:pnl});
+    pos2.units-=uSold;pos2.cost-=costPart;if(pos2.units<1e-9)delete S.pos[a.id];S.cash+=proceeds;S.log.push({side:'sell',name:a.name,amount:proceeds,price:p,pnl:pnl});S.f.sold=true;S.lastPnl=pnl;
     S.msg=Math.abs(pnl)<proceeds*0.003?{k:'good',h:'Roughly break-even',t:'You sold at about the price you paid. Real profit comes from selling clearly above your buy price.'}:pnl<0&&S.crash?{k:'bad',h:'Panic sell?',t:'You sold during the crash and locked in a loss of '+inr(Math.abs(pnl))+'. Prices often recover, but only if you are still holding.'}:pnl<0?{k:'warn',h:'Sold at a loss',t:'You lost '+inr(Math.abs(pnl))+' on this trade. Ask: did the reason you bought change, or did you just get scared?'}:{k:'good',h:'Sold for a profit',t:'You made '+inr(pnl)+'. Notice you only gain if you sell above your buy price.'}}
   closeSheet();draw()
 }
 document.getElementById('reset').onclick=function(){S.cash=START;S.pos={};S.log=[];S.msg=null;S.crash=null;setSpeed(1000);document.getElementById('banner').style.display='none';draw()};
 document.getElementById('hist').onclick=function(){S.view='log';setNav();draw()};
-document.querySelectorAll('.nav button').forEach(function(b){b.onclick=function(){S.view=b.getAttribute('data-v');setNav();draw()}});
+document.querySelectorAll('.nav button').forEach(function(b){b.onclick=function(){S.view=b.getAttribute('data-v');if(S.view==='port')S.f.port=true;setNav();draw()}});
 function setNav(){document.querySelectorAll('.nav button').forEach(function(b){b.className=b.getAttribute('data-v')===S.view?'on':''})}
-window.FLT={buy:function(id,amt){S.sel=id;T={mode:'buy',amt:amt};confirmTrade()},crash:startCrash,state:S,tick:tick,total:total};
+var TUT=[
+{m:'cheer',h:'Welcome!',t:'Hi, I am Lumi! I will show you how practice trading works in about two minutes. You get ₹1,00,000 of practice money. It is not real, so you cannot lose a single rupee here.',b:'Show me'},
+{m:'happy',h:'Your cash',t:'This is your cash: money you have not invested yet. It goes down when you buy something and up when you sell.',hl:'#bal',b:'Got it'},
+{m:'happy',h:'Pick an asset',t:'An asset is something you can buy, like gold or a share. Tap NIFTY. It is a basket of 50 big companies, so it moves gently.',hl:'[data-a=nifty]',wait:function(){return S.sel==='nifty'},hint:'Tap NIFTY above'},
+{m:'happy',h:'The price chart',t:'The line shows the price. Green means it is higher than at the start of this view, red means lower. The tag on the right is the price right now.',hl:'#chart',b:'Next'},
+{m:'happy',h:'Zoom in and out',t:'Tap 5MIN to see a longer stretch of time. Short views show quick wiggles, longer views show the bigger trend.',hl:'[data-t="5MIN"]',wait:function(){return S.tf==='5MIN'},hint:'Tap 5MIN'},
+{m:'cheer',h:'Buy',t:'Buying means swapping cash for a share of the asset. Tap Buy.',hl:'#buyb',wait:function(){return S.f.sheetBuy||S.f.bought},hint:'Tap Buy'},
+{m:'cheer',h:'Choose an amount',t:'Pick how much to invest, for example ₹5,000 or ₹10,000, then tap Confirm buy.',hl:'#go',wait:function(){return S.f.bought},hint:'Tap Confirm buy'},
+{m:'happy',h:'Your profit or loss',t:'Watch the dashed line on the chart: it is your buy price. Price above it means profit. Below it means a loss. The line right under the chart shows it live.',hl:'#mypos',b:'Next'},
+{m:'nervous',h:'Quick check',quiz:{q:'The price drops below your dashed line. What does that mean?',opts:['You are making a profit','You are in a loss, but only on paper until you sell','Your money is safe from loss'],ok:1,fb:['Not quite. Below your buy price means a loss.','Right. It is a loss on paper. It only becomes real if you sell.','Not quite. Prices can fall, so nothing is guaranteed.']}},
+{m:'cheer',h:'Sell',t:'Selling swaps your holding back into cash. Tap Sell.',hl:'#sellb',wait:function(){return S.f.sheetSell||S.f.sold},hint:'Tap Sell'},
+{m:'cheer',h:'Sell it all',t:'Choose 100% and tap Confirm sell.',hl:'#go',wait:function(){return S.f.sold},hint:'Tap Confirm sell'},
+{m:'cheer',h:'Your result',t:function(){return S.lastPnl>=0?'You made '+inr(S.lastPnl)+'. This time the price went up. In real life it can go either way, and that is the risk.':'You lost '+inr(Math.abs(S.lastPnl))+'. That can happen. Risk means prices can fall as well as rise.'},b:'Next'},
+{m:'happy',h:'Spread your money',t:'Tap Portfolio to see how your money is split. Spreading it across different assets means one bad day cannot sink you.',hl:'.nav [data-v=port]',wait:function(){return S.f.port},hint:'Tap Portfolio'},
+{m:'nervous',h:'Practice a crash',t:'On the Trade tab there is a button to replay a market crash. Try it when you are ready: it teaches you to stay calm.',b:'Next',goTrade:true},
+{m:'cheer',h:'Ready!',t:'You know the basics. I will reset your practice money to ₹1,00,000 so you can start fresh. Practice here, and think carefully before you ever invest real money.',b:'Start practicing',finish:true}
+];
+function tutRefresh(){
+  var el=document.getElementById('tut');
+  document.querySelectorAll('.hl').forEach(function(e){e.classList.remove('hl')});
+  if(!S.tut){el.style.display='none';return}
+  var st=TUT[S.tut.i],ready=!st.wait||st.wait(),text=typeof st.t==='function'?st.t():st.t;
+  var h='<div class="stp">Lumi’s tour &middot; '+(S.tut.i+1)+' of '+TUT.length+'</div><div class="tb2">'+lumi(st.m,60)+'<div class="tx"><b>'+st.h+'</b><br>'+(st.quiz?st.quiz.q:text)+'</div></div>';
+  if(st.quiz){h+=st.quiz.opts.map(function(o,i){var c=S.tut.quiz===null?'':(i===st.quiz.ok?' ok':(i===S.tut.quiz?' no':''));return '<button class="q'+c+'" data-q="'+i+'">'+o+'</button>'}).join('');
+    if(S.tut.quiz!==null)h+='<div class="tx" style="margin-top:6px">'+st.quiz.fb[S.tut.quiz]+'</div>'}
+  var canNext=st.quiz?S.tut.quiz!==null:ready;
+  h+='<div class="acts"><button class="nx" id="tnx"'+(canNext?'':' disabled')+'>'+(canNext?(st.b||'Next'):(st.hint||'Do the step above'))+'</button><button class="sk" id="tsk">Skip tour</button></div>';
+  el.innerHTML=h;el.style.display='block';
+  document.getElementById('tnx').onclick=tutNext;document.getElementById('tsk').onclick=function(){tutEnd(false)};
+  el.querySelectorAll('[data-q]').forEach(function(e){e.onclick=function(){if(S.tut.quiz===null){S.tut.quiz=Number(e.getAttribute('data-q'));tutRefresh()}}});
+  if(st.hl){var t=document.querySelector(st.hl);if(t)t.classList.add('hl')}
+}
+function tutNext(){var st=TUT[S.tut.i];if(st.finish){tutEnd(true);return}
+  S.tut.i++;S.tut.quiz=null;var ns=TUT[S.tut.i];
+  if(ns&&ns.goTrade){S.view='trade';setNav();draw();return}
+  tutRefresh()}
+function tutEnd(reset){S.tut=null;S.bias=0;closeSheet();if(reset){S.cash=START;S.pos={};S.log=[];S.msg=null;S.f={};S.view='trade'}setNav();draw()}
+window.FLT={buy:function(id,amt){S.sel=id;T={mode:'buy',amt:amt};confirmTrade()},crash:startCrash,state:S,tick:tick,total:total,next:tutNext,tut:function(){return S.tut}};
 draw()
 })();
 </script>
