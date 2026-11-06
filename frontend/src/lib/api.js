@@ -34,6 +34,8 @@ api.interceptors.request.use((config) => {
   requestStarted();
   const token = localStorage.getItem("fl_token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  // Lets the server count days (streak, daily goal) on the learner's own clock.
+  config.headers["X-TZ-Offset"] = String(new Date().getTimezoneOffset());
   return config;
 }, (error) => { requestEnded(); return Promise.reject(error); });
 

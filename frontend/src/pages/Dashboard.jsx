@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 import { ArrowRight, Sparkles, Target, Flame, Repeat, Snowflake } from "lucide-react";
 import { trackCourseEnrolled } from "@/lib/firebase";
+import GoalPicker from "@/components/GoalPicker";
+import { streakState } from "@/lib/streak";
 
 const FREEZE_COST = 30;
 const FREEZE_MAX = 2;
@@ -25,6 +27,14 @@ export default function Dashboard() {
   const [enrolled, setEnrolled] = useState([]);
   const [dueCount, setDueCount] = useState(0);
   const [busy, setBusy] = useState({});
+  const [showGoal, setShowGoal] = useState(false);
+
+  // Ask for a daily goal once, when the learner has not chosen one yet.
+  useEffect(() => {
+    let later = false;
+    try { later = !!sessionStorage.getItem("fl_goal_later"); } catch { /* storage unavailable */ }
+    if (stats && stats.daily_goal_minutes == null && !later) setShowGoal(true);
+  }, [stats]);
 
   useEffect(() => {
     (async () => {
@@ -66,16 +76,25 @@ export default function Dashboard() {
 
   const isEnrolled = (id) => enrolled.some((c) => c.id === id);
   const xpToNext = 100 - (stats?.total_xp || 0) % 100;
-  const dailyGoal = 30;
+  const dailyGoal = stats?.daily_goal_xp || 20;
+  const goalMinutes = stats?.daily_goal_minutes || 5;
   const todayXp = stats?.xp_today || 0;
   const dailyPct = Math.min(100, (todayXp / dailyGoal) * 100);
+  const st = streakState(stats, goalMinutes);
 
   return (
     <div className="pb-24">
+      {showGoal && (
+        <GoalPicker
+          current={stats?.daily_goal_minutes}
+          onClose={() => { try { sessionStorage.setItem("fl_goal_later", "1"); } catch { /* ignore */ } setShowGoal(false); }}
+          onSaved={async () => { await refreshStats(); setShowGoal(false); }}
+        />
+      )}
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899] rounded-3xl p-5 md:p-10 text-white mb-6 md:mb-8 relative overflow-hidden">
-        <div className="absolute -right-4 -top-3 md:-right-10 md:-top-10 opacity-30 pointer-events-none">
-          <Lumi size={115} mood="cheer"/>
+      <section className={`bg-gradient-to-br ${st.mood === "angry" ? "from-[#E5484D] via-[#FF6B35] to-[#EC4899]" : "from-[#FF6B35] via-[#FF8A4C] to-[#EC4899]"} rounded-3xl p-5 md:p-10 text-white mb-6 md:mb-8 relative overflow-hidden`}>
+        <div className="absolute -right-1 top-1 md:right-4 md:top-3 pointer-events-none">
+          <Lumi size={104} mood={st.mood}/>
         </div>
         <div className="relative">
           <p className="uppercase tracking-[0.2em] text-[11px] md:text-xs font-bold text-white/90 mb-2">
@@ -83,10 +102,9 @@ export default function Dashboard() {
             {greeting()}, {user?.name?.split(" ")[0] || "learner"}
           </p>
           <h1 className="font-[Outfit] font-black text-2xl md:text-5xl tracking-tight leading-tight max-w-[75%] md:max-w-2xl">
-            {(stats?.streak_days || 0) > 0
-              ? <>{stats.streak_days}-day streak. Keep it alive.</>
-              : "Let's start your streak today."}
+            {st.headline}
           </h1>
+          <p className="text-white/90 text-sm mt-1.5 max-w-[62%] md:max-w-xl">{st.sub}</p>
           <div className="mt-5 grid grid-cols-3 gap-2 md:gap-3 max-w-2xl">
             <HeroStat label="Level" value={stats?.level || 1} sub={`${xpToNext} XP to next`}/>
             <HeroStat label="Total XP" value={stats?.total_xp || 0} sub="Lifetime"/>
@@ -102,6 +120,8 @@ export default function Dashboard() {
             <div>
               <p className="uppercase tracking-[0.2em] text-xs font-bold text-zinc-500">Daily Goal</p>
               <h3 className="font-[Outfit] font-black text-2xl tracking-tight">Earn {dailyGoal} XP today</h3>
+              <button onClick={() => setShowGoal(true)} data-testid="change-goal"
+                className="text-xs font-bold text-[#FF6B35] mt-0.5">{goalMinutes} min a day · Change</button>
             </div>
             <Target className="w-6 h-6 text-[#FF6B35]"/>
           </div>
@@ -131,7 +151,9 @@ export default function Dashboard() {
           <Flame className="w-8 h-8 text-[#FF5C00] mb-2"/>
           <p className="font-[Outfit] font-black text-4xl tabular-nums">{stats?.streak_days || 0}</p>
           <p className="text-sm text-zinc-500">Day streak</p>
-          <p className="text-xs text-zinc-500 mt-2">Practice every day to keep the flame.</p>
+          {st.atRisk
+            ? <p className="text-xs font-bold text-[#E5484D] mt-2" data-testid="streak-risk">Your streak is at risk tonight</p>
+            : <p className="text-xs text-zinc-500 mt-2">Practice every day to keep the flame.</p>}
           <div className="mt-4 w-full border-t border-zinc-100 pt-4">
             <p className="text-xs font-semibold text-zinc-600 flex items-center justify-center gap-1.5">
               <Snowflake className="w-4 h-4 text-[#2563EB]" aria-hidden="true"/>

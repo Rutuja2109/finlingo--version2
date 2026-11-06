@@ -546,7 +546,7 @@ async def get_concept(concept_id: str, user: dict = Depends(get_current_user)):
 
 # ---------- PROGRESS & GAMIFICATION ----------
 @api.post("/progress/complete-concept")
-async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_current_user)):
+async def complete_concept(payload: CompleteConceptIn, request: Request, user: dict = Depends(get_current_user)):
     concept = await db.concepts.find_one({"id": payload.concept_id}, {"_id": 0})
     if not concept:
         raise HTTPException(status_code=404, detail="Concept not found")
@@ -586,7 +586,8 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
     )
 
     # update user stats + streak
-    today = datetime.now(timezone.utc).date().isoformat()
+    today_d = learner_today(request)
+    today = today_d.isoformat()
     stats = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0}) or {}
     last_date = stats.get("last_active_date")
     streak = stats.get("streak_days", 0)
@@ -595,7 +596,6 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
         if last_date:
             try:
                 last = datetime.fromisoformat(last_date).date()
-                today_d = datetime.now(timezone.utc).date()
                 delta = (today_d - last).days
                 if delta == 1:
                     streak += 1
@@ -647,7 +647,7 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
             "streak_days": streak, "last_active_date": today, "streak_freezes": freezes,
             "concepts_mastered": concepts_mastered, "lessons_completed": lessons_completed,
             "achievements": achievements,
-            **_xp_today_fields(stats, xp_earned),
+            **_xp_today_fields(stats, xp_earned, today),
         }},
         upsert=True,
     )
@@ -660,15 +660,24 @@ async def complete_concept(payload: CompleteConceptIn, user: dict = Depends(get_
     }
 
 
-def _xp_today_fields(stats: dict, delta: int) -> dict:
-    """Fields that add `delta` XP to today's running total (resets each UTC day)."""
-    today = datetime.now(timezone.utc).date().isoformat()
+def learner_today(request: Request):
+    """Today's date on the learner's own clock. The app sends X-TZ-Offset (minutes behind UTC, as JS reports it)."""
+    try:
+        offset = max(-840, min(840, int(request.headers.get("X-TZ-Offset", "0"))))
+    except ValueError:
+        offset = 0
+    return (datetime.now(timezone.utc) - timedelta(minutes=offset)).date()
+
+
+def _xp_today_fields(stats: dict, delta: int, today: Optional[str] = None) -> dict:
+    """Fields that add `delta` XP to today's running total (resets each day on the learner's clock)."""
+    today = today or datetime.now(timezone.utc).date().isoformat()
     base = stats.get("xp_today", 0) if stats.get("xp_today_date") == today else 0
     return {"xp_today": base + delta, "xp_today_date": today}
 
 
 @api.get("/stats/me")
-async def my_stats(user: dict = Depends(get_current_user)):
+async def my_stats(request: Request, user: dict = Depends(get_current_user)):
     s = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0})
     if not s:
         s = {"user_id": user["id"], "total_xp": 0, "level": 1, "coins": 50,
@@ -676,11 +685,41 @@ async def my_stats(user: dict = Depends(get_current_user)):
              "lessons_completed": 0}
         await db.user_stats.insert_one(s)
         s.pop("_id", None)
-    today = datetime.now(timezone.utc).date().isoformat()
+    today = learner_today(request).isoformat()
     s["xp_today"] = s.get("xp_today", 0) if s.get("xp_today_date") == today else 0
     s.pop("xp_today_date", None)
     s.setdefault("streak_freezes", 0)
+    # A streak that was not continued in time is shown as broken (it is reset when the learner next studies).
+    last = s.get("last_active_date")
+    if last and s.get("streak_days", 0) > 0:
+        try:
+            gap = (learner_today(request) - datetime.fromisoformat(last).date()).days
+            if gap >= 3 or (gap == 2 and s.get("streak_freezes", 0) == 0):
+                s["streak_days"] = 0
+                s["streak_broken"] = True
+        except Exception:
+            pass
+    u = await db.users.find_one({"id": user["id"]}, {"daily_goal_minutes": 1}) or {}
+    mins = u.get("daily_goal_minutes")
+    s["daily_goal_minutes"] = mins
+    s["daily_goal_xp"] = GOAL_XP.get(mins, GOAL_XP[5])
     return s
+
+
+# Daily goal choices: minutes per day -> XP target (one lesson is about 5 minutes and earns 20 to 33 XP).
+GOAL_XP = {5: 20, 10: 40, 15: 60}
+
+
+class GoalIn(BaseModel):
+    minutes: int
+
+
+@api.put("/me/goal")
+async def set_daily_goal(payload: GoalIn, user: dict = Depends(get_current_user)):
+    if payload.minutes not in GOAL_XP:
+        raise HTTPException(status_code=400, detail="Choose 5, 10 or 15 minutes a day")
+    await db.users.update_one({"id": user["id"]}, {"$set": {"daily_goal_minutes": payload.minutes}})
+    return {"daily_goal_minutes": payload.minutes, "daily_goal_xp": GOAL_XP[payload.minutes]}
 
 
 STREAK_FREEZE_COST = 30
@@ -949,7 +988,7 @@ async def revisions_due(user: dict = Depends(get_current_user)):
 
 
 @api.post("/revisions/grade")
-async def revisions_grade(payload: RevisionGradeIn, user: dict = Depends(get_current_user)):
+async def revisions_grade(payload: RevisionGradeIn, request: Request, user: dict = Depends(get_current_user)):
     prog = await db.user_progress.find_one(
         {"user_id": user["id"], "concept_id": payload.concept_id}, {"_id": 0}
     )
@@ -970,7 +1009,7 @@ async def revisions_grade(payload: RevisionGradeIn, user: dict = Depends(get_cur
         await db.user_stats.update_one(
             {"user_id": user["id"]},
             {"$inc": {"total_xp": xp_bonus, "coins": xp_bonus // 2},
-             "$set": _xp_today_fields(cur, xp_bonus)},
+             "$set": _xp_today_fields(cur, xp_bonus, learner_today(request).isoformat())},
         )
     return {"next_review_in_days": nxt, "xp_bonus": xp_bonus}
 
@@ -1008,7 +1047,7 @@ async def boss_battle(chapter_id: str, user: dict = Depends(get_current_user)):
 
 
 @api.post("/boss-battles/submit")
-async def boss_battle_submit(payload: BossBattleSubmitIn, user: dict = Depends(get_current_user)):
+async def boss_battle_submit(payload: BossBattleSubmitIn, request: Request, user: dict = Depends(get_current_user)):
     # Server-side scoring: look up each question id and grade against stored correct answer
     if not payload.answers:
         raise HTTPException(status_code=400, detail="No answers submitted")
@@ -1040,7 +1079,7 @@ async def boss_battle_submit(payload: BossBattleSubmitIn, user: dict = Depends(g
     await db.user_stats.update_one(
         {"user_id": user["id"]},
         {"$set": {"total_xp": new_xp, "level": new_level, "coins": new_coins,
-                  "achievements": achievements, **_xp_today_fields(stats, xp_award)}},
+                  "achievements": achievements, **_xp_today_fields(stats, xp_award, learner_today(request).isoformat())}},
         upsert=True,
     )
     # Record battle

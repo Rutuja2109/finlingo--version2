@@ -34,6 +34,18 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [x] Fixed from the phone test: status bar/gesture bar overlap, keyboard hiding forms, demo credentials prefilled on sign-up, Continue hidden below the fold, cramped headlines, repeated course titles, leaderboard layout and names, old trademark placeholders on Courses
 - [ ] (you) Log in on the phone with the release build (live server) and re-check; not tested by me: Revise page, boss battle, notification delivery at 8 am / 8 pm, offline mode, rotation
 
+## Duolingo-inspired round (2026-11-06, committed, not pushed)
+- [x] Lumi redesigned (cuter) with new angry and worried moods (design/mascot-preview.html)
+- [x] Daily goal: choose 5, 10 or 15 minutes a day (20 / 40 / 60 XP), asked once after sign-up, changeable from the dashboard
+- [x] Streak-at-risk behaviour: worried Lumi from 6 pm, angry Lumi (red hero) from 9 pm, sad Lumi when a streak broke
+- [x] Reminder notifications escalate: morning, 8 pm worried, 9:30 pm angry
+- [x] Days now follow the learner's own timezone (streak and daily goal reset at local midnight)
+- [ ] Practice trading (virtual money, assets, chart, buy/sell) from your Investmade screenshot
+- [ ] SIP / EMI / emergency fund calculators
+- [ ] Make the 'coming soon' courses real: Taxes Made Simple, Insurance Basics, Hindi Lessons
+- [ ] More Investment Analysis chapters
+- [ ] Daily quests, friend streaks, weekly leagues
+
 ## You need to do (see the list in chat)
 - [ ] (you) Change ADMIN_PASSWORD in Render
 - [ ] (you) Set PRIVACY_OPERATOR and PRIVACY_EMAIL in Render, then check /privacy
@@ -68,4 +80,5 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 ## Known risks
 - Google sign-in uses an external service (auth.emergentagent.com). Test it, it may not work outside the original platform.
 - data/loma.pdf (a copyrighted book) is in the public repo.
+
 

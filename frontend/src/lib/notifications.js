@@ -55,8 +55,22 @@ export async function scheduleReminders(streakDays = 0, reminderHour = 8) {
     eveningTime.setHours(20, 0, 0, 0);
     if (eveningTime <= now) eveningTime.setDate(eveningTime.getDate() + 1);
 
+    // Last call (9:30 PM): the angry one
+    const lateTime = new Date(now);
+    lateTime.setHours(21, 30, 0, 0);
+    if (lateTime <= now) lateTime.setDate(lateTime.getDate() + 1);
+
     await LN.schedule({
       notifications: [
+        {
+          id: 1003,
+          title: messages.late.title,
+          body: messages.late.body,
+          schedule: { at: lateTime, repeats: true, every: "day" },
+          sound: null,
+          smallIcon: "ic_launcher_foreground",
+          iconColor: "#E5484D",
+        },
         {
           id: 1001,
           title: messages.morning.title,
@@ -94,33 +108,28 @@ export async function cancelReminders() {
   } catch {}
 }
 
+// Lumi's reminders get more worried, then angry, as the day goes on and a streak is on the line.
 function getMessages(streakDays) {
   if (streakDays === 0) {
     return {
-      morning: { title: "Start your streak today! 🔥", body: "Even 5 minutes of FinLearn counts. Begin your first concept now." },
-      evening: { title: "Still time to start! ⏰", body: "Open FinLearn and complete one concept before midnight." },
+      morning: { title: "Start your streak today!", body: "Five minutes of FinLearn counts. Lumi is cheering for you." },
+      evening: { title: "Lumi is waiting for you", body: "One quick lesson before bed? It only takes a few minutes." },
+      late: { title: "Last call for today", body: "A 5-minute lesson still counts today. Lumi believes in you." },
     };
   }
-  if (streakDays < 3) {
-    return {
-      morning: { title: `Day ${streakDays + 1} — keep it going! 🔥`, body: "You're building a habit. Practice a concept to grow your streak." },
-      evening: { title: "Don't lose your streak! ⚠️", body: `You're on a ${streakDays}-day streak. Complete today's lesson before midnight.` },
-    };
-  }
-  if (streakDays < 7) {
-    return {
-      morning: { title: `${streakDays}-day streak! Keep it alive 🔥`, body: "Your consistency is paying off. One concept a day keeps the streak alive." },
-      evening: { title: "Streak at risk! 😰", body: `Don't let your ${streakDays}-day streak die tonight. Jump in for 5 minutes.` },
-    };
-  }
-  if (streakDays < 30) {
-    return {
-      morning: { title: `${streakDays} days strong 🏆`, body: "You're in the top learners this week. Keep the momentum going!" },
-      evening: { title: `Protect your ${streakDays}-day streak! 🔥`, body: "You've worked hard for this. Don't let tonight break it." },
-    };
-  }
+  const n = streakDays;
   return {
-    morning: { title: `${streakDays}-day legend! 🌟`, body: "You're unstoppable. Keep mastering finance one concept at a time." },
-    evening: { title: `${streakDays} days — don't stop now! 🏆`, body: "Champions practice every day. A quick concept is all it takes." },
+    morning: {
+      title: n < 7 ? `Day ${n + 1}. Keep it going!` : `${n} days strong!`,
+      body: "One lesson today keeps your streak alive.",
+    },
+    evening: {
+      title: `Your ${n}-day streak is at risk`,
+      body: "Lumi is getting worried. Just 5 minutes saves it.",
+    },
+    late: {
+      title: "Lumi is NOT happy",
+      body: `Your ${n}-day streak is about to break. Don't make Lumi angry. 5 minutes is all it takes!`,
+    },
   };
 }
