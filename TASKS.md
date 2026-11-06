@@ -47,6 +47,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [ ] More Investment Analysis chapters
 - [x] Daily quests on the dashboard: 3 a day from a pool (XP, lesson, perfect score, revise, practice trade, My money log), +5 coins each, daily chest +15 coins, week view. Tests: backend/tests/test_quests.py. Phone check pending.
 - [x] Real-life missions (18): UPI history, log spends, auto-transfer, emergency fund, two-step verification, spot a scam, check health cover, PAN-Aadhaar link and more. 5 check themselves from your data, the rest are honour system with an optional note. +20 to 30 XP each, once. Mission of the week on the Dashboard. Tests: backend/tests/test_missions.py. Phone check pending.
+- [x] Daily 60-second explainer: 14 built-in 'idea of the day' explainers explaining the idea behind common headlines (repo rate, inflation, Sensex, GDP, rupee, FD, IPO, credit score, gold, NAV, bear market, regulators, budget, lifestyle inflation), one-question check, +5 XP (+5 more if right), also a daily quest. Admin page (/admin/explainers) to publish a real-headline explainer with a source link, which replaces the built-in one for that date. Nothing about real news is shown unless a person publishes it. Tests: backend/tests/test_explainers.py.
 - [ ] Friend streaks, weekly leagues
 
 ## You need to do (see the list in chat)
@@ -66,7 +67,6 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [ ] First-time setup + placement quiz
 - [ ] Interactive sliders in lessons
 - [ ] Friend challenges, weekly leagues
-- [ ] Daily 60-second finance explainer
 - [x] Hindi course (first one). More languages later
 - [ ] Badges and certificates
 - [ ] Ask Lumi tutor (guardrails)

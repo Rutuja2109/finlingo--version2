@@ -15,6 +15,8 @@ import Leaderboard from "@/pages/Leaderboard";
 import Practice from "@/pages/Practice";
 import Money from "@/pages/Money";
 import Missions from "@/pages/Missions";
+import Explainer from "@/pages/Explainer";
+import ExplainerAdmin from "@/pages/ExplainerAdmin";
 import Calculators from "@/pages/Calculators";
 import Achievements from "@/pages/Achievements";
 import Admin from "@/pages/Admin";
@@ -65,6 +67,8 @@ function AppRouter() {
       <Route path="/concept/:conceptId" element={<Protected><LessonPlayer/></Protected>}/>
       <Route path="/money" element={<Protected><Money/></Protected>}/>
       <Route path="/calculators" element={<Protected><Calculators/></Protected>}/>
+      <Route path="/explainer" element={<Protected><Explainer/></Protected>}/>
+      <Route path="/admin/explainers" element={<Protected><ExplainerAdmin/></Protected>}/>
       <Route path="/missions" element={<Protected><Missions/></Protected>}/>
       <Route path="/practice" element={<Protected><Practice/></Protected>}/>
       <Route path="/leaderboard" element={<Protected><Leaderboard/></Protected>}/>

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Zap, BookOpen, Star, Repeat, LineChart, Wallet, Gift, Lock, CheckCircle2, Target, Coins } from "lucide-react";
+import { Newspaper, Zap, BookOpen, Star, Repeat, LineChart, Wallet, Gift, Lock, CheckCircle2, Target, Coins } from "lucide-react";
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
@@ -10,6 +10,7 @@ const META = {
   lesson: { Icon: BookOpen, bg: "#EFF6FF", fg: "#2563EB" },
   perfect: { Icon: Star, bg: "#FEF3C7", fg: "#D97706" },
   revise: { Icon: Repeat, bg: "#ECFDF5", fg: "#10B981", to: "/revise" },
+  explainer: { Icon: Newspaper, bg: "#FEF3C7", fg: "#D97706", to: "/explainer" },
   trade: { Icon: LineChart, bg: "#FDF2F8", fg: "#EC4899", to: "/practice" },
   log: { Icon: Wallet, bg: "#EEF2FF", fg: "#6366F1", to: "/money" },
 };

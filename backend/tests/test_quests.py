@@ -57,6 +57,8 @@ res = c.post(f"{U}/progress/complete-concept", headers=H, json={"concept_id": co
 ok("complete lesson with 100%", res.status_code == 200)
 for _ in range(3):
     c.post(f"{U}/revisions/grade", headers=H, json={"concept_id": concept, "quality": 2})
+db.explainer_reads.delete_many({"user_id": uid, "date": today})
+c.post(f"{U}/explainer/read", headers=H, json={"answer": 0})
 c.post(f"{U}/practice/reset", headers=H)
 c.post(f"{U}/practice/trade", headers=H, json={"asset": "nifty", "side": "buy", "amount": 500})
 c.post(f"{U}/practice/reset", headers=H)

@@ -15,10 +15,11 @@ QUESTS = {
     "lesson": {"title": "Finish 1 lesson", "goal": 1, "metric": "lessons"},
     "perfect": {"title": "Score 100% on a lesson", "goal": 1, "metric": "perfect"},
     "revise": {"title": "Revise 3 concepts", "goal": 3, "metric": "revisions"},
+    "explainer": {"title": "Read today's 60-second explainer", "goal": 1, "metric": "explainers"},
     "trade": {"title": "Make a practice trade", "goal": 1, "metric": "trades"},
     "log": {"title": "Log a spend or income in My money", "goal": 1, "metric": "entries"},
 }
-SLOTS = [["xp", "lesson"], ["perfect", "revise"], ["trade", "log"]]
+SLOTS = [["xp", "lesson"], ["perfect", "revise", "explainer"], ["trade", "log"]]
 
 
 def pick_quests(user_id: str, day: str, can_revise: bool) -> list:

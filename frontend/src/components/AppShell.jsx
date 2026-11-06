@@ -59,9 +59,14 @@ export default function AppShell({ children }) {
             </Link>
             {/* nav-admin: render placeholder until user hydrates to avoid flash */}
             {user && user.role === "admin" ? (
-              <Link to="/admin" className={linkCls("/admin")} data-testid="nav-admin">
-                <Sparkles className="w-4 h-4" /> AI Lab
-              </Link>
+              <>
+                <Link to="/admin/explainers" className={linkCls("/admin/explainers")} data-testid="nav-admin-explainers">
+                  <Flag className="w-4 h-4" /> Explainers
+                </Link>
+                <Link to="/admin" className={linkCls("/admin")} data-testid="nav-admin">
+                  <Sparkles className="w-4 h-4" /> AI Lab
+                </Link>
+              </>
             ) : null}
           </nav>
 
