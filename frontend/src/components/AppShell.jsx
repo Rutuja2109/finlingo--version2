@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart } from "lucide-react";
+import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart, Wallet } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 
@@ -41,6 +41,9 @@ export default function AppShell({ children }) {
             </Link>
             <Link to="/practice" className={linkCls("/practice")} data-testid="nav-practice">
               <LineChart className="w-4 h-4" /> Practice
+            </Link>
+            <Link to="/money" className={linkCls("/money")} data-testid="nav-money">
+              <Wallet className="w-4 h-4" /> My money
             </Link>
             <Link to="/revise" className={linkCls("/revise")} data-testid="nav-revise">
               <Repeat className="w-4 h-4" /> Revise
@@ -96,8 +99,8 @@ export default function AppShell({ children }) {
             { to: "/dashboard", Icon: Home, label: "Home", t: "mnav-dashboard" },
             { to: "/courses", Icon: BookOpen, label: "Courses", t: "mnav-courses" },
             { to: "/practice", Icon: LineChart, label: "Practice", t: "mnav-practice" },
+            { to: "/money", Icon: Wallet, label: "Money", t: "mnav-money" },
             { to: "/leaderboard", Icon: Trophy, label: "Rank", t: "mnav-leaderboard" },
-            { to: "/achievements", Icon: Award, label: "Awards", t: "mnav-achievements" },
           ].map(({ to, Icon, label, t }) => (
             <Link key={to} to={to} data-testid={t}
               className={`flex flex-col items-center gap-1 py-2.5 text-xs font-semibold ${

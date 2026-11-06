@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { LogOut, Trash2, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
+import { LogOut, Trash2, Shield, Award } from "lucide-react";
 import { PRIVACY_URL } from "@/lib/api";
 
 export default function Account() {
@@ -22,6 +23,10 @@ export default function Account() {
   return (
     <div className="max-w-xl mx-auto pb-24">
       <h1 className="font-[Outfit] font-black text-3xl tracking-tight mb-6">Account</h1>
+
+      <Link to="/achievements" data-testid="account-awards" className="flex items-center gap-3 bg-white border border-zinc-200 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
+        <Award className="w-5 h-5 text-[#FF6B35]" /> Your awards
+      </Link>
 
       <div className="bg-white border border-zinc-200 rounded-3xl p-6 mb-4">
         <p className="uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 mb-1">Signed in as</p>

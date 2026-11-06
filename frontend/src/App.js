@@ -13,6 +13,7 @@ import CoursePath from "@/pages/CoursePath";
 import LessonPlayer from "@/pages/LessonPlayer";
 import Leaderboard from "@/pages/Leaderboard";
 import Practice from "@/pages/Practice";
+import Money from "@/pages/Money";
 import Achievements from "@/pages/Achievements";
 import Admin from "@/pages/Admin";
 import Revision from "@/pages/Revision";
@@ -60,6 +61,7 @@ function AppRouter() {
       <Route path="/courses" element={<Protected><Courses/></Protected>}/>
       <Route path="/learn/:courseId" element={<Protected><CoursePath/></Protected>}/>
       <Route path="/concept/:conceptId" element={<Protected><LessonPlayer/></Protected>}/>
+      <Route path="/money" element={<Protected><Money/></Protected>}/>
       <Route path="/practice" element={<Protected><Practice/></Protected>}/>
       <Route path="/leaderboard" element={<Protected><Leaderboard/></Protected>}/>
       <Route path="/achievements" element={<Protected><Achievements/></Protected>}/>

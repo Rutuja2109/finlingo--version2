@@ -26,6 +26,7 @@ import httpx
 from seed_data import seed_courses
 from seed_finance import seed_finance_courses
 from practice import make_router as make_practice_router
+from money import make_router as make_money_router
 from text_repair import repair_collection
 from pdf_ingest import extract_chapters
 from llm_gen import generate_chapter_lessons
@@ -302,7 +303,8 @@ async def delete_account(payload: DeleteAccountIn, response: Response, user: dic
         if not payload.password or not verify_password(payload.password, stored["password_hash"]):
             raise HTTPException(status_code=401, detail="Incorrect password")
     uid = user["id"]
-    for coll in ("user_stats", "user_progress", "user_enrollments", "boss_battles", "password_resets"):
+    for coll in ("user_stats", "user_progress", "user_enrollments", "boss_battles", "password_resets",
+                 "practice_accounts", "money_entries", "money_goals"):
         await db[coll].delete_many({"user_id": uid})
     await db.users.delete_one({"id": uid})
     clear_auth_cookies(response)
@@ -1127,6 +1129,7 @@ async def privacy_policy():
 
 
 api.include_router(make_practice_router(db, get_current_user, _xp_today_fields, learner_today))
+api.include_router(make_money_router(db, get_current_user, learner_today))
 app.include_router(api)
 
 # CORS — open for mobile app (Capacitor sends null origin)
