@@ -1,14 +1,14 @@
 """Structural checks for the finance courses: every lesson has the fields the player needs."""
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-import seed_finance, seed_hindi, seed_life
+import seed_cfa, seed_finance, seed_hindi, seed_life
 
 bad = []
 def chk(cond, msg):
     if not cond:
         bad.append(msg)
 
-courses = seed_finance.build_finance_courses() + seed_life.build_life_courses() + [seed_hindi.build_hindi_course()]
+courses = seed_finance.build_finance_courses() + seed_life.build_life_courses() + [seed_hindi.build_hindi_course(), seed_cfa.build_cfa_course()]
 n = 0
 for c in courses:
     for ch in c["chapters"]:

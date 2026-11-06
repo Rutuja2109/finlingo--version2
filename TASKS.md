@@ -74,7 +74,8 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 ### Content
 - [x] Investment Analysis (exam-style), chapter 1: Quantitative Methods (4 concepts, math verified). Live on the server (verified 2026-11-05, commit e44a477).
 - [x] Naming decision: neutral title (no "CFA" in the name) with a "not affiliated with CFA Institute" notice
-- [ ] More Investment Analysis topics (Economics, Financial Statement Analysis, Corporate Issuers, Equity, Fixed Income, Derivatives, Alternatives, Portfolio Management, Ethics)
+- [x] Investment Analysis chapters 2 to 4: Fixed Income (bond pricing, duration, credit risk), Equity Valuation (dividend discount model, multiples, ROE and growth), Portfolio Management (diversification, CAPM, allocation and rebalancing). 81 lessons, every figure rechecked in backend/tests/check_ia_math.py. Course version bumped to ia-2.
+- [ ] Still to write for Investment Analysis: Economics, Financial Statement Analysis, Corporate Issuers, Derivatives, Alternatives, Ethics
 - [ ] More chapters per track
 - [ ] Sources on lessons (after your accuracy review)
 

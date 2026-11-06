@@ -6,7 +6,7 @@ CFA(R) and Chartered Financial Analyst(R) are trademarks owned by CFA Institute.
 from seed_data import _id, _intro, _teach, _example, _flash, _mcq, _concept
 from seed_finance import _choice, _outcome
 
-CFA_SEED_VERSION = "ia-1"
+CFA_SEED_VERSION = "ia-2"
 
 DISCLAIMER = ("Independent study material for learners preparing for finance exams. Not affiliated with or endorsed by "
               "CFA Institute. CFA and Chartered Financial Analyst are trademarks owned by CFA Institute. "
@@ -238,13 +238,14 @@ def _quant_chapter(course_id):
 
 
 def build_cfa_course():
+    from seed_cfa2 import fixed_income_chapter, equity_chapter, portfolio_chapter  # imported here to avoid a circular import
     cid = _id()
     return {
         "id": cid, "slug": "investment-analysis-quant", "seed_version": CFA_SEED_VERSION,
-        "name": "Investment Analysis", "title": "Investment Analysis: Quantitative Methods",
+        "name": "Investment Analysis", "title": "Investment Analysis: Quant, Bonds, Equity and Portfolios",
         "certification": "Exam-style",
-        "description": ("Exam-style practice on time value of money, returns, statistics and the normal distribution, "
+        "description": ("Exam-style practice on quantitative methods, bonds, equity valuation and portfolio management, "
                         "useful for candidates preparing for professional finance exams. " + DISCLAIMER),
         "color": "#7C3AED", "icon": "Calculator", "order": 2,
-        "chapters": [_quant_chapter(cid)],
+        "chapters": [_quant_chapter(cid), fixed_income_chapter(cid), equity_chapter(cid), portfolio_chapter(cid)],
     }
