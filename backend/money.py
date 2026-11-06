@@ -117,7 +117,7 @@ def coach(s: dict) -> dict:
     return {"mood": "happy", "tone": "good", "title": "On track", "text": "Your split is close to 50/30/20. Keep logging and aim for 20% in savings."}
 
 
-def make_router(db, get_current_user, learner_today):
+def make_router(db, get_current_user, learner_today, on_entry=None):
     r = APIRouter(prefix="/money")
 
     @r.get("/categories")
@@ -160,6 +160,8 @@ def make_router(db, get_current_user, learner_today):
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
         await db.money_entries.insert_one(dict(doc))
+        if on_entry and d == learner_today(request).isoformat():  # backdated entries do not count for today's quest
+            await on_entry(user["id"], d)
         doc.pop("_id", None); doc.pop("user_id", None)
         return doc
 

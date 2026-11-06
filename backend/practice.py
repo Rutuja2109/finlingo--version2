@@ -196,7 +196,7 @@ class TourIn(BaseModel):
     skipped: bool = False
 
 
-def make_router(db, get_current_user, xp_today_fields, learner_today):
+def make_router(db, get_current_user, xp_today_fields, learner_today, on_trade=None):
     r = APIRouter(prefix="/practice")
 
     async def load(user_id: str) -> dict:
@@ -224,7 +224,7 @@ def make_router(db, get_current_user, xp_today_fields, learner_today):
         return build_state(acct, now, asset, tf)
 
     @r.post("/trade")
-    async def trade(body: TradeIn, user: dict = Depends(get_current_user)):
+    async def trade(body: TradeIn, request: Request, user: dict = Depends(get_current_user)):
         a = BY_ID.get(body.asset)
         if not a:
             raise HTTPException(status_code=400, detail="Unknown asset")
@@ -271,6 +271,8 @@ def make_router(db, get_current_user, xp_today_fields, learner_today):
             result = {"side": "sell", "amount": proceeds, "pnl": pnl, "during_scenario": acct.get("scenario") is not None}
         acct["trades"] = acct["trades"][-100:]
         await save(acct, rev)
+        if on_trade:
+            await on_trade(user["id"], learner_today(request).isoformat())
         return {"result": result, "state": build_state(acct, now, a["id"], "1MIN")}
 
     @r.post("/reset")

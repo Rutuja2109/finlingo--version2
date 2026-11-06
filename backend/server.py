@@ -27,6 +27,7 @@ from seed_data import seed_courses
 from seed_finance import seed_finance_courses
 from practice import make_router as make_practice_router
 from money import make_router as make_money_router
+from quests import make_router as make_quests_router, bump as quest_bump
 from text_repair import repair_collection
 from pdf_ingest import extract_chapters
 from llm_gen import generate_chapter_lessons
@@ -304,7 +305,7 @@ async def delete_account(payload: DeleteAccountIn, response: Response, user: dic
             raise HTTPException(status_code=401, detail="Incorrect password")
     uid = user["id"]
     for coll in ("user_stats", "user_progress", "user_enrollments", "boss_battles", "password_resets",
-                 "practice_accounts", "money_entries", "money_goals"):
+                 "practice_accounts", "money_entries", "money_goals", "daily_quests"):
         await db[coll].delete_many({"user_id": uid})
     await db.users.delete_one({"id": uid})
     clear_auth_cookies(response)
@@ -654,6 +655,11 @@ async def complete_concept(payload: CompleteConceptIn, request: Request, user: d
         }},
         upsert=True,
     )
+
+    if payload.score >= 60:
+        await quest_bump(db, user["id"], today, "lessons")
+        if payload.score == 100:
+            await quest_bump(db, user["id"], today, "perfect")
 
     return {
         "xp_earned": xp_earned, "coins_earned": coins_earned,
@@ -1014,6 +1020,7 @@ async def revisions_grade(payload: RevisionGradeIn, request: Request, user: dict
             {"$inc": {"total_xp": xp_bonus, "coins": xp_bonus // 2},
              "$set": _xp_today_fields(cur, xp_bonus, learner_today(request).isoformat())},
         )
+    await quest_bump(db, user["id"], learner_today(request).isoformat(), "revisions")
     return {"next_review_in_days": nxt, "xp_bonus": xp_bonus}
 
 
@@ -1128,8 +1135,9 @@ async def privacy_policy():
     return HTMLResponse(_privacy_page())
 
 
-api.include_router(make_practice_router(db, get_current_user, _xp_today_fields, learner_today))
-api.include_router(make_money_router(db, get_current_user, learner_today))
+api.include_router(make_practice_router(db, get_current_user, _xp_today_fields, learner_today, on_trade=lambda uid, day: quest_bump(db, uid, day, "trades")))
+api.include_router(make_money_router(db, get_current_user, learner_today, on_entry=lambda uid, day: quest_bump(db, uid, day, "entries")))
+api.include_router(make_quests_router(db, get_current_user, learner_today))
 app.include_router(api)
 
 # CORS — open for mobile app (Capacitor sends null origin)

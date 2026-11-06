@@ -45,7 +45,8 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [x] Calculators (linked from My money): SIP (what you will get, and what to save for a target), loan EMI (with the pay-extra tip), emergency fund (can use your needs from My money). Maths checked in frontend/src/lib/calc.check.mjs. Phone check pending.
 - [ ] Make the 'coming soon' courses real: Taxes Made Simple, Insurance Basics, Hindi Lessons
 - [ ] More Investment Analysis chapters
-- [ ] Daily quests, friend streaks, weekly leagues
+- [x] Daily quests on the dashboard: 3 a day from a pool (XP, lesson, perfect score, revise, practice trade, My money log), +5 coins each, daily chest +15 coins, week view. Tests: backend/tests/test_quests.py. Phone check pending.
+- [ ] Friend streaks, weekly leagues
 
 ## You need to do (see the list in chat)
 - [ ] (you) Change ADMIN_PASSWORD in Render
@@ -60,7 +61,6 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 
 ## Still to build
 ### Features (each: demo, your approval, then build)
-- [ ] Daily quests
 - [ ] Calculators: SIP, EMI, emergency fund
 - [ ] First-time setup + placement quiz
 - [ ] Interactive sliders in lessons

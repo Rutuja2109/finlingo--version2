@@ -7,6 +7,7 @@ import Lumi from "@/components/Lumi";
 import { ArrowRight, Sparkles, Target, Flame, Repeat, Snowflake } from "lucide-react";
 import { trackCourseEnrolled } from "@/lib/firebase";
 import GoalPicker from "@/components/GoalPicker";
+import DailyQuests from "@/components/DailyQuests";
 import { streakState } from "@/lib/streak";
 
 const FREEZE_COST = 30;
@@ -169,6 +170,8 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
+
+      <DailyQuests />
 
       {/* Courses — winding path style */}
       <section>
