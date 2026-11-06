@@ -585,6 +585,8 @@ async def seed_finance_courses(db):
     """Add or refresh the beginner tracks without touching LOMA content."""
     from seed_data import flatten_for_db
     from seed_cfa import build_cfa_course  # imported here to avoid a circular import
+    from seed_life import build_life_courses
+    from seed_hindi import build_hindi_course
 
     # Beginner tracks use negative orders so they always list first; LOMA and other courses keep their own order.
 
@@ -601,7 +603,7 @@ async def seed_finance_courses(db):
             await _delete_course_tree(db, old["id"])
 
     # Each course carries its own seed_version, so updating one course never re-seeds (and re-ids) the others.
-    for course in build_finance_courses() + [build_cfa_course()]:
+    for course in build_finance_courses() + [build_cfa_course()] + build_life_courses() + [build_hindi_course()]:
         existing = await db.courses.find_one({"slug": course["slug"]})
         if existing and existing.get("seed_version") == course["seed_version"]:
             continue

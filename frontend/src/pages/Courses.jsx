@@ -15,11 +15,8 @@ const ICONS_SVG = {
   Briefcase: "M3 7h18v13H3zM8 7V5a2 2 0 012-2h4a2 2 0 012 2v2",
 };
 
-const COMING_SOON = [
-  { name: "Taxes Made Simple", title: "Your first tax return, explained", color: "#2563EB", icon: "Briefcase", certification: "Money basics" },
-  { name: "Insurance Basics", title: "Health, term and what you really need", color: "#7C3AED", icon: "Shield", certification: "Money basics" },
-  { name: "Hindi Lessons", title: "Learn money in Hindi", color: "#059669", icon: "Wallet", certification: "Languages" },
-];
+// Courses announced but not built yet appear here as locked nodes. Empty for now: every announced course is live.
+const COMING_SOON = [];
 
 export default function Courses() {
   const nav = useNavigate();

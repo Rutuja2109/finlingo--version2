@@ -43,7 +43,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [x] Practice trading built into the app (new Practice tab): Rs 1,00,000 virtual money, 4 simulated assets, chart with 7 timeframes, buy/sell, portfolio, history, crash replay, Lumi's 15-step tour with +15 XP. Server tests: backend/tests/test_practice.py. Phone check pending.
 - [x] My money tab: manual expense tracker with 50/30/20 split and Lumi coaching, income and expense entries by month, savings-goal planner ("save Rs X a month"). No SMS or bank access. Tests: backend/tests/test_money.py. Phone check pending.
 - [x] Calculators (linked from My money): SIP (what you will get, and what to save for a target), loan EMI (with the pay-extra tip), emergency fund (can use your needs from My money). Maths checked in frontend/src/lib/calc.check.mjs. Phone check pending.
-- [ ] Make the 'coming soon' courses real: Taxes Made Simple, Insurance Basics, Hindi Lessons
+- [x] The 'coming soon' courses are now real: Taxes Made Simple (4 concepts), Insurance Basics (4), and पैसों की बात, personal finance in Hindi (4). 108 lessons. Every number rechecked in backend/tests/check_life_math.py; shape checks in check_course_shape.py. Needs your accuracy review, and a Hindi reader's review.
 - [ ] More Investment Analysis chapters
 - [x] Daily quests on the dashboard: 3 a day from a pool (XP, lesson, perfect score, revise, practice trade, My money log), +5 coins each, daily chest +15 coins, week view. Tests: backend/tests/test_quests.py. Phone check pending.
 - [ ] Friend streaks, weekly leagues
@@ -66,7 +66,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [ ] Interactive sliders in lessons
 - [ ] Friend challenges, weekly leagues
 - [ ] Daily 60-second finance explainer
-- [ ] Hindi + other languages
+- [x] Hindi course (first one). More languages later
 - [ ] Badges and certificates
 - [ ] Ask Lumi tutor (guardrails)
 
