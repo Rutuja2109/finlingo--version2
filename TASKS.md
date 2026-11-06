@@ -28,6 +28,12 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [x] Signed release bundle (AAB) and installable release APK built (finlearn-release.aab / .apk in repo root, git-ignored)
 - [x] Verified live: single LOMA course, /privacy page, streak-freeze route, no garbled text in 64 concepts, old admin rejected
 
+## Phone test (Samsung SM-S921E, Android 16, 2026-11-06)
+- [x] Installed release build, signed, targets Android 15
+- [x] Tested on device (local test server over USB): sign-up, login, dashboard, course path, a full lesson (wrong and right answers, repeat question, result), streak freeze purchase, Courses, Rank, Awards, Account, privacy link, delete account, deleted account rejected
+- [x] Fixed from the phone test: status bar/gesture bar overlap, keyboard hiding forms, demo credentials prefilled on sign-up, Continue hidden below the fold, cramped headlines, repeated course titles, leaderboard layout and names, old trademark placeholders on Courses
+- [ ] (you) Log in on the phone with the release build (live server) and re-check; not tested by me: Revise page, boss battle, notification delivery at 8 am / 8 pm, offline mode, rotation
+
 ## You need to do (see the list in chat)
 - [ ] (you) Change ADMIN_PASSWORD in Render
 - [ ] (you) Set PRIVACY_OPERATOR and PRIVACY_EMAIL in Render, then check /privacy
@@ -62,3 +68,4 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 ## Known risks
 - Google sign-in uses an external service (auth.emergentagent.com). Test it, it may not work outside the original platform.
 - data/loma.pdf (a copyrighted book) is in the public repo.
+
