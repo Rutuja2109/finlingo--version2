@@ -12,7 +12,7 @@ export default function AppShell({ children }) {
   const immersive = loc.pathname.startsWith("/concept") || loc.pathname.startsWith("/boss");
 
   const linkCls = (path) =>
-    `flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+    `flex items-center gap-1.5 px-2 xl:px-3 py-2 rounded-xl text-[13px] xl:text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
       loc.pathname.startsWith(path)
         ? "bg-[#FF6B35]/10 text-[#FF6B35]"
         : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
@@ -32,7 +32,7 @@ export default function AppShell({ children }) {
             <span className="hidden sm:inline font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
             <Link to="/dashboard" className={linkCls("/dashboard")} data-testid="nav-dashboard">
               <Home className="w-4 h-4" /> Home
             </Link>

@@ -22,7 +22,7 @@ h1{font-size:22px;margin:0 0 4px} .sub{color:#71717a;font-size:14px;margin:0 0 1
 .hero{margin-top:18px;max-width:640px;background:linear-gradient(135deg,#FF6B35,#FF8A4C,#EC4899);border-radius:24px;padding:18px;color:#fff;position:relative;overflow:hidden}
 .hero h2{margin:0;font-size:20px;max-width:70%}.hero svg{position:absolute;right:6px;top:2px;opacity:.9}
 </style></head><body>
-<h1>Lumi, redesigned</h1><p class="sub">Rounder head, low-set sparkly eyes, blush cheeks, tiny nose and mouth. Same moods the app uses, plus a new angry one.</p>
+<h1>Lumi, the scholar</h1><p class="sub">Now a scholar: round glasses and a graduation cap with a gold tassel. Same six moods the app uses.</p>
 <div class="g">${LUMI_MOODS.map(cell).join("")}</div>
 <div class="row">${small("happy", "#fff")}${small("happy", "#FF8A4C")}${small("cheer", "#10B981")}${small("angry", "#fff")}${small("sad", "#fff")}</div>
 <div class="hero"><svg viewBox="0 0 100 100" width="110" height="110">${lumiMarkup("angry")}</svg><h2>Your 5-day streak ends tonight. Lumi is NOT happy.</h2></div>
