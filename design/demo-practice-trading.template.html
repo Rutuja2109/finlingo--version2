@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FinLearn practice trading demo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#FAFAFA;color:#18181b;font-family:Manrope,system-ui,sans-serif;padding:18px 10px 40px}
+.note{max-width:390px;margin:0 auto 12px;font-size:13px;color:#71717a;text-align:center}
+.ph{position:relative;max-width:390px;margin:0 auto;background:#FAFAFA;border:1px solid #e4e4e7;border-radius:36px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.2);min-height:760px;display:flex;flex-direction:column}
+.hd{background:linear-gradient(135deg,#FF6B35,#FF8A4C 55%,#EC4899);color:#fff;padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hd .mid{text-align:center}.hd .bal{font-family:Outfit,sans-serif;font-weight:900;font-size:24px;letter-spacing:-.01em}
+.hd .sub{font-size:11.5px;opacity:.92;font-weight:600}
+.hb{border:0;background:rgba(255,255,255,.22);color:#fff;border-radius:99px;padding:7px 12px;font-family:Outfit,sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.ic{border:0;background:rgba(255,255,255,.22);color:#fff;width:38px;height:38px;border-radius:50%;font-size:20px;cursor:pointer;display:grid;place-items:center}
+.body{flex:1;padding:10px 14px 12px;overflow:hidden}
+.assets{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.assets::-webkit-scrollbar{display:none}
+.as{flex:none;text-align:center;width:62px;cursor:pointer;border:0;background:none;font:inherit;padding:0}
+.as .c{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#fff;margin:0 auto 3px;border:3px solid transparent}
+.as.on .c{border-color:#18181b}
+.as span{font-size:11px;font-weight:700;color:#71717a}.as.on span{color:#18181b}
+.pr{display:flex;align-items:flex-end;justify-content:space-between;margin:2px 0 4px}
+.pr .n{font-size:12.5px;color:#71717a;font-weight:700}
+.pr .p{font-family:Outfit,sans-serif;font-weight:900;font-size:28px;letter-spacing:-.02em;line-height:1.1}
+.chg{font-weight:800;font-size:13px;padding:4px 10px;border-radius:99px;font-family:Outfit,sans-serif}
+.up{background:#ecfdf5;color:#047857}.dn{background:#fef2f2;color:#b91c1c}
+.chart{background:#fff;border:1px solid #e4e4e7;border-radius:20px;padding:6px 4px 2px;position:relative}
+.tf{display:flex;justify-content:space-between;margin:6px 2px 8px}
+.tf button{border:0;background:none;font-family:Outfit,sans-serif;font-weight:800;font-size:12px;color:#a1a1aa;padding:6px 7px;border-radius:10px;cursor:pointer}
+.tf button.on{background:#18181b;color:#fff}
+.tb{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.buy,.sell{border:0;border-radius:16px;padding:12px;color:#fff;font-family:Outfit,sans-serif;font-weight:900;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.buy{background:#10B981}.sell{background:#EF4444}.buy:active,.sell:active{transform:scale(.97)}
+.sell[disabled]{background:#fca5a5;cursor:default}
+.coach{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #e4e4e7;border-radius:18px;padding:10px 12px;margin-top:10px;font-size:13px;line-height:1.5}
+.coach b{font-family:Outfit,sans-serif}
+.coach.warn{background:#fffbeb;border-color:#f59e0b66}.coach.bad{background:#fef2f2;border-color:#ef444466}.coach.good{background:#ecfdf5;border-color:#10B98166}
+.nav{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-top:1px solid #e4e4e7;padding:6px 0 10px}
+.nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;font-size:11px;font-weight:700;color:#71717a;padding:4px;cursor:pointer}
+.nav i{font-size:22px}.nav .on{color:#FF6B35}
+.card{background:#fff;border:1px solid #e4e4e7;border-radius:20px;padding:14px;margin:0 0 10px}
+.tag{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#71717a;margin:0 0 6px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;border-top:1px solid #f4f4f5;font-size:14px}
+.row:first-of-type{border-top:0}
+.big{font-family:Outfit,sans-serif;font-weight:900;font-size:22px}
+.alloc{display:flex;height:14px;border-radius:99px;overflow:hidden;background:#f4f4f5;margin:8px 0}
+.sheet{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end}
+.sheet .in{background:#fff;border-radius:26px 26px 0 0;padding:16px 16px 22px;width:100%}
+.sheet h3{font-family:Outfit,sans-serif;font-weight:900;font-size:20px;margin:0 0 2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chip{border:2px solid #e4e4e7;background:#fff;border-radius:14px;padding:9px 12px;font-family:Outfit,sans-serif;font-weight:800;font-size:14px;cursor:pointer}
+.chip.on{border-color:#FF6B35;background:#FF6B3514}
+.cta{width:100%;border:0;border-radius:16px;padding:14px;font-family:Outfit,sans-serif;font-weight:900;font-size:16px;color:#fff;cursor:pointer;margin-top:4px}
+.cancel{width:100%;border:0;background:#f4f4f5;border-radius:16px;padding:12px;font-family:Outfit,sans-serif;font-weight:800;margin-top:8px;cursor:pointer}
+.banner{background:#18181b;color:#fff;padding:9px 14px;font-size:13px;font-weight:700;display:none;align-items:center;gap:8px}
+.mut{font-size:12.5px;color:#71717a}
+.crash{border:2px solid #EF4444;background:#fff;color:#b91c1c;border-radius:14px;padding:8px 12px;font-family:Outfit,sans-serif;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;margin:10px auto 0}
+</style>
+</head>
+<body>
+<p class="note">Demo of practice trading in FinLearn. Prices are simulated, and so is the money. Tap an asset, buy, and watch.</p>
+<div class="ph" id="ph">
+  <div class="hd">
+    <button class="hb" id="reset"><i class="ti ti-refresh"></i>Reset</button>
+    <div class="mid"><div class="bal" id="bal"></div><div class="sub">Practice money, not real money</div></div>
+    <button class="ic" id="hist" aria-label="Trade history"><i class="ti ti-history"></i></button>
+  </div>
+  <div class="banner" id="banner"></div>
+  <div class="body" id="body"></div>
+  <div class="nav">
+    <button data-v="trade" class="on"><i class="ti ti-chart-line"></i>Trade</button>
+    <button data-v="port"><i class="ti ti-wallet"></i>Portfolio</button>
+    <button data-v="log"><i class="ti ti-history"></i>History</button>
+  </div>
+  <div class="sheet" id="sheet"><div class="in" id="sin"></div></div>
+</div>
+<script>
+(function(){
+window.onerror=function(m,s,l){var b=document.getElementById('body');if(b)b.innerHTML='<p style="color:#b91c1c;padding:14px">Demo error: '+m+' (line '+l+')</p>'};
+var LUMI=/*LUMI_JSON*/{};
+function lumi(mood,size){return '<svg viewBox="0 0 100 100" width="'+size+'" height="'+size+'" aria-hidden="true">'+(LUMI[mood]||LUMI.happy)+'</svg>'}
+var A=[
+ {id:'nifty',name:'Nifty 50 Index Fund',short:'NIFTY',base:250,vol:.0011,icon:'ti-chart-bar',col:'#2563EB',why:'An index fund holds 50 big companies, so one company falling does not sink it. That is why it moves gently.'},
+ {id:'gold',name:'Gold (per gram)',short:'GOLD',base:7400,vol:.0008,icon:'ti-coin',col:'#F59E0B',why:'Gold often holds up or rises when shares fall, because people look for a safe place to park money.'},
+ {id:'btc',name:'Bitcoin',short:'BTC',base:6500000,vol:.0042,icon:'ti-currency-bitcoin',col:'#FF9500',why:'Bitcoin has no profits to anchor its price, only buyers and sellers, so it swings a lot.'},
+ {id:'rkt',name:'Rocket Tech (a made-up stock)',short:'RKT',base:1280,vol:.0027,icon:'ti-rocket',col:'#EC4899',why:'One company can jump or fall on a single news item. That is the risk of owning just one stock.'}
+];
+var START=100000, N_HIST=900, TF={'1MIN':30,'5MIN':60,'15MIN':110,'30MIN':200,'1H':340,'1D':560,'1W':880};
+var S={cash:START,pos:{},log:[],sel:'nifty',tf:'1MIN',view:'trade',hist:{},crash:null,crashBase:null,msg:null,boughtTypes:{}};
+function gauss(){var u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+A.forEach(function(a){var p=a.base,arr=[];for(var i=0;i<N_HIST;i++){p*=Math.exp(a.vol*gauss());arr.push(p)}var k=a.base*(0.94+Math.random()*0.12)/arr[arr.length-1];S.hist[a.id]=arr.map(function(x){return x*k})});
+function price(id){var h=S.hist[id];return h[h.length-1]}
+function asset(id){return A.filter(function(a){return a.id===id})[0]}
+function inr(n,d){return (n<0?'-':'')+'₹'+Math.abs(Number(n)).toLocaleString('en-IN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+function total(){var t=S.cash;Object.keys(S.pos).forEach(function(id){t+=S.pos[id].units*price(id)});return t}
+function posVal(id){return S.pos[id]?S.pos[id].units*price(id):0}
+var CRASH={nifty:-.014,gold:.004,btc:-.034,rkt:-.03};
+function tick(){
+  A.forEach(function(a){var h=S.hist[a.id],p=h[h.length-1],drift=0;
+    if(S.crash){var step=S.crash.step; drift=step<25?CRASH[a.id]:(a.id==='gold'?-.002:Math.abs(CRASH[a.id])*.55)}
+    p*=Math.exp(a.vol*gauss()*(S.crash?.5:1)+drift);h.push(p);if(h.length>1800)h.shift()});
+  if(S.crash){S.crash.step++;if(S.crash.step>=50)endCrash()}
+  draw(true)
+}
+var timer=setInterval(tick,1000);
+function setSpeed(ms){clearInterval(timer);timer=setInterval(tick,ms)}
+function startCrash(){if(S.crash)return;S.crashBase=total();S.crash={step:0};setSpeed(450);
+  var b=document.getElementById('banner');b.style.display='flex';b.innerHTML='<i class="ti ti-flame" style="font-size:18px;color:#FF6B35"></i><span id="bt">Market crash replay. Hold your nerve.</span>';draw()}
+function endCrash(){var before=S.crashBase,after=total();S.crash=null;setSpeed(1000);document.getElementById('banner').style.display='none';
+  var lost=after-before;S.msg={k:lost<0?'warn':'good',h:'Crash replay finished',t:'Your portfolio went from '+inr(before)+' to '+inr(after)+' ('+(lost>=0?'+':'')+inr(lost)+'). Prices fell hard, then recovered. People who sold at the bottom locked in the loss. People who held and had some gold saw less damage.'};draw()}
+function chartSvg(){
+  var a=asset(S.sel),h=S.hist[a.id],n=TF[S.tf],d=h.slice(-n),W=350,H=210,pl=6,pr=62,pt=14,pb=12;
+  var mn=Math.min.apply(null,d),mx=Math.max.apply(null,d);if(mx===mn){mx+=1;mn-=1}var pad=(mx-mn)*.08;mn-=pad;mx+=pad;
+  function x(i){return pl+(W-pl-pr)*i/(d.length-1)}function y(v){return pt+(H-pt-pb)*(1-(v-mn)/(mx-mn))}
+  var line='',i;for(i=0;i<d.length;i++)line+=(i?'L':'M')+x(i).toFixed(1)+' '+y(d[i]).toFixed(1);
+  var area=line+'L'+x(d.length-1).toFixed(1)+' '+(H-pb)+'L'+x(0).toFixed(1)+' '+(H-pb)+'Z';
+  var up=d[d.length-1]>=d[0],col=up?'#10B981':'#EF4444',g='';
+  for(i=0;i<5;i++){var v=mn+(mx-mn)*i/4,yy=y(v);g+='<line x1="'+pl+'" x2="'+(W-pr+4)+'" y1="'+yy+'" y2="'+yy+'" stroke="#f4f4f5"/><text x="'+(W-pr+8)+'" y="'+(yy+4)+'" font-size="10.5" fill="#a1a1aa" font-weight="600">'+(v>=1000?Math.round(v).toLocaleString('en-IN'):v.toFixed(1))+'</text>'}
+  var ly=y(d[d.length-1]);
+  var avg=S.pos[a.id]?S.pos[a.id].cost/S.pos[a.id].units:null,mark='';
+  if(avg&&avg>mn&&avg<mx){var ay=y(avg);mark='<line x1="'+pl+'" x2="'+(W-pr+4)+'" y1="'+ay+'" y2="'+ay+'" stroke="#18181b" stroke-dasharray="4 4"/><text x="'+(pl+4)+'" y="'+(ay-4)+'" font-size="10" fill="#18181b" font-weight="800">your buy price</text>'}
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Price chart">'+g+'<path d="'+area+'" fill="'+col+'" opacity=".12"/><path d="'+line+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>'+mark+'<rect x="'+(W-pr+2)+'" y="'+(ly-10)+'" width="'+(pr-2)+'" height="20" rx="6" fill="'+col+'"/><text x="'+(W-pr+7)+'" y="'+(ly+4)+'" font-size="11" fill="#fff" font-weight="800">'+(d[d.length-1]>=1000?Math.round(d[d.length-1]).toLocaleString('en-IN'):d[d.length-1].toFixed(1))+'</text></svg>'
+}
+function coachBox(){
+  if(S.msg){var m=S.msg;return '<div class="coach '+m.k+'">'+lumi(m.k==='bad'?'angry':m.k==='warn'?'nervous':'cheer',44)+'<div><b>'+m.h+'</b><br>'+m.t+'</div></div>'}
+  var a=asset(S.sel);return '<div class="coach">'+lumi('happy',44)+'<div><b>Lumi says</b><br>'+a.why+'</div></div>'
+}
+function tradeView(){
+  var a=asset(S.sel),h=S.hist[a.id],n=TF[S.tf],d=h.slice(-n),c=d[d.length-1]-d[0],pc=c/d[0]*100,upc=c>=0;
+  var btns=A.map(function(x){return '<button class="as'+(x.id===S.sel?' on':'')+'" data-a="'+x.id+'"><div class="c" style="background:'+x.col+'"><i class="ti '+x.icon+'"></i></div><span>'+x.short+'</span></button>'}).join('');
+  var tf=Object.keys(TF).map(function(k){return '<button data-t="'+k+'"'+(k===S.tf?' class="on"':'')+'>'+k+'</button>'}).join('');
+  var has=!!S.pos[a.id];
+  return '<div class="assets">'+btns+'</div><div class="pr"><div><div class="n">'+a.name+'</div><div class="p">'+inr(price(a.id),price(a.id)<1000?2:0)+'</div></div><span class="chg '+(upc?'up':'dn')+'">'+(upc?'+':'')+pc.toFixed(2)+'%</span></div><div class="chart" id="chart">'+chartSvg()+'</div><div class="tf">'+tf+'</div><div class="tb"><button class="sell" id="sellb"'+(has?'':' disabled')+'><i class="ti ti-arrow-down"></i>Sell</button><button class="buy" id="buyb"><i class="ti ti-arrow-up"></i>Buy</button></div>'+coachBox()+(S.crash?'':'<button class="crash" id="crashb"><i class="ti ti-flame"></i>Replay a market crash</button>')
+}
+function portView(){
+  var t=total(),pnl=t-START,ids=Object.keys(S.pos),h='';
+  var segs=[['Cash',S.cash,'#d4d4d8']].concat(ids.map(function(id){return [asset(id).short,posVal(id),asset(id).col]}));
+  var bar=segs.map(function(s){return '<div style="width:'+(s[1]/t*100)+'%;background:'+s[2]+'"></div>'}).join('');
+  h+='<div class="card"><p class="tag">Total value</p><div class="big">'+inr(t)+'</div><div class="chg '+(pnl>=0?'up':'dn')+'" style="display:inline-block;margin-top:4px">'+(pnl>=0?'+':'')+inr(pnl)+' ('+(pnl/START*100).toFixed(2)+'%)</div><div class="alloc">'+bar+'</div><div class="mut">'+segs.map(function(s){return s[0]+' '+Math.round(s[1]/t*100)+'%'}).join(' · ')+'</div></div>';
+  h+='<div class="card"><p class="tag">Your holdings</p>'+(ids.length?ids.map(function(id){var a=asset(id),p=S.pos[id],v=posVal(id),g=v-p.cost;return '<div class="row"><div><b>'+a.name+'</b><div class="mut">'+p.units.toFixed(4)+' units</div></div><div style="text-align:right"><b>'+inr(v)+'</b><div class="'+(g>=0?'up':'dn')+'" style="font-size:12px;font-weight:800;border-radius:8px;padding:1px 6px;display:inline-block">'+(g>=0?'+':'')+inr(g)+'</div></div></div>'}).join(''):'<p class="mut">Nothing yet. Buy something on the Trade tab.</p>')+'</div>';
+  h+=diversityCard(t);return h
+}
+function diversityCard(t){
+  var ids=Object.keys(S.pos);if(!ids.length)return '';
+  var top=ids.map(function(id){return [id,posVal(id)/t]}).sort(function(a,b){return b[1]-a[1]})[0];
+  if(top[1]>.4)return '<div class="coach bad">'+lumi('angry',44)+'<div><b>Too much in one basket</b><br>'+Math.round(top[1]*100)+'% of your money is in '+asset(top[0]).name+'. If it falls 30%, you lose about '+Math.round(top[1]*30)+'% of everything.</div></div>';
+  if(ids.length>=3)return '<div class="coach good">'+lumi('cheer',44)+'<div><b>Nicely spread out</b><br>You hold '+ids.length+' different assets. One bad day will not sink you.</div></div>';
+  return '<div class="coach warn">'+lumi('nervous',44)+'<div><b>Try spreading out</b><br>Holding a mix of assets, like an index fund and gold, softens the bad days.</div></div>'
+}
+function logView(){
+  return '<div class="card"><p class="tag">Trade history</p>'+(S.log.length?S.log.slice().reverse().map(function(l){return '<div class="row"><div><b>'+(l.side==='buy'?'Bought':'Sold')+' '+l.name+'</b><div class="mut">'+inr(l.amount)+' at '+inr(l.price,l.price<1000?2:0)+'</div></div>'+(l.side==='sell'?'<span class="chg '+(l.pnl>=0?'up':'dn')+'">'+(l.pnl>=0?'+':'')+inr(l.pnl)+'</span>':'')+'</div>'}).join(''):'<p class="mut">No trades yet.</p>')+'</div>'
+}
+function draw(soft){
+  var b=document.getElementById('body');
+  document.getElementById('bal').textContent=inr(S.cash);
+  if(soft&&S.view==='trade'&&document.getElementById('chart')){
+    var a=asset(S.sel),d=S.hist[a.id].slice(-TF[S.tf]),c=d[d.length-1]-d[0];
+    document.getElementById('chart').innerHTML=chartSvg();
+    var pe=b.querySelector('.p'),ch=b.querySelector('.chg');pe.textContent=inr(price(a.id),price(a.id)<1000?2:0);ch.className='chg '+(c>=0?'up':'dn');ch.textContent=(c>=0?'+':'')+(c/d[0]*100).toFixed(2)+'%';
+    if(S.crash){var bt=document.getElementById('bt');if(bt)bt.textContent='Market crash replay: day '+Math.min(10,Math.ceil(S.crash.step/5))+' of 10. Hold your nerve.'}
+    return}
+  b.innerHTML=S.view==='trade'?tradeView():S.view==='port'?portView():logView();
+  wire()
+}
+function wire(){
+  var b=document.getElementById('body');
+  b.querySelectorAll('[data-a]').forEach(function(e){e.onclick=function(){S.sel=e.getAttribute('data-a');S.msg=null;draw()}});
+  b.querySelectorAll('[data-t]').forEach(function(e){e.onclick=function(){S.tf=e.getAttribute('data-t');draw()}});
+  var bb=document.getElementById('buyb'),sb=document.getElementById('sellb'),cb=document.getElementById('crashb');
+  if(bb)bb.onclick=function(){openSheet('buy')};if(sb&&!sb.disabled)sb.onclick=function(){openSheet('sell')};if(cb)cb.onclick=startCrash
+}
+var T={mode:'buy',amt:10000};
+function openSheet(mode){
+  T.mode=mode;var a=asset(S.sel);T.amt=mode==='buy'?Math.min(10000,Math.floor(S.cash)):100;renderSheet();document.getElementById('sheet').style.display='flex'
+}
+function renderSheet(){
+  var a=asset(S.sel),buy=T.mode==='buy',opts=buy?[5000,10000,25000,50000]:[25,50,100],held=posVal(a.id);
+  var chips=opts.map(function(o){return '<button class="chip'+(o===T.amt?' on':'')+'" data-o="'+o+'">'+(buy?inr(o):o+'%')+'</button>'}).join('');
+  var amount=buy?T.amt:held*T.amt/100,units=amount/price(a.id);
+  var err=buy&&T.amt>S.cash?'You only have '+inr(S.cash)+' of practice money.':'';
+  document.getElementById('sin').innerHTML='<h3>'+(buy?'Buy ':'Sell ')+a.name+'</h3><div class="mut">Price now '+inr(price(a.id),price(a.id)<1000?2:0)+(buy?' &middot; Cash '+inr(S.cash):' &middot; You hold '+inr(held))+'</div><div class="chips">'+chips+'</div><div class="card" style="margin:0 0 10px"><div class="row"><span>'+(buy?'You spend':'You receive')+'</span><b>'+inr(amount)+'</b></div><div class="row"><span>Units</span><b>'+units.toFixed(4)+'</b></div></div>'+(err?'<p style="color:#b91c1c;font-size:13px;margin:0 0 8px">'+err+'</p>':'')+'<button class="cta" id="go" style="background:'+(buy?'#10B981':'#EF4444')+'">Confirm '+(buy?'buy':'sell')+'</button><button class="cancel" id="cx">Cancel</button>';
+  document.querySelectorAll('#sin [data-o]').forEach(function(e){e.onclick=function(){T.amt=Number(e.getAttribute('data-o'));renderSheet()}});
+  document.getElementById('cx').onclick=closeSheet;document.getElementById('go').onclick=confirmTrade
+}
+function closeSheet(){document.getElementById('sheet').style.display='none'}
+function confirmTrade(){
+  var a=asset(S.sel),p=price(a.id),buy=T.mode==='buy';
+  if(buy){if(T.amt>S.cash||T.amt<=0){renderSheet();return}
+    var u=T.amt/p,pos=S.pos[a.id]||{units:0,cost:0};pos.units+=u;pos.cost+=T.amt;S.pos[a.id]=pos;S.cash-=T.amt;S.log.push({side:'buy',name:a.name,amount:T.amt,price:p});
+    var t=total(),share=posVal(a.id)/t;
+    S.msg=share>.4?{k:'bad',h:'Big bet on one asset',t:Math.round(share*100)+'% of your money is now in '+a.name+'. Beginners who spread their money lose less when one asset falls.'}:{k:'good',h:'Bought '+inr(T.amt),t:'You now own '+u.toFixed(4)+' units. Watch the dashed line: that is your buy price.'}}
+  else{var pos2=S.pos[a.id],frac=T.amt/100,uSold=pos2.units*frac,proceeds=uSold*p,costPart=pos2.cost*frac,pnl=proceeds-costPart;
+    pos2.units-=uSold;pos2.cost-=costPart;if(pos2.units<1e-9)delete S.pos[a.id];S.cash+=proceeds;S.log.push({side:'sell',name:a.name,amount:proceeds,price:p,pnl:pnl});
+    S.msg=Math.abs(pnl)<proceeds*0.003?{k:'good',h:'Roughly break-even',t:'You sold at about the price you paid. Real profit comes from selling clearly above your buy price.'}:pnl<0&&S.crash?{k:'bad',h:'Panic sell?',t:'You sold during the crash and locked in a loss of '+inr(Math.abs(pnl))+'. Prices often recover, but only if you are still holding.'}:pnl<0?{k:'warn',h:'Sold at a loss',t:'You lost '+inr(Math.abs(pnl))+' on this trade. Ask: did the reason you bought change, or did you just get scared?'}:{k:'good',h:'Sold for a profit',t:'You made '+inr(pnl)+'. Notice you only gain if you sell above your buy price.'}}
+  closeSheet();draw()
+}
+document.getElementById('reset').onclick=function(){S.cash=START;S.pos={};S.log=[];S.msg=null;S.crash=null;setSpeed(1000);document.getElementById('banner').style.display='none';draw()};
+document.getElementById('hist').onclick=function(){S.view='log';setNav();draw()};
+document.querySelectorAll('.nav button').forEach(function(b){b.onclick=function(){S.view=b.getAttribute('data-v');setNav();draw()}});
+function setNav(){document.querySelectorAll('.nav button').forEach(function(b){b.className=b.getAttribute('data-v')===S.view?'on':''})}
+window.FLT={buy:function(id,amt){S.sel=id;T={mode:'buy',amt:amt};confirmTrade()},crash:startCrash,state:S,tick:tick,total:total};
+draw()
+})();
+</script>
+</body>
+</html>
