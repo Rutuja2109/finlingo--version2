@@ -29,6 +29,8 @@ from practice import make_router as make_practice_router
 from money import make_router as make_money_router
 from missions import make_router as make_missions_router
 from explainers import make_router as make_explainer_router
+import google_auth
+from starlette.concurrency import run_in_threadpool
 from quests import make_router as make_quests_router, bump as quest_bump
 from text_repair import repair_collection
 from pdf_ingest import extract_chapters
@@ -140,8 +142,8 @@ class EnrollIn(BaseModel):
     course_id: str
 
 
-class GoogleSessionIn(BaseModel):
-    session_id: str
+class GoogleLoginIn(BaseModel):
+    id_token: str
 
 
 class ForgotPasswordIn(BaseModel):
@@ -402,54 +404,50 @@ async def reset_password(payload: ResetPasswordIn, response: Response):
     }
 
 
-@api.post("/auth/google/session")
-async def google_session(payload: GoogleSessionIn, response: Response):
-    """Exchange Emergent OAuth session_id for our JWT.
+@api.get("/auth/config")
+async def auth_config():
+    """What the app needs to show sign-in options. The client id is public by design."""
+    ids = google_auth.client_ids()
+    return {"google_client_id": ids[0] if ids else None}
 
-    Flow:
-    1. Call Emergent's /session-data with the session_id to get verified user info.
-    2. Find or create the user in our users collection (linked by email).
-    3. Issue our own JWT cookies + Bearer token so the rest of the app works unchanged.
-    """
-    async with httpx.AsyncClient(timeout=15.0) as client:
-        try:
-            r = await client.get(
-                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-                headers={"X-Session-ID": payload.session_id},
-            )
-        except Exception as e:
-            raise HTTPException(status_code=502, detail=f"Auth provider unreachable: {e}")
-    if r.status_code != 200:
-        raise HTTPException(status_code=401, detail="Invalid Google session")
-    info = r.json()
-    email = (info.get("email") or "").lower()
-    if not email:
-        raise HTTPException(status_code=400, detail="Google account missing email")
-    name = info.get("name") or email.split("@")[0]
-    picture = info.get("picture")
+
+@api.post("/auth/google")
+async def google_login(payload: GoogleLoginIn, response: Response):
+    """Sign in (or sign up) with a Google ID token. We verify it ourselves, then issue our own login."""
+    ids = google_auth.client_ids()
+    if not ids:
+        raise HTTPException(status_code=503, detail="Google sign-in is not set up yet")
+    try:
+        claims = await run_in_threadpool(google_auth.verify_id_token, payload.id_token, ids)
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    email, sub = claims["email"], claims["sub"]
+    name = (claims.get("name") or email.split("@")[0])[:80]
+    picture = claims.get("picture")
 
     user = await db.users.find_one({"email": email})
     if user:
-        # Link the Google identity to existing user if not already
-        update = {}
-        if not user.get("google_linked"):
-            update["google_linked"] = True
+        if user.get("google_sub") and user["google_sub"] != sub:
+            raise HTTPException(status_code=409, detail="This email is already linked to a different Google account")
+        update = {"google_linked": True, "google_sub": sub}
         if picture and user.get("picture") != picture:
             update["picture"] = picture
-        if update:
-            await db.users.update_one({"id": user["id"]}, {"$set": update})
-        user_id = user["id"]
-        user_doc = user
+        if not user.get("google_linked") and user.get("role") != "admin":
+            # The email on a password account was never verified, but Google has now verified it for the real owner.
+            # Drop the old password and any pending reset links, so nobody who registered this email first keeps access.
+            update["password_hash"] = ""
+            await db.password_resets.delete_many({"user_id": user["id"]})
+        await db.users.update_one({"id": user["id"]}, {"$set": update})
+        user_id, user_doc = user["id"], {**user, **update}
     else:
         user_id = str(uuid.uuid4())
         user_doc = {
             "id": user_id, "email": email, "name": name, "role": "user",
-            # No password — google-only account; can be set later via "change password" if needed.
-            "password_hash": "", "google_linked": True, "picture": picture,
+            "password_hash": "", "google_linked": True, "google_sub": sub, "picture": picture,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "avatar_color": _pick_color(email),
         }
-        await db.users.insert_one(user_doc)
+        await db.users.insert_one(dict(user_doc))
         await db.user_stats.insert_one({
             "user_id": user_id, "total_xp": 0, "level": 1, "coins": 50,
             "streak_days": 0, "last_active_date": None, "achievements": [],
@@ -464,7 +462,7 @@ async def google_session(payload: GoogleSessionIn, response: Response):
         "role": user_doc.get("role", "user"),
         "avatar_color": user_doc.get("avatar_color", "#FF6B35"),
         "picture": user_doc.get("picture"),
-        "access_token": access,
+        "access_token": access, "new_account": not user,
     }
 
 

@@ -61,6 +61,27 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Sign in (or sign up) with a Google ID token. The server verifies it and returns our own login.
+  const loginWithGoogle = async (idToken) => {
+    try {
+      const { data } = await api.post("/auth/google", { id_token: idToken });
+      if (data.access_token) localStorage.setItem("fl_token", data.access_token);
+      setUser(data);
+      await refreshStats();
+      identifyUser(data.id, data.name, data.email);
+      if (data.new_account) trackSignUp("google"); else trackLogin("google");
+      try {
+        const granted = await requestNotificationPermission();
+        if (granted) scheduleReminders(0);
+      } catch {
+        // reminders are optional
+      }
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: formatApiError(e) };
+    }
+  };
+
   const register = async (email, password, name) => {
     try {
       const { data } = await api.post("/auth/register", { email, password, name });
@@ -97,7 +118,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, stats, login, register, logout, deleteAccount,refreshStats, setStats, setUser }}>
+    <AuthContext.Provider value={{ user, stats, login, loginWithGoogle, register, logout, deleteAccount,refreshStats, setStats, setUser }}>
       {children}
     </AuthContext.Provider>
   );

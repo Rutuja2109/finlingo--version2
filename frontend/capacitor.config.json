@@ -4,10 +4,25 @@
   "webDir": "build",
   "server": {
     "androidScheme": "https",
-    "allowNavigation": ["auth.emergentagent.com", "accounts.google.com", "*.google.com", "*.googleapis.com", "*.googleusercontent.com"]
+    "allowNavigation": [
+      "accounts.google.com",
+      "*.google.com",
+      "*.googleapis.com",
+      "*.googleusercontent.com"
+    ]
   },
   "android": {
     "allowMixedContent": false
   },
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SocialLogin": {
+      "providers": {
+        "google": true,
+        "facebook": false,
+        "apple": false,
+        "twitter": false
+      }
+    }
+  }
 }

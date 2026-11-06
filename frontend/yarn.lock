@@ -1155,6 +1155,11 @@
   resolved "https://registry.yarnpkg.com/@capacitor/local-notifications/-/local-notifications-7.0.7.tgz#467bfbc2c9fbb4b99dcb0da456934ee0ea3eef7d"
   integrity sha512-3qSpa8PpVMONHqBOaJ4RbA/lB5vOdEngtep0myGmP3S56gShPScDCotbw7dwmQy3NCdY4Up9nH3ySrGvUh2jZg==
 
+"@capgo/capacitor-social-login@7.20.0":
+  version "7.20.0"
+  resolved "https://registry.yarnpkg.com/@capgo/capacitor-social-login/-/capacitor-social-login-7.20.0.tgz#8e788f0c1532387e49fafea776840ea6d6fdcf16"
+  integrity sha512-rHlEALFUonLe4sDG+qybDowh2/XDiHJ4DK9pShe1aPTGSrmA5j7kz8VbHYGqgof5xdyeC7pAY3+8PASTW+qGKg==
+
 "@craco/craco@7.1.0":
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-7.1.0.tgz#12bd394c7f0334e214302e4d35a1768f68042fbb"

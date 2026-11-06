@@ -23,7 +23,6 @@ import Admin from "@/pages/Admin";
 import Revision from "@/pages/Revision";
 import BossBattle from "@/pages/BossBattle";
 import Account from "@/pages/Account";
-import AuthCallback from "@/pages/AuthCallback";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 

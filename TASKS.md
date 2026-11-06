@@ -80,7 +80,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [ ] Sources on lessons (after your accuracy review)
 
 ## Known risks
-- Google sign-in uses an external service (auth.emergentagent.com). Test it, it may not work outside the original platform.
+- [x] Google sign-in rebuilt: the app gets a Google ID token (web and Android), our server verifies it against Google's keys and issues our own login. The old Emergent-hosted flow is removed. Needs your Google Cloud client ID: see docs/GOOGLE_SIGNIN_SETUP.md. Not tested with a real Google account.
 - data/loma.pdf (a copyrighted book) is in the public repo.
 
 
