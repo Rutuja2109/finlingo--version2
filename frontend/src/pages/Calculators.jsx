@@ -22,7 +22,8 @@ function Field({ label, value, set, min, max, step, unit, testid }) {
         </div>
       </div>
       <input type="range" min={min} max={max} step={step} value={Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : min}
-        onChange={(e) => set(String(e.target.value))} className="w-full accent-[#FF6B35]" aria-label={label} />
+        onChange={(e) => set(String(e.target.value))} className="fl-range w-full" aria-label={label}
+        style={{ "--fill": `${Number.isFinite(n) ? Math.round(((Math.min(max, Math.max(min, n)) - min) / (max - min)) * 100) : 0}%` }} />
     </div>
   );
 }

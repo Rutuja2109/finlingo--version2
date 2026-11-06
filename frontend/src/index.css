@@ -149,3 +149,11 @@ h1, h2, h3 { word-spacing: 0.08em; }
 /* Practice trading: the element Lumi's tour points at */
 .pt-hl { outline: 3px solid #FF6B35; outline-offset: 3px; border-radius: 14px; animation: pt-hlp 1.2s ease-in-out infinite; position: relative; z-index: 31; }
 @keyframes pt-hlp { 0%, 100% { outline-color: #FF6B35; } 50% { outline-color: #FF6B3555; } }
+
+/* Calculator sliders: light track with an orange filled part, easy to grab with a thumb */
+.fl-range { -webkit-appearance: none; appearance: none; height: 28px; background: transparent; }
+.fl-range::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: linear-gradient(to right, #FF6B35 var(--fill, 0%), #E4E4E7 var(--fill, 0%)); }
+.fl-range::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; margin-top: -9px; border-radius: 50%; background: #FF6B35; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+.fl-range::-moz-range-track { height: 8px; border-radius: 99px; background: #E4E4E7; }
+.fl-range::-moz-range-progress { height: 8px; border-radius: 99px; background: #FF6B35; }
+.fl-range::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #FF6B35; border: 3px solid #fff; }

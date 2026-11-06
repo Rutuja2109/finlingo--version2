@@ -26,7 +26,7 @@ const cleanNum = (v) => v.replace(/[^\d.]/g, "").replace(/(\..*)\./g, "$1");
 function Sheet({ title, onClose, children, testid }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/45 flex items-end justify-center" onClick={onClose}>
-      <div className="bg-white rounded-t-[26px] w-full max-w-md px-4 pt-4 pb-6 max-h-[92vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} data-testid={testid}>
+      <div className="bg-white rounded-t-[26px] w-full max-w-md px-4 pt-4 pb-3 max-h-[92vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} data-testid={testid}>
         <h3 className="font-[Outfit] font-black text-xl mb-3">{title}</h3>
         {children}
       </div>
@@ -219,8 +219,10 @@ function EntrySheet({ onClose, onSaved }) {
       <input type="date" value={date} max={localToday()} onChange={(e) => setDate(e.target.value || localToday())}
         className="w-full border-2 border-zinc-200 rounded-2xl px-3 py-2.5 mb-3 text-sm outline-none focus:border-[#FF6B35]" />
       {err && <p className="text-red-700 text-[13px] mb-2">{err}</p>}
-      <button onClick={save} disabled={!valid || busy} data-testid="entry-save" className="w-full rounded-2xl py-3.5 font-[Outfit] font-black text-base text-white bg-[#FF6B35] disabled:opacity-50">Save</button>
-      <button onClick={onClose} className="w-full rounded-2xl py-3 mt-2 bg-zinc-100 font-[Outfit] font-extrabold">Cancel</button>
+      <div className="sticky bottom-0 -mx-4 px-4 pt-2 pb-1 bg-white border-t border-zinc-100">
+        <button onClick={save} disabled={!valid || busy} data-testid="entry-save" className="w-full rounded-2xl py-3.5 font-[Outfit] font-black text-base text-white bg-[#FF6B35] disabled:opacity-50">Save</button>
+        <button onClick={onClose} className="w-full rounded-2xl py-2.5 mt-1.5 bg-zinc-100 font-[Outfit] font-extrabold">Cancel</button>
+      </div>
     </Sheet>
   );
 }

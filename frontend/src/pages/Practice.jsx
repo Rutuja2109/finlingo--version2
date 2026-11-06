@@ -17,6 +17,8 @@ function Chart({ series, avg }) {
   if (d.length < 2) return <div className="h-[210px]" />;
   let mn = Math.min(...d), mx = Math.max(...d);
   if (mx === mn) { mx += 1; mn -= 1; }
+  const minSpan = d[d.length - 1] * 0.005;
+  if (mx - mn < minSpan) { const mid = (mx + mn) / 2; mx = mid + minSpan / 2; mn = mid - minSpan / 2; }
   const pad = (mx - mn) * 0.08; mn -= pad; mx += pad;
   const x = (i) => pl + ((W - pl - pr) * i) / (d.length - 1);
   const y = (v) => pt + (H - pt - pb) * (1 - (v - mn) / (mx - mn));
@@ -212,7 +214,7 @@ export default function Practice() {
         <div className="flex items-center justify-between gap-2">
           <button onClick={resetAll} className="flex items-center gap-1 rounded-full bg-white/25 px-3 py-1.5 text-[13px] font-bold font-[Outfit]" data-testid="pt-reset"><RefreshCw className="w-3.5 h-3.5" />Reset</button>
           <div className="text-center">
-            <div id="pt-bal" className="font-[Outfit] font-black text-2xl tracking-tight" data-testid="pt-cash">{inr(S.cash)}</div>
+            <div id="pt-bal" className="inline-block px-3 mb-1.5 font-[Outfit] font-black text-2xl tracking-tight" data-testid="pt-cash">{inr(S.cash)}</div>
             <div className="text-[11.5px] font-semibold opacity-90">Practice money, not real money</div>
           </div>
           <span className="w-[68px]" />
@@ -227,11 +229,11 @@ export default function Practice() {
 
       {/* Lumi's tour card */}
       {step && (
-        <div className="sticky top-[68px] z-30 mt-2 bg-white border-2 border-[#FF6B35] rounded-2xl p-3 shadow-lg" data-testid="pt-tour">
+        <div className="sticky top-[68px] z-30 mt-2 bg-white border-2 border-[#FF6B35] rounded-2xl p-2.5 shadow-lg" data-testid="pt-tour">
           <div className="text-[11px] font-extrabold tracking-[.14em] uppercase text-[#FF6B35]">Lumi’s tour · {tour.i + 1} of {TOUR.length}</div>
           <div className="flex gap-2.5 items-start mt-1">
-            <Lumi size={56} mood={step.m} className="shrink-0" />
-            <div className="text-[13.5px] leading-relaxed"><b className="font-[Outfit]">{step.h}</b><br />{step.quiz ? step.quiz.q : step.t}</div>
+            <Lumi size={44} mood={step.m} className="shrink-0" />
+            <div className="text-[13px] leading-snug"><b className="font-[Outfit]">{step.h}</b><br />{step.quiz ? step.quiz.q : step.t}</div>
           </div>
           {step.quiz && step.quiz.opts.map((o, i) => (
             <button key={i} onClick={() => tour.quiz === null && setTour({ ...tour, quiz: i })}
@@ -260,7 +262,7 @@ export default function Practice() {
 
       {view === "trade" && asset && (
         <div className="mt-3">
-          <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none]">
+          <div className="flex gap-3 overflow-x-auto px-2 pt-2 pb-3 -mx-2 [scrollbar-width:none]">
             {S.assets.map((a) => {
               const I = ICONS[a.icon] || BarChart3;
               return (

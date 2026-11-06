@@ -245,8 +245,8 @@ export default function Dashboard() {
         <div className="mt-6 flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 border border-zinc-200">
           <Lumi size={44} mood="happy" />
           <div>
-            <p className="font-[Outfit] font-bold text-sm text-zinc-800">More courses coming soon</p>
-            <p className="text-xs text-zinc-500">Taxes, insurance, Hindi lessons and more are on the way</p>
+            <p className="font-[Outfit] font-bold text-sm text-zinc-800">More courses are on the way</p>
+            <p className="text-xs text-zinc-500">New topics and chapters are added regularly.</p>
           </div>
         </div>
       </section>

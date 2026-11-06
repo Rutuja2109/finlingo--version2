@@ -32,7 +32,7 @@ export default function AppShell({ children }) {
             <span className="hidden sm:inline font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             <Link to="/dashboard" className={linkCls("/dashboard")} data-testid="nav-dashboard">
               <Home className="w-4 h-4" /> Home
             </Link>
@@ -70,7 +70,7 @@ export default function AppShell({ children }) {
             ) : null}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             <Stat icon={Flame} value={stats?.streak_days || 0} color="#FF5C00" testid="stat-streak" />
             <Stat icon={Zap} value={stats?.total_xp || 0} color="#FBBF24" testid="stat-xp" />
             <Stat icon={Coins} value={stats?.coins || 0} color="#F59E0B" testid="stat-coins" />
@@ -78,7 +78,7 @@ export default function AppShell({ children }) {
               onClick={() => { logout(); window.location.replace("/login"); }}
               data-testid="btn-logout"
               aria-label="Log out"
-              className="ml-2 w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition"
+              className="sm:ml-2 w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition"
               title={user?.name}
             >
               <LogOut className="w-4 h-4" />
@@ -101,7 +101,7 @@ export default function AppShell({ children }) {
 
       {/* Mobile nav */}
       {!immersive && (
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-t border-zinc-200">
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-t border-zinc-200">
         <div className="max-w-md mx-auto grid grid-cols-5">
           {[
             { to: "/dashboard", Icon: Home, label: "Home", t: "mnav-dashboard" },

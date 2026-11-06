@@ -73,5 +73,20 @@ Test the release APK (`finlearn-release.apk`) on a real Android phone. Tick each
 - [ ] Phone's dark mode: text is still readable
 - [ ] Switch away and back to the app: you are still logged in
 
+## 11. New features (added after the first phone test)
+Bottom tabs are now Home, Courses, Practice, Money, Rank. Awards moved to Account.
+- [ ] **Practice:** Lumi's tour starts on first open. Tap through it (NIFTY, 5MIN, Buy, Confirm, Sell). Finish for +15 XP.
+- [ ] Practice: chart readable, buy and sell sheets fit above the keyboard-free area, Portfolio and History tabs work
+- [ ] Practice: "Replay a market crash" runs about 30 seconds, then shows the before and after message
+- [ ] **My money:** add income and a few expenses (the amount field opens the number keyboard and is not hidden by it)
+- [ ] My money: the 50/30/20 split and Lumi's comment update, entries can be deleted, month arrows work
+- [ ] My money: create a goal ("New phone", 50000, 6 months) and see "Save ₹8,333 a month"
+- [ ] **Calculators** (link at the top of My money): SIP, Loan EMI and Emergency fund tabs, sliders are easy to use with a thumb
+- [ ] **Dashboard:** idea of the day card, daily quests card (three quests, Claim buttons, chest), missions card
+- [ ] Explainer: read it, answer the quick check, see +XP
+- [ ] **Missions:** open one, tick "I did it" with a note; try the "Log 5 spends" one before and after logging
+- [ ] **New courses:** Taxes Made Simple, Insurance Basics, पैसों की बात (Hindi text shows correctly, not boxes)
+- [ ] Investment Analysis now has four chapters
+
 ## What to send me
 For any problem, tell me: which screen, what you tapped, what you expected, and what happened. A screenshot helps a lot.
