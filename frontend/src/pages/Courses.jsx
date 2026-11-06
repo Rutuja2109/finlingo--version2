@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { courseSubtitle } from "@/lib/course";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Lock, ArrowRight, Check, Star, ChevronDown, ChevronUp } from "lucide-react";
@@ -15,9 +16,9 @@ const ICONS_SVG = {
 };
 
 const COMING_SOON = [
-  { name: "CFA Level 1", title: "Chartered Financial Analyst", color: "#2563EB", icon: "TrendingUp" },
-  { name: "FRM Part 1", title: "Financial Risk Manager", color: "#7C3AED", icon: "Shield" },
-  { name: "PMP", title: "Project Management Professional", color: "#059669", icon: "Briefcase" },
+  { name: "Taxes Made Simple", title: "Your first tax return, explained", color: "#2563EB", icon: "Briefcase", certification: "Money basics" },
+  { name: "Insurance Basics", title: "Health, term and what you really need", color: "#7C3AED", icon: "Shield", certification: "Money basics" },
+  { name: "Hindi Lessons", title: "Learn money in Hindi", color: "#059669", icon: "Wallet", certification: "Languages" },
 ];
 
 export default function Courses() {
@@ -56,7 +57,7 @@ export default function Courses() {
     <div className="pb-28">
       <div className="mb-8">
         <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Learning Path</p>
-        <h1 className="font-[Outfit] font-black text-3xl tracking-tighter">Your Journey</h1>
+        <h1 className="font-[Outfit] font-black text-3xl tracking-tight">Your Journey</h1>
         <p className="text-zinc-500 text-sm mt-1">Start with Money Basics, then move on to stocks and crypto. One concept at a time.</p>
       </div>
 
@@ -141,8 +142,8 @@ function CourseNode({ node, idx, isEnrolled, busy, onEnroll, onContinue }) {
         >
           <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-zinc-500">{node.certification || "Coming Soon"}</p>
           <p className="font-[Outfit] font-black text-[17px] tracking-tight text-zinc-900 leading-tight">{node.name}</p>
-          <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{node.title}</p>
-          {isLocked && <p className="text-[10px] text-zinc-500 mt-1 font-semibold">🔒 Coming soon</p>}
+          <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{courseSubtitle(node)}</p>
+          {isLocked && <p className="text-[11px] text-zinc-500 mt-1 font-semibold">Coming soon</p>}
           {isActive && <p className="text-[10px] text-[#10B981] mt-1 font-bold">IN PROGRESS →</p>}
           {node.status === "available" && <p className="text-[10px] text-zinc-500 mt-1 font-semibold">Tap to start</p>}
         </button>

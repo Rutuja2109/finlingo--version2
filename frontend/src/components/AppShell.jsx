@@ -8,6 +8,8 @@ export default function AppShell({ children }) {
   const { user, stats, logout } = useAuth();
   const nav = useNavigate();
   const loc = useLocation();
+  // Lessons and boss battles are full screen: no top bar or tab bar, so the question and the Continue button have room.
+  const immersive = loc.pathname.startsWith("/concept") || loc.pathname.startsWith("/boss");
 
   const linkCls = (path) =>
     `flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
@@ -19,6 +21,7 @@ export default function AppShell({ children }) {
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-zinc-900 font-[Manrope]">
       {/* Top bar */}
+      {!immersive && (
       <header
         data-testid="app-header"
         className="sticky top-0 z-40 backdrop-blur-xl bg-white/70 border-b border-zinc-200"
@@ -78,10 +81,12 @@ export default function AppShell({ children }) {
           </div>
         </div>
       </header>
+      )}
 
-      <main className="max-w-6xl mx-auto px-5 py-8">{children}</main>
+      <main className={`max-w-6xl mx-auto px-5 ${immersive ? "py-3" : "py-8"}`}>{children}</main>
 
       {/* Mobile nav */}
+      {!immersive && (
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-t border-zinc-200">
         <div className="max-w-md mx-auto grid grid-cols-4">
           {[
@@ -100,6 +105,7 @@ export default function AppShell({ children }) {
           ))}
         </div>
       </nav>
+      )}
     </div>
   );
 }

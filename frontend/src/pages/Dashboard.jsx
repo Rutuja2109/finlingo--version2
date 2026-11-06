@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { courseSubtitle } from "@/lib/course";
 import { Link } from "react-router-dom";
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
@@ -81,7 +82,7 @@ export default function Dashboard() {
             <Sparkles className="w-3.5 h-3.5 inline -mt-0.5 mr-1"/>
             {greeting()}, {user?.name?.split(" ")[0] || "learner"}
           </p>
-          <h1 className="font-[Outfit] font-black text-2xl md:text-5xl tracking-tighter leading-tight max-w-[75%] md:max-w-2xl">
+          <h1 className="font-[Outfit] font-black text-2xl md:text-5xl tracking-tight leading-tight max-w-[75%] md:max-w-2xl">
             {(stats?.streak_days || 0) > 0
               ? <>{stats.streak_days}-day streak. Keep it alive.</>
               : "Let's start your streak today."}
@@ -134,7 +135,7 @@ export default function Dashboard() {
           <div className="mt-4 w-full border-t border-zinc-100 pt-4">
             <p className="text-xs font-semibold text-zinc-600 flex items-center justify-center gap-1.5">
               <Snowflake className="w-4 h-4 text-[#2563EB]" aria-hidden="true"/>
-              Streak freezes: <span data-testid="freeze-count">{freezes}</span>/{FREEZE_MAX}
+              <span>Streak freezes: <span data-testid="freeze-count">{freezes}</span>/{FREEZE_MAX}</span>
             </p>
             <button onClick={buyFreeze} disabled={buying || freezes >= FREEZE_MAX || (stats?.coins || 0) < FREEZE_COST}
               data-testid="btn-buy-freeze"
@@ -173,7 +174,7 @@ export default function Dashboard() {
                 <div className="relative flex-1 min-w-0">
                   <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-white/70">{c.certification}</p>
                   <p className="font-[Outfit] font-black text-xl tracking-tight leading-tight">{c.name}</p>
-                  <p className="text-sm text-white/80 mt-0.5 truncate">{c.title}</p>
+                  <p className="text-sm text-white/80 mt-0.5 truncate">{courseSubtitle(c)}</p>
                 </div>
                 <div className="relative flex flex-col items-center gap-1 shrink-0">
                   <div className="w-10 h-10 rounded-full bg-white/20 grid place-items-center">
@@ -198,7 +199,7 @@ export default function Dashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-[Outfit] font-black text-xl tracking-tight">{c.name}</p>
-                  <p className="text-sm text-zinc-500">{c.title}</p>
+                  <p className="text-sm text-zinc-500">{courseSubtitle(c)}</p>
                 </div>
                 <button onClick={() => enroll(c.id)} disabled={!!busy[c.id]}
                   data-testid={`btn-enroll-${c.slug}`}
@@ -215,8 +216,8 @@ export default function Dashboard() {
         <div className="mt-6 flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 border border-zinc-200">
           <Lumi size={44} mood="happy" />
           <div>
-            <p className="font-[Outfit] font-bold text-sm text-zinc-800">More certifications coming soon</p>
-            <p className="text-xs text-zinc-500">FRM, AWS and more are on the way</p>
+            <p className="font-[Outfit] font-bold text-sm text-zinc-800">More courses coming soon</p>
+            <p className="text-xs text-zinc-500">Taxes, insurance, Hindi lessons and more are on the way</p>
           </div>
         </div>
       </section>

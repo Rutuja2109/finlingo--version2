@@ -19,7 +19,7 @@ export default function Achievements() {
     <div className="pb-24">
       <div className="mb-7">
         <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Your trophies</p>
-        <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tighter">Achievements</h1>
+        <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tight">Achievements</h1>
         <p className="text-zinc-500 mt-1">{earned.size} of {ALL.length} unlocked.</p>
       </div>
 

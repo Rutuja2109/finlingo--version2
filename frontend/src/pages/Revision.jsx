@@ -54,7 +54,7 @@ export default function Revision() {
     return (
       <div className="pb-24 max-w-2xl text-center">
         <div className="mt-8 mb-4 flex justify-center"><Lumi size={160} mood="cheer"/></div>
-        <h1 className="font-[Outfit] font-black text-4xl tracking-tighter mb-2">Daily revision complete</h1>
+        <h1 className="font-[Outfit] font-black text-4xl tracking-tight mb-2">Daily revision complete</h1>
         <p className="text-zinc-500 mb-6">{items.length} concept{items.length>1?"s":""} reviewed · +{earned} XP</p>
         <Link to="/dashboard" data-testid="revision-done" className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#FF6B35] text-white font-[Outfit] font-bold">
           <Sparkles className="w-4 h-4"/> Done
@@ -119,7 +119,7 @@ function Header() {
   return (
     <div className="mb-6">
       <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Daily Revision</p>
-      <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tighter flex items-center gap-2">
+      <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tight flex items-center gap-2">
         <Repeat className="w-7 h-7 text-[#FF6B35]"/> Reinforce
       </h1>
     </div>

@@ -64,7 +64,7 @@ export default function Admin() {
     <div className="pb-24 max-w-5xl">
       <div className="mb-7">
         <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Admin · AI Lab</p>
-        <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tighter">Generate a course from a PDF</h1>
+        <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tight">Generate a course from a PDF</h1>
         <p className="text-zinc-500 mt-1">Upload a textbook → we'll extract chapters and generate interactive lessons using Claude Sonnet 4.5 + GPT-5.2.</p>
       </div>
 

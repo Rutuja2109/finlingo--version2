@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { courseSubtitle } from "@/lib/course";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Lock, Check, Sparkles, ChevronLeft, Skull, Star, BookOpen, Zap } from "lucide-react";
@@ -50,8 +51,8 @@ export default function CoursePath() {
           style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
         <div className="relative">
           <p className="uppercase tracking-[0.25em] text-xs font-bold text-white/70">{course.certification}</p>
-          <h1 className="font-[Outfit] font-black text-3xl tracking-tighter">{course.name}</h1>
-          <p className="text-white/80 text-sm mt-1">{course.title}</p>
+          <h1 className="font-[Outfit] font-black text-3xl tracking-tight">{course.name}</h1>
+          <p className="text-white/80 text-sm mt-1">{courseSubtitle(course)}</p>
         </div>
       </div>
 

@@ -10,7 +10,7 @@ export default function Leaderboard() {
     <div className="pb-24">
       <div className="mb-7">
         <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Real-time</p>
-        <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tighter">Leaderboard</h1>
+        <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tight">Leaderboard</h1>
         <p className="text-zinc-500 mt-1">Top FinLearn learners by XP — no fake data, ever.</p>
       </div>
 
@@ -23,29 +23,37 @@ export default function Leaderboard() {
       <div className="bg-white border border-zinc-200 rounded-3xl overflow-hidden">
         {rows.map((r) => (
           <div key={r.user_id} data-testid={`lb-row-${r.rank}`}
-            className={`flex items-center gap-4 px-5 py-4 border-b border-zinc-100 last:border-0 ${r.is_me ? "bg-[#FF6B35]/8" : ""}`}>
+            className={`flex items-center gap-3 px-4 py-3.5 border-b border-zinc-100 last:border-0 ${r.is_me ? "bg-[#FF6B35]/8" : ""}`}>
             <RankBadge rank={r.rank}/>
-            <div className="w-10 h-10 rounded-full grid place-items-center text-white font-[Outfit] font-black"
+            <div className="w-9 h-9 shrink-0 rounded-full grid place-items-center text-white font-[Outfit] font-black"
               style={{ background: r.avatar_color }}>
               {r.name?.[0]?.toUpperCase() || "?"}
             </div>
-            <div className="flex-1">
-              <p className="font-[Outfit] font-bold tracking-tight">
-                {r.name} {r.is_me && <span className="ml-2 text-xs uppercase tracking-wider font-bold text-[#FF6B35]">You</span>}
+            <div className="flex-1 min-w-0">
+              <p className="font-[Outfit] font-bold tracking-tight truncate">
+                {publicName(r.name)} {r.is_me && <span className="ml-1.5 text-[11px] uppercase tracking-wider font-bold text-[#FF6B35]">You</span>}
               </p>
               <p className="text-xs text-zinc-500">Level {r.level}</p>
             </div>
-            <div className="flex items-center gap-1 text-sm font-bold text-[#FF5C00]">
-              <Flame className="w-4 h-4"/> {r.streak_days}
-            </div>
-            <div className="flex items-center gap-1 text-sm font-bold text-[#F59E0B] tabular-nums w-20 justify-end">
-              <Zap className="w-4 h-4"/> {r.total_xp}
+            <div className="shrink-0 flex flex-col items-end gap-0.5">
+              <div className="flex items-center gap-1 text-sm font-bold text-[#F59E0B] tabular-nums">
+                <Zap className="w-4 h-4"/> {r.total_xp}
+              </div>
+              <div className="flex items-center gap-1 text-xs font-bold text-[#FF5C00] tabular-nums">
+                <Flame className="w-3.5 h-3.5"/> {r.streak_days}
+              </div>
             </div>
           </div>
         ))}
       </div>
     </div>
   );
+}
+
+// Other learners see only a first name and last initial, e.g. "Priya S."
+function publicName(name) {
+  const parts = (name || "Learner").trim().split(/\s+/);
+  return parts.length > 1 ? `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.` : parts[0];
 }
 
 function RankBadge({ rank }) {
@@ -56,7 +64,7 @@ function RankBadge({ rank }) {
   };
   const cls = styles[rank] || "bg-zinc-100 text-zinc-600";
   return (
-    <div className={`w-9 h-9 rounded-full grid place-items-center font-[Outfit] font-black text-sm ${cls}`}>
+    <div className={`w-9 h-9 shrink-0 rounded-full grid place-items-center font-[Outfit] font-black text-sm ${cls}`}>
       {rank <= 3 ? <Trophy className="w-4 h-4"/> : rank}
     </div>
   );

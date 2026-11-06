@@ -127,8 +127,8 @@ export default function LessonPlayer() {
   const isFinalShift = queue.length === 1 && (!needsAnswer || (answered && answered.correct === true));
 
   return (
-    <div className="max-w-3xl mx-auto pb-24">
-      <div className="flex items-center gap-3 mb-6">
+    <div className="max-w-3xl mx-auto pb-2 flex flex-col" style={{ minHeight: "calc(100dvh - 1.5rem)" }}>
+      <div className="flex items-center gap-3 mb-5">
         <button onClick={() => nav(-1)} data-testid="lesson-exit" aria-label="Exit lesson" className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 grid place-items-center">
           <ChevronLeft className="w-5 h-5"/>
         </button>
@@ -139,7 +139,7 @@ export default function LessonPlayer() {
         </div>
         <div className="flex flex-col items-center">
           <Lumi key={lumiKey} size={42} mood={lumiMood} className={lumiAnim} />
-          <span className="text-[10px] font-bold tabular-nums text-zinc-500 -mt-1">
+          <span className="text-[10px] font-bold tabular-nums text-zinc-500 mt-0.5">
             {Math.max(1, initialQueueLen - queue.length + 1)}/{initialQueueLen}{queue.length > initialQueueLen ? "+" : ""}
           </span>
         </div>
@@ -155,7 +155,7 @@ export default function LessonPlayer() {
         </div>
       )}
 
-      <div data-testid="lesson-card" className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 min-h-[320px]">
+      <div data-testid="lesson-card" className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 min-h-[320px] mb-4">
         {current.type === "intro" && <IntroLesson l={current} concept={concept}/>}
         {current.type === "info" && <InfoLesson l={current}/>}
         {current.type === "teach" && <TeachLesson l={current}/>}
@@ -167,7 +167,8 @@ export default function LessonPlayer() {
         {current.type === "scenario" && <ScenarioLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
       </div>
 
-      <div className="mt-6 flex justify-between items-center">
+      {/* Always-visible action bar: Continue never hides below the content */}
+      <div className="sticky bottom-0 z-30 -mx-5 px-5 mt-auto pt-3 pb-3 bg-[#FAFAFA]/95 backdrop-blur border-t border-zinc-200 flex justify-between items-center gap-3">
         <span className="text-xs text-zinc-500">
           {wrongFirstTry.size > 0 && `${wrongFirstTry.size} question${wrongFirstTry.size>1?"s":""} to revisit`}
         </span>
@@ -233,7 +234,7 @@ function IntroLesson({ l, concept }) {
   return (
     <div className="text-center fade-up">
       <div className="flex justify-center mb-5"><Lumi size={120} mood="happy"/></div>
-      <h2 className="font-[Outfit] font-black text-3xl tracking-tighter mb-3">{l.content.heading}</h2>
+      <h2 className="font-[Outfit] font-black text-3xl tracking-tight mb-3">{l.content.heading}</h2>
       <p className="text-zinc-600 max-w-xl mx-auto text-lg leading-relaxed">{l.content.body}</p>
     </div>
   );
@@ -606,7 +607,7 @@ function ResultScreen({ result, concept, onAgain }) {
       <div className="mt-8 mb-4 flex justify-center">
         <Lumi size={160} mood={isMastered ? "celebrate" : "happy"} className={isMastered ? "lumi-celebrate" : "lumi-float"} />
       </div>
-      <h1 className="font-[Outfit] font-black text-4xl tracking-tighter mb-2">
+      <h1 className="font-[Outfit] font-black text-4xl tracking-tight mb-2">
         {isMastered ? "Concept mastered!" : result.status === "completed" ? "Nicely done!" : "Keep going!"}
       </h1>
       <p className="text-zinc-500 mb-8">{concept.title}</p>
@@ -629,11 +630,11 @@ function ResultScreen({ result, concept, onAgain }) {
 
       <div className="flex gap-3 justify-center">
         <button onClick={onAgain} data-testid="btn-redo"
-          className="px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-400 font-bold inline-flex items-center gap-2">
+          className="flex-1 px-3 py-3 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-400 font-bold inline-flex items-center justify-center gap-2 whitespace-nowrap">
           <RotateCcw className="w-4 h-4"/> Practice again
         </button>
         <button onClick={() => nav(-1)} data-testid="btn-continue-path"
-          className="px-6 py-3 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold inline-flex items-center gap-2">
+          className="flex-1 px-3 py-3 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold inline-flex items-center justify-center gap-2 whitespace-nowrap">
           <Sparkles className="w-4 h-4"/> Continue path
         </button>
       </div>

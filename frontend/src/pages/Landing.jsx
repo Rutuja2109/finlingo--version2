@@ -23,7 +23,7 @@ export default function Landing() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF6B35]/10 text-[#FF6B35] text-xs font-bold uppercase tracking-[0.2em] mb-6">
             <Sparkles className="w-3.5 h-3.5"/> Learn by choosing
           </div>
-          <h1 className="font-[Outfit] font-black text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tighter mb-6">
+          <h1 className="font-[Outfit] font-black text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mb-6">
             Learn money,<br/>
             <span className="bg-gradient-to-r from-[#FF6B35] via-[#EC4899] to-[#FF6B35] bg-clip-text text-transparent">finally</span> fun.
           </h1>

@@ -42,7 +42,7 @@ export default function BossBattle() {
       <div className="min-h-[80vh] grid place-items-center p-10 -m-2" data-testid="boss-locked">
         <div className="text-center max-w-md">
           <Lock className="w-12 h-12 mx-auto text-[#EC4899] mb-3"/>
-          <h1 className="font-[Outfit] font-black text-3xl tracking-tighter mb-2 text-white">Boss locked</h1>
+          <h1 className="font-[Outfit] font-black text-3xl tracking-tight mb-2 text-white">Boss locked</h1>
           <p className="text-zinc-500">Master all {data.concepts_total} concepts of this chapter to challenge the boss. You're at {data.concepts_done}/{data.concepts_total}.</p>
           <button onClick={() => nav(-1)} className="mt-5 px-5 py-3 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-bold">Back</button>
         </div>
@@ -81,7 +81,7 @@ export default function BossBattle() {
         }}/>
         <div className="relative text-center max-w-md">
           {result.passed ? <Crown className="w-16 h-16 mx-auto text-[#FBBF24] mb-3"/> : <Skull className="w-16 h-16 mx-auto text-[#EF4444] mb-3"/>}
-          <h1 className="font-[Outfit] font-black text-5xl tracking-tighter mb-2">{result.passed ? "Victory!" : "Defeated"}</h1>
+          <h1 className="font-[Outfit] font-black text-5xl tracking-tight mb-2">{result.passed ? "Victory!" : "Defeated"}</h1>
           <p className="text-zinc-300 mb-7">Score: <span className="text-[#FBBF24] font-bold text-2xl">{result.score}%</span></p>
           <div className="grid grid-cols-2 gap-3 mb-6">
             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-4">

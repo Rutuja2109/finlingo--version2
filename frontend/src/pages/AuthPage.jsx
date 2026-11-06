@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
+import { Eye, EyeOff } from "lucide-react";
 import { PRIVACY_URL } from "@/lib/api";
 
 export default function AuthPage({ mode = "login" }) {
@@ -13,6 +14,14 @@ export default function AuthPage({ mode = "login" }) {
   const [form, setForm] = useState({ email: isDemo ? "demo@finlingo.com" : "", password: isDemo ? "Demo@123" : "", name: "" });
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+
+  // Login and signup share this component, so reset the form when switching screens
+  // (otherwise the demo credentials carry over into the sign-up form).
+  useEffect(() => {
+    setForm({ email: isDemo ? "demo@finlingo.com" : "", password: isDemo ? "Demo@123" : "", name: "" });
+    setErr("");
+  }, [mode, isDemo]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -37,7 +46,7 @@ export default function AuthPage({ mode = "login" }) {
             <span className="font-[Outfit] font-black text-2xl tracking-tight">FinLearn</span>
           </Link>
           <div>
-            <h1 className="font-[Outfit] font-black text-5xl leading-tight tracking-tighter mb-4">
+            <h1 className="font-[Outfit] font-black text-5xl leading-tight tracking-tight mb-4">
               Learn money.<br/>One choice at a time.
             </h1>
             <p className="text-white/85 max-w-md">
@@ -83,13 +92,21 @@ export default function AuthPage({ mode = "login" }) {
           </Field>
 
           <Field label="Password" testid="input-password">
-            <input
-              type="password" required minLength={6}
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              placeholder="Min 6 characters"
-              className="w-full px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
-            />
+            <div className="relative">
+              <input
+                type={showPw ? "text" : "password"} required minLength={6}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                placeholder="Min 6 characters"
+                autoComplete={isLogin ? "current-password" : "new-password"}
+                className="w-full pl-4 pr-12 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
+              />
+              <button type="button" onClick={() => setShowPw((s) => !s)}
+                aria-label={showPw ? "Hide password" : "Show password"} data-testid="btn-toggle-password"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 grid place-items-center rounded-full text-zinc-500 hover:text-zinc-800">
+                {showPw ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
           </Field>
 
           {err && (
