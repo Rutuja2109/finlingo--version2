@@ -18,7 +18,7 @@ Test the release APK (`finlearn-release.apk`) on a real Android phone. Tick each
 - [ ] You land on the dashboard with your name in the greeting
 - [ ] Log out (arrow icon), then log back in
 - [ ] A wrong password shows a clear error
-- [ ] Try "Forgot password"
+- [ ] Tap "Forgot password?": it explains what to do (Google sign-in, or email support). It no longer shows a reset button
 - [ ] Try "Try the demo" from the landing page (it fills the demo login)
 - [ ] If there is a Google sign-in button, try it and note whether it works
 

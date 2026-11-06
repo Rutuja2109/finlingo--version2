@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import { api, formatApiError } from "@/lib/api";
 import { requestNotificationPermission, scheduleReminders, cancelReminders } from "@/lib/notifications";
 import { identifyUser, trackLogin, trackSignUp } from "@/lib/firebase";
@@ -9,14 +9,50 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // null = loading, false = logged out
   const [stats, setStats] = useState(null);
 
+  // Reminders are scheduled one after another (never two at once) and re-planned whenever the learner's day changes,
+  // so practising today cancels today's nudges.
+  const queue = useRef(Promise.resolve());
+  const lastPlan = useRef("");
+  const localDay = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+  const syncReminders = useCallback((s, force = false) => {
+    if (!s) return;
+    const practiced = s.last_active_date === localDay();
+    const key = `${localDay()}|${s.streak_days || 0}|${practiced}`;
+    if (!force && key === lastPlan.current) return;
+    lastPlan.current = key;
+    queue.current = queue.current.then(() => scheduleReminders(s.streak_days || 0, 8, practiced)).catch(() => {});
+  }, []);
+
   const refreshStats = useCallback(async () => {
     try {
       const { data } = await api.get("/stats/me");
       setStats(data);
+      return data;
     } catch (e) {
-      // ignore
+      return null;
     }
   }, []);
+
+  // Practising (or a new day) changes which reminders still make sense.
+  useEffect(() => {
+    try {
+      if (stats && user && localStorage.getItem("fl_notif") === "granted") syncReminders(stats);
+    } catch {
+      // storage unavailable: skip
+    }
+  }, [stats, user, syncReminders]);
+
+  const reminderPermission = useCallback(async (s) => {
+    try {
+      const granted = await requestNotificationPermission();
+      if (granted) {
+        try { localStorage.setItem("fl_notif", "granted"); } catch { /* ignore */ }
+        syncReminders(s, true);
+      }
+    } catch {
+      // reminders are optional; never let them break the session
+    }
+  }, [syncReminders]);
 
   const loadMe = useCallback(async () => {
     try {
@@ -25,17 +61,12 @@ export function AuthProvider({ children }) {
       const s = await api.get("/stats/me");
       setStats(s.data);
       identifyUser(data.id, data.name, data.email);
-      try {
-        const granted = await requestNotificationPermission();
-        if (granted) scheduleReminders(s.data?.streak_days || 0);
-      } catch {
-        // reminders are optional; never let them break the session
-      }
+      await reminderPermission(s.data);
     } catch {
       setUser(false);
       setStats(null);
     }
-  }, []);
+  }, [reminderPermission]);
 
   useEffect(() => {
     loadMe();
@@ -46,15 +77,10 @@ export function AuthProvider({ children }) {
       const { data } = await api.post("/auth/login", { email, password });
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
       setUser(data);
-      await refreshStats();
+      const st = await refreshStats();
       identifyUser(data.id, data.name, data.email);
       trackLogin(email === "demo@finlingo.com" ? "demo" : "email");
-      try {
-        const granted = await requestNotificationPermission();
-        if (granted) scheduleReminders(0);
-      } catch {
-        // reminders are optional
-      }
+      await reminderPermission(st);
       return { ok: true };
     } catch (e) {
       return { ok: false, error: formatApiError(e) };
@@ -67,15 +93,10 @@ export function AuthProvider({ children }) {
       const { data } = await api.post("/auth/google", { id_token: idToken });
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
       setUser(data);
-      await refreshStats();
+      const st = await refreshStats();
       identifyUser(data.id, data.name, data.email);
       if (data.new_account) trackSignUp("google"); else trackLogin("google");
-      try {
-        const granted = await requestNotificationPermission();
-        if (granted) scheduleReminders(0);
-      } catch {
-        // reminders are optional
-      }
+      await reminderPermission(st);
       return { ok: true };
     } catch (e) {
       return { ok: false, error: formatApiError(e) };
@@ -97,6 +118,8 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    try { localStorage.removeItem("fl_notif"); } catch { /* ignore */ }
+    lastPlan.current = "";
     cancelReminders().catch(() => {});
     api.post("/auth/logout").catch(() => {});
     localStorage.removeItem("fl_token");

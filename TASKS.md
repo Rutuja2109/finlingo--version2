@@ -79,6 +79,10 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [ ] More chapters per track
 - [ ] Sources on lessons (after your accuracy review)
 
+## Security fixes (2026-11-06)
+- [x] Forgot password no longer hands the reset token to whoever asks (anyone could take over any account). The page now explains: Google sign-in, or write to support. Real email reset needs an email service (to do). Tests: backend/tests/test_password_reset.py
+- [x] Reminders skip today's nudges once you have practised (planReminders, frontend/src/lib/notifications.check.mjs)
+
 ## Known risks
 - [x] Google sign-in rebuilt: the app gets a Google ID token (web and Android), our server verifies it against Google's keys and issues our own login. The old Emergent-hosted flow is removed. Needs your Google Cloud client ID: see docs/GOOGLE_SIGNIN_SETUP.md. Not tested with a real Google account.
 - data/loma.pdf (a copyrighted book) is in the public repo.

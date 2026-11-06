@@ -1,5 +1,4 @@
-"""Phase 2.5 backend tests: forgot-password, reset-password, google/session,
-and Phase 1+2 regression smoke."""
+"""Phase 1+2 regression smoke (pytest). Password reset and Google sign-in have their own test files."""
 import os
 import pytest
 import requests
@@ -26,95 +25,7 @@ def H(tok):
     return {"Authorization": f"Bearer {tok}"}
 
 
-# -------------- forgot-password / reset-password --------------
-class TestPasswordReset:
-    """Full forgot-password → reset-password lifecycle. We mutate the demo
-    password during the test class and restore Demo@123 at the end."""
-
-    def test_forgot_existing_user_returns_dev_reset_url(self):
-        r = requests.post(f"{API}/auth/forgot-password",
-                          json={"email": DEMO_EMAIL}, timeout=15)
-        assert r.status_code == 200, r.text
-        data = r.json()
-        assert data.get("ok") is True
-        assert data.get("dev_reset_url"), f"expected dev_reset_url, got {data}"
-        assert "/reset-password?token=" in data["dev_reset_url"]
-
-    def test_forgot_unknown_email_returns_200_no_url(self):
-        r = requests.post(f"{API}/auth/forgot-password",
-                          json={"email": "nope_does_not_exist@finlingo.com"}, timeout=15)
-        assert r.status_code == 200, r.text
-        data = r.json()
-        assert data.get("ok") is True
-        assert data.get("dev_reset_url") is None, data
-
-    def test_reset_with_invalid_token_returns_400(self):
-        r = requests.post(f"{API}/auth/reset-password",
-                          json={"token": "this-token-does-not-exist-123",
-                                "new_password": "Whatever@123"}, timeout=15)
-        assert r.status_code == 400, r.text
-        body = r.json()
-        # detail string per server.py
-        assert "Invalid" in body.get("detail", ""), body
-
-    def test_full_cycle_reset_then_login_then_restore(self):
-        # Step 1: forgot-password
-        r1 = requests.post(f"{API}/auth/forgot-password",
-                           json={"email": DEMO_EMAIL}, timeout=15)
-        assert r1.status_code == 200
-        url1 = r1.json()["dev_reset_url"]
-        token1 = url1.split("token=")[1]
-        assert len(token1) > 10
-
-        # Step 2: reset-password to TMP_PASSWORD
-        r2 = requests.post(f"{API}/auth/reset-password",
-                           json={"token": token1, "new_password": TMP_PASSWORD}, timeout=15)
-        assert r2.status_code == 200, r2.text
-        body2 = r2.json()
-        assert body2["email"] == DEMO_EMAIL
-        assert body2.get("access_token"), "expected access_token in reset response"
-
-        # Step 3: token reuse should fail
-        r2b = requests.post(f"{API}/auth/reset-password",
-                            json={"token": token1, "new_password": "AnotherPwd@1"}, timeout=15)
-        assert r2b.status_code == 400, r2b.text
-
-        # Step 4: login with new password
-        r3 = _login(DEMO_EMAIL, TMP_PASSWORD)
-        assert r3.status_code == 200, f"login with new pwd failed: {r3.text}"
-        tok = r3.json()["access_token"]
-
-        # /auth/me should also work
-        rme = requests.get(f"{API}/auth/me", headers=H(tok), timeout=15)
-        assert rme.status_code == 200
-        assert rme.json()["email"] == DEMO_EMAIL
-
-        # Step 5: login with OLD password should fail
-        r_old = _login(DEMO_EMAIL, DEMO_PASSWORD)
-        assert r_old.status_code == 401, f"old password should not work: {r_old.status_code}"
-
-        # Step 6: restore -> forgot again, reset back to Demo@123
-        r4 = requests.post(f"{API}/auth/forgot-password",
-                           json={"email": DEMO_EMAIL}, timeout=15)
-        assert r4.status_code == 200
-        token2 = r4.json()["dev_reset_url"].split("token=")[1]
-        r5 = requests.post(f"{API}/auth/reset-password",
-                           json={"token": token2, "new_password": DEMO_PASSWORD}, timeout=15)
-        assert r5.status_code == 200, r5.text
-
-        # Step 7: confirm demo creds work again
-        r6 = _login(DEMO_EMAIL, DEMO_PASSWORD)
-        assert r6.status_code == 200, f"restore failed; demo creds broken: {r6.text}"
-
-
-# -------------- google/session (negative path only) --------------
-class TestGoogleSession:
-    def test_invalid_session_id_returns_401(self):
-        r = requests.post(f"{API}/auth/google/session",
-                          json={"session_id": "totally-bogus-session-id-xyz"}, timeout=20)
-        assert r.status_code == 401, f"expected 401, got {r.status_code} body={r.text}"
-        body = r.json()
-        assert "Invalid Google session" in body.get("detail", ""), body
+# Password reset and Google sign-in are tested in test_password_reset.py and test_google_auth.py.
 
 
 # -------------- Phase 1 + 2 regression smoke --------------

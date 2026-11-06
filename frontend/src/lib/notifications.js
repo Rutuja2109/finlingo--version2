@@ -30,7 +30,28 @@ export async function requestNotificationPermission() {
   }
 }
 
-export async function scheduleReminders(streakDays = 0, reminderHour = 8) {
+const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+// Decides what to schedule. Plain function so it can be tested without a phone.
+// Once today's practice is done, today's reminders are pointless (and the "streak at risk" ones are wrong), so every
+// reminder starts tomorrow instead. They repeat daily from there until the app is opened and practised again.
+export function planReminders(now, streakDays = 0, practicedToday = false, reminderHour = 8) {
+  const messages = getMessages(streakDays);
+  const next = (h, m) => {
+    const d = new Date(now);
+    d.setHours(h, m, 0, 0);
+    if (d <= now) d.setDate(d.getDate() + 1);
+    if (practicedToday && sameDay(d, now)) d.setDate(d.getDate() + 1);
+    return d;
+  };
+  return [
+    { id: 1001, at: next(reminderHour, 0), color: "#FF6B35", ...messages.morning },
+    { id: 1002, at: next(20, 0), color: "#FF6B35", ...messages.evening },
+    { id: 1003, at: next(21, 30), color: "#E5484D", ...messages.late },
+  ];
+}
+
+export async function scheduleReminders(streakDays = 0, reminderHour = 8, practicedToday = false) {
   const plugin = await getPlugin();
   if (!plugin) return;
   const LN = plugin.LN;
@@ -41,55 +62,13 @@ export async function scheduleReminders(streakDays = 0, reminderHour = 8) {
     if (pending.notifications.length > 0) {
       await LN.cancel({ notifications: pending.notifications.map((n) => ({ id: n.id })) });
     }
-
-    const now = new Date();
-    const messages = getMessages(streakDays);
-
-    // Daily morning reminder (8 AM by default)
-    const morningTime = new Date(now);
-    morningTime.setHours(reminderHour, 0, 0, 0);
-    if (morningTime <= now) morningTime.setDate(morningTime.getDate() + 1);
-
-    // Evening streak-risk reminder (8 PM) — fires only if user hasn't practiced
-    const eveningTime = new Date(now);
-    eveningTime.setHours(20, 0, 0, 0);
-    if (eveningTime <= now) eveningTime.setDate(eveningTime.getDate() + 1);
-
-    // Last call (9:30 PM): the angry one
-    const lateTime = new Date(now);
-    lateTime.setHours(21, 30, 0, 0);
-    if (lateTime <= now) lateTime.setDate(lateTime.getDate() + 1);
-
+    const plan = planReminders(new Date(), streakDays, practicedToday, reminderHour);
     await LN.schedule({
-      notifications: [
-        {
-          id: 1003,
-          title: messages.late.title,
-          body: messages.late.body,
-          schedule: { at: lateTime, repeats: true, every: "day" },
-          sound: null,
-          smallIcon: "ic_launcher_foreground",
-          iconColor: "#E5484D",
-        },
-        {
-          id: 1001,
-          title: messages.morning.title,
-          body: messages.morning.body,
-          schedule: { at: morningTime, repeats: true, every: "day" },
-          sound: null,
-          smallIcon: "ic_launcher_foreground",
-          iconColor: "#FF6B35",
-        },
-        {
-          id: 1002,
-          title: messages.evening.title,
-          body: messages.evening.body,
-          schedule: { at: eveningTime, repeats: true, every: "day" },
-          sound: null,
-          smallIcon: "ic_launcher_foreground",
-          iconColor: "#FF6B35",
-        },
-      ],
+      notifications: plan.map((n) => ({
+        id: n.id, title: n.title, body: n.body,
+        schedule: { at: n.at, repeats: true, every: "day" },
+        sound: null, smallIcon: "ic_launcher_foreground", iconColor: n.color,
+      })),
     });
   } catch (e) {
     console.warn("Notification scheduling failed:", e);

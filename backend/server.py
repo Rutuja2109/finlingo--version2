@@ -342,16 +342,25 @@ async def refresh_token(request: Request, response: Response):
 
 
 @api.post("/auth/forgot-password")
-async def forgot_password(payload: ForgotPasswordIn):
-    """Generate a 1-hour reset token. In dev-mode (no email service wired),
-    we return the token + path so the frontend can build a same-origin reset link.
-    Always returns 200 to avoid revealing whether an email exists.
+async def forgot_password(payload: ForgotPasswordIn, request: Request):
+    """There is no email service yet, so a reset link cannot be delivered to its owner.
+
+    The token must NEVER be returned to the caller: that would let anyone who knows an email reset that person's
+    password. It is only handed back when DEV_RESET_LINKS=1 AND the request comes from this same machine
+    (local development and tests). Always answers the same way, so it does not reveal whether an email exists.
     """
+    generic = {
+        "ok": True, "reset_token": None, "reset_path": None, "delivery": "unavailable",
+        "message": "We cannot email reset links yet. If you signed up with Google, use Continue with Google.",
+    }
+    caller = request.client.host if request.client else ""
+    if os.environ.get("DEV_RESET_LINKS") != "1" or caller not in ("127.0.0.1", "::1", "localhost"):
+        return generic
+
     email = payload.email.lower()
     user = await db.users.find_one({"email": email})
     if not user:
-        return {"ok": True, "reset_token": None, "reset_path": None,
-                "message": "If this email exists, a reset link has been generated."}
+        return generic
 
     token = str(uuid.uuid4()).replace("-", "") + str(uuid.uuid4()).replace("-", "")
     expires_at = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
@@ -360,12 +369,7 @@ async def forgot_password(payload: ForgotPasswordIn):
         "token": token, "expires_at": expires_at, "used": False,
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
-    return {
-        "ok": True,
-        "reset_token": token,
-        "reset_path": f"/reset-password?token={token}",
-        "message": "Reset link generated. In production this would be emailed to you.",
-    }
+    return {**generic, "reset_token": token, "reset_path": f"/reset-password?token={token}", "delivery": "dev"}
 
 
 @api.post("/auth/reset-password")
@@ -408,7 +412,7 @@ async def reset_password(payload: ResetPasswordIn, response: Response):
 async def auth_config():
     """What the app needs to show sign-in options. The client id is public by design."""
     ids = google_auth.client_ids()
-    return {"google_client_id": ids[0] if ids else None}
+    return {"google_client_id": ids[0] if ids else None, "support_email": os.environ.get("PRIVACY_EMAIL", "").strip() or None}
 
 
 @api.post("/auth/google")

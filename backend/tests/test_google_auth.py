@@ -106,7 +106,7 @@ try:
     db.users.delete_many({"email": {"$in": [EM, EM2]}})
     c = httpx.Client(timeout=30)
 
-    ok("config reports the client id", c.get(f"{U}/auth/config").json() == {"google_client_id": CLIENT})
+    ok("config reports the client id", c.get(f"{U}/auth/config").json()["google_client_id"] == CLIENT)
     ok("bad token -> 401", c.post(f"{U}/auth/google", json={"id_token": "nope"}).status_code == 401)
     ok("wrong audience -> 401", c.post(f"{U}/auth/google", json={"id_token": token({"aud": "x"})}).status_code == 401)
     ok("unverified email -> 401", c.post(f"{U}/auth/google", json={"id_token": token({"email_verified": False})}).status_code == 401)
