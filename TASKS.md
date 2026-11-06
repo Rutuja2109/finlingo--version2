@@ -40,7 +40,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [x] Streak-at-risk behaviour: worried Lumi from 6 pm, angry Lumi (red hero) from 9 pm, sad Lumi when a streak broke
 - [x] Reminder notifications escalate: morning, 8 pm worried, 9:30 pm angry
 - [x] Days now follow the learner's own timezone (streak and daily goal reset at local midnight)
-- [ ] Practice trading (virtual money, assets, chart, buy/sell) from your Investmade screenshot
+- [x] Practice trading built into the app (new Practice tab): Rs 1,00,000 virtual money, 4 simulated assets, chart with 7 timeframes, buy/sell, portfolio, history, crash replay, Lumi's 15-step tour with +15 XP. Server tests: backend/tests/test_practice.py. Phone check pending.
 - [ ] SIP / EMI / emergency fund calculators
 - [ ] Make the 'coming soon' courses real: Taxes Made Simple, Insurance Basics, Hindi Lessons
 - [ ] More Investment Analysis chapters
@@ -62,7 +62,6 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [ ] Daily quests
 - [ ] Calculators: SIP, EMI, emergency fund
 - [ ] First-time setup + placement quiz
-- [ ] Practice portfolio (virtual Rs 1,00,000) + replay the crash
 - [ ] Interactive sliders in lessons
 - [ ] Friend challenges, weekly leagues
 - [ ] Daily 60-second finance explainer

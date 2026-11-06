@@ -25,6 +25,7 @@ import httpx
 
 from seed_data import seed_courses
 from seed_finance import seed_finance_courses
+from practice import make_router as make_practice_router
 from text_repair import repair_collection
 from pdf_ingest import extract_chapters
 from llm_gen import generate_chapter_lessons
@@ -1125,6 +1126,7 @@ async def privacy_policy():
     return HTMLResponse(_privacy_page())
 
 
+api.include_router(make_practice_router(db, get_current_user, _xp_today_fields, learner_today))
 app.include_router(api)
 
 # CORS — open for mobile app (Capacitor sends null origin)

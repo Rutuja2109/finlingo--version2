@@ -145,3 +145,7 @@ html.boss-mode header [data-testid="btn-logout"] {
 }
 
 h1, h2, h3 { word-spacing: 0.08em; }
+
+/* Practice trading: the element Lumi's tour points at */
+.pt-hl { outline: 3px solid #FF6B35; outline-offset: 3px; border-radius: 14px; animation: pt-hlp 1.2s ease-in-out infinite; position: relative; z-index: 31; }
+@keyframes pt-hlp { 0%, 100% { outline-color: #FF6B35; } 50% { outline-color: #FF6B3555; } }

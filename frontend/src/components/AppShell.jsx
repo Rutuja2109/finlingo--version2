@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles } from "lucide-react";
+import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 
@@ -38,6 +38,9 @@ export default function AppShell({ children }) {
             </Link>
             <Link to="/courses" className={linkCls("/courses")} data-testid="nav-courses">
               <BookOpen className="w-4 h-4" /> Courses
+            </Link>
+            <Link to="/practice" className={linkCls("/practice")} data-testid="nav-practice">
+              <LineChart className="w-4 h-4" /> Practice
             </Link>
             <Link to="/revise" className={linkCls("/revise")} data-testid="nav-revise">
               <Repeat className="w-4 h-4" /> Revise
@@ -88,10 +91,11 @@ export default function AppShell({ children }) {
       {/* Mobile nav */}
       {!immersive && (
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-t border-zinc-200">
-        <div className="max-w-md mx-auto grid grid-cols-4">
+        <div className="max-w-md mx-auto grid grid-cols-5">
           {[
             { to: "/dashboard", Icon: Home, label: "Home", t: "mnav-dashboard" },
             { to: "/courses", Icon: BookOpen, label: "Courses", t: "mnav-courses" },
+            { to: "/practice", Icon: LineChart, label: "Practice", t: "mnav-practice" },
             { to: "/leaderboard", Icon: Trophy, label: "Rank", t: "mnav-leaderboard" },
             { to: "/achievements", Icon: Award, label: "Awards", t: "mnav-achievements" },
           ].map(({ to, Icon, label, t }) => (
