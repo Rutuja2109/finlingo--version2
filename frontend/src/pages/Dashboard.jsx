@@ -8,6 +8,7 @@ import { ArrowRight, Sparkles, Target, Flame, Repeat, Snowflake } from "lucide-r
 import { trackCourseEnrolled } from "@/lib/firebase";
 import GoalPicker from "@/components/GoalPicker";
 import DailyQuests from "@/components/DailyQuests";
+import MissionsTeaser from "@/components/MissionsTeaser";
 import { streakState } from "@/lib/streak";
 
 const FREEZE_COST = 30;
@@ -172,6 +173,7 @@ export default function Dashboard() {
       </section>
 
       <DailyQuests />
+      <MissionsTeaser />
 
       {/* Courses — winding path style */}
       <section>

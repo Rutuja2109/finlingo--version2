@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart, Wallet } from "lucide-react";
+import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart, Wallet, Flag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 
@@ -44,6 +44,9 @@ export default function AppShell({ children }) {
             </Link>
             <Link to="/money" className={linkCls("/money")} data-testid="nav-money">
               <Wallet className="w-4 h-4" /> My money
+            </Link>
+            <Link to="/missions" className={linkCls("/missions")} data-testid="nav-missions">
+              <Flag className="w-4 h-4" /> Missions
             </Link>
             <Link to="/revise" className={linkCls("/revise")} data-testid="nav-revise">
               <Repeat className="w-4 h-4" /> Revise

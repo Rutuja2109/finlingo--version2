@@ -46,6 +46,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [x] The 'coming soon' courses are now real: Taxes Made Simple (4 concepts), Insurance Basics (4), and पैसों की बात, personal finance in Hindi (4). 108 lessons. Every number rechecked in backend/tests/check_life_math.py; shape checks in check_course_shape.py. Needs your accuracy review, and a Hindi reader's review.
 - [ ] More Investment Analysis chapters
 - [x] Daily quests on the dashboard: 3 a day from a pool (XP, lesson, perfect score, revise, practice trade, My money log), +5 coins each, daily chest +15 coins, week view. Tests: backend/tests/test_quests.py. Phone check pending.
+- [x] Real-life missions (18): UPI history, log spends, auto-transfer, emergency fund, two-step verification, spot a scam, check health cover, PAN-Aadhaar link and more. 5 check themselves from your data, the rest are honour system with an optional note. +20 to 30 XP each, once. Mission of the week on the Dashboard. Tests: backend/tests/test_missions.py. Phone check pending.
 - [ ] Friend streaks, weekly leagues
 
 ## You need to do (see the list in chat)

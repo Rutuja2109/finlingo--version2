@@ -27,6 +27,7 @@ from seed_data import seed_courses
 from seed_finance import seed_finance_courses
 from practice import make_router as make_practice_router
 from money import make_router as make_money_router
+from missions import make_router as make_missions_router
 from quests import make_router as make_quests_router, bump as quest_bump
 from text_repair import repair_collection
 from pdf_ingest import extract_chapters
@@ -305,7 +306,7 @@ async def delete_account(payload: DeleteAccountIn, response: Response, user: dic
             raise HTTPException(status_code=401, detail="Incorrect password")
     uid = user["id"]
     for coll in ("user_stats", "user_progress", "user_enrollments", "boss_battles", "password_resets",
-                 "practice_accounts", "money_entries", "money_goals", "daily_quests"):
+                 "practice_accounts", "money_entries", "money_goals", "daily_quests", "mission_progress"):
         await db[coll].delete_many({"user_id": uid})
     await db.users.delete_one({"id": uid})
     clear_auth_cookies(response)
@@ -1136,6 +1137,7 @@ async def privacy_policy():
 
 
 api.include_router(make_practice_router(db, get_current_user, _xp_today_fields, learner_today, on_trade=lambda uid, day: quest_bump(db, uid, day, "trades")))
+api.include_router(make_missions_router(db, get_current_user, _xp_today_fields, learner_today))
 api.include_router(make_money_router(db, get_current_user, learner_today, on_entry=lambda uid, day: quest_bump(db, uid, day, "entries")))
 api.include_router(make_quests_router(db, get_current_user, learner_today))
 app.include_router(api)
