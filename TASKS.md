@@ -54,7 +54,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - [ ] (you) Change ADMIN_PASSWORD in Render
 - [ ] (you) Set PRIVACY_OPERATOR and PRIVACY_EMAIL in Render, then check /privacy
 - [ ] (you) Back up C:\Users\Admin\finlearn-keys (two places)
-- [ ] (you) Decide on LOMA book rights: loma.pdf is in the public repo
+- [x] LOMA book PDF (two identical copies) removed from the repo and ignored from now on. It is still in the git history of the public repo: make the repo private, or rewrite history (see chat).
 - [ ] (you) Always-on Render plan
 - [ ] (you) Google Play Console account ($25), then create the app, upload AAB, fill the forms
 - [ ] (you) 12 testers for 14 days, if your account type requires it

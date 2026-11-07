@@ -93,3 +93,7 @@ credentials.json
 *.jks
 *.keystore
 keystore.properties
+
+# Copyrighted source books and uploaded PDFs must never be committed
+data/*.pdf
+data/uploads/
