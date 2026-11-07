@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart, Wallet, Flag } from "lucide-react";
+import { Flame, Zap, Coins, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart, Wallet, Flag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Logo from "@/components/Logo";
 import ProStrip from "@/components/ProStrip";
 
 export default function AppShell({ children }) {
-  const { user, stats, logout } = useAuth();
+  const { user, stats } = useAuth();
   const nav = useNavigate();
   const loc = useLocation();
   // Lessons and boss battles are full screen: no top bar or tab bar, so the question and the Continue button have room.
@@ -75,15 +75,6 @@ export default function AppShell({ children }) {
             <Stat icon={Flame} value={stats?.streak_days || 0} color="#FF5C00" testid="stat-streak" />
             <Stat icon={Zap} value={stats?.total_xp || 0} color="#FBBF24" testid="stat-xp" />
             <Stat icon={Coins} value={stats?.coins || 0} color="#F59E0B" testid="stat-coins" />
-            <button
-              onClick={() => { logout(); window.location.replace("/login"); }}
-              data-testid="btn-logout"
-              aria-label="Log out"
-              className="sm:ml-2 w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition"
-              title={user?.name}
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
             <Link
               to="/account"
               data-testid="btn-account"

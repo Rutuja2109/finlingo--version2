@@ -786,6 +786,54 @@ async def my_progress(user: dict = Depends(get_current_user)):
     return docs
 
 
+# ---------- NEXT UP (Home screen "Continue" card) ----------
+async def _ordered_concepts(course_id: str) -> list:
+    """The concepts of a course in reading order (chapter, module, concept)."""
+    chapters = await db.chapters.find({"course_id": course_id}, {"_id": 0, "id": 1, "order": 1}).to_list(300)
+    ch_order = {c["id"]: c.get("order", 0) for c in chapters}
+    modules = await db.modules.find({"chapter_id": {"$in": list(ch_order)}}, {"_id": 0, "id": 1, "chapter_id": 1, "order": 1}).to_list(1000)
+    mod_key = {m["id"]: (ch_order[m["chapter_id"]], m.get("order", 0)) for m in modules}
+    concepts = await db.concepts.find({"module_id": {"$in": list(mod_key)}}, {"_id": 0, "id": 1, "title": 1, "module_id": 1, "order": 1}).to_list(3000)
+    concepts.sort(key=lambda c: (*mod_key[c["module_id"]], c.get("order", 0)))
+    return concepts
+
+
+@api.get("/progress/next")
+async def next_up(user: dict = Depends(get_current_user)):
+    """The lesson to do next: the first unfinished concept of the course used most recently (or the first course)."""
+    uid = user["id"]
+    prog = await db.user_progress.find({"user_id": uid}, {"_id": 0}).to_list(5000)
+    done_ids = {p["concept_id"] for p in prog if p.get("status") in ("completed", "mastered")}
+    enrolled = {r["course_id"] for r in await db.user_enrollments.find({"user_id": uid}, {"_id": 0}).to_list(100)}
+    courses = await db.courses.find({"hidden": {"$ne": True}}, {"_id": 0}).sort("order", 1).to_list(100)
+    if not courses:
+        return {"all_done": True}
+
+    # Most recently practised course first, then the rest in course order.
+    target = None
+    recent = max((p for p in prog if p.get("last_completed_at")), key=lambda p: p["last_completed_at"], default=None)
+    if recent:
+        c = await db.concepts.find_one({"id": recent["concept_id"]}, {"_id": 0, "module_id": 1})
+        m = c and await db.modules.find_one({"id": c["module_id"]}, {"_id": 0, "chapter_id": 1})
+        ch = m and await db.chapters.find_one({"id": m["chapter_id"]}, {"_id": 0, "course_id": 1})
+        target = ch["course_id"] if ch else None
+    order = ([c for c in courses if c["id"] == target] + [c for c in courses if c["id"] != target]) if target else courses
+
+    for course in order[:4]:
+        concepts = await _ordered_concepts(course["id"])
+        nxt = next((c for c in concepts if c["id"] not in done_ids), None)
+        if nxt:
+            return {
+                "all_done": False,
+                "course": {"id": course["id"], "name": course["name"], "color": course.get("color"), "slug": course.get("slug")},
+                "concept": {"id": nxt["id"], "title": nxt["title"]},
+                "done": sum(1 for c in concepts if c["id"] in done_ids), "total": len(concepts),
+                "enrolled": course["id"] in enrolled,
+                "locked": await pro.concept_locked(db, user, nxt),
+            }
+    return {"all_done": True}
+
+
 # ---------- ENROLLMENT ----------
 @api.post("/enrollments")
 async def enroll(payload: EnrollIn, user: dict = Depends(get_current_user)):

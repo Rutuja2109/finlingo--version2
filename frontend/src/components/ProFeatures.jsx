@@ -20,7 +20,10 @@ export default function ProFeatures() {
   if (!sub) return null;
   return (
     <section className="mb-8" data-testid="feature-showcase">
-      <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-500 mb-2.5 px-1">Everything in FinLearn</p>
+      <div className="flex items-center justify-between mb-2.5 px-1">
+        <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-600">Everything in FinLearn</p>
+        {!isPro && <Link to="/pro?from=home" data-testid="features-go-pro" className="text-[12px] font-extrabold text-[#FF6B35]">Go Pro →</Link>}
+      </div>
       <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2 snap-x">
         {ITEMS.map(({ key, to, Icon, t, d, c, pro, note }) => {
           const locked = pro && !isPro;
