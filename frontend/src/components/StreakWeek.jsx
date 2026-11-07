@@ -32,13 +32,20 @@ export default function StreakWeek() {
     setBuying(false);
   };
 
+  // Days inside the current streak count as practised even if no quest was claimed that day.
+  const streakDates = new Set();
+  if (streak > 0 && !stats?.streak_broken && stats?.last_active_date) {
+    const base = new Date(`${stats.last_active_date}T12:00:00Z`);
+    for (let k = 0; k < streak; k++) streakDates.add(new Date(base.getTime() - k * 86400000).toISOString().slice(0, 10));
+  }
+  const practised = (w) => !!w.on || streakDates.has(String(w.date));
   const todayIdx = week ? week.findIndex((w) => w.today) : -1;
   // Days before sign-up are not "missed" (compare in the learner's own timezone, like the week itself).
   const joined = (() => {
     const d = user?.created_at ? new Date(user.created_at) : null;
     return d && !isNaN(d) ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : "";
   })();
-  const doneDays = week ? week.filter((w) => w.on).length : 0;
+  const doneDays = week ? week.filter(practised).length : 0;
   const canBuy = !buying && freezes < FREEZE_MAX && (stats?.coins || 0) >= FREEZE_COST;
 
   return (
@@ -63,16 +70,17 @@ export default function StreakWeek() {
         {(week || Array.from({ length: 7 }, (_, i) => ({ date: i, label: "·" }))).map((w, i) => {
           const today = i === todayIdx;
           const future = todayIdx >= 0 && i > todayIdx;
-          const before = !w.on && !today && !future && joined && String(w.date) < joined;
+          const on = practised(w);
+          const before = !on && !today && !future && joined && String(w.date) < joined;
           let cls = "bg-[#FFE3D0]"; // missed: warm and quiet, never red
-          if (w.on) cls = "bg-gradient-to-br from-[#FF6B35] to-[#FBBF24] text-white shadow";
+          if (on) cls = "bg-gradient-to-br from-[#FF6B35] to-[#FBBF24] text-white shadow";
           else if (today) cls = "bg-white border-2 border-[#FF6B35] ring-4 ring-[#FF6B35]/20 animate-pulse";
           else if (future) cls = "bg-transparent border-2 border-dashed border-[#F2BE9B]";
           else if (before) cls = "bg-transparent border-2 border-dotted border-[#F2D5BF]";
           return (
             <div key={w.date}>
-              <div className={`w-9 h-9 rounded-full grid place-items-center mx-auto ${cls}`} data-testid={`week-day-${i}`} data-state={w.on ? "done" : today ? "today" : future ? "future" : before ? "before" : "missed"}>
-                {w.on && <Flame className="w-4 h-4" fill="currentColor" />}
+              <div className={`w-9 h-9 rounded-full grid place-items-center mx-auto ${cls}`} data-testid={`week-day-${i}`} data-state={on ? "done" : today ? "today" : future ? "future" : before ? "before" : "missed"}>
+                {on && <Flame className="w-4 h-4" fill="currentColor" />}
               </div>
               <p className={`text-[11px] mt-1 font-bold ${today ? "text-[#FF6B35]" : "text-zinc-600"}`}>{w.label}</p>
             </div>
@@ -83,7 +91,7 @@ export default function StreakWeek() {
       <div className="mt-3.5">
         <div className="flex justify-between text-[12px] font-bold text-zinc-700 mb-1"><span>Aim for {WEEK_GOAL} days this week</span><span className="tabular-nums" data-testid="week-goal">{Math.min(doneDays, WEEK_GOAL)} / {WEEK_GOAL}</span></div>
         <div className="h-2.5 rounded-full bg-white/80 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-[#FF6B35] to-[#FBBF24] transition-all duration-700" style={{ width: `${Math.min(100, (doneDays / WEEK_GOAL) * 100)}%` }} /></div>
-        <p className="text-[11.5px] text-zinc-600 mt-1.5">A day lights up when you claim a quest. A freeze saves your streak if you miss a day.</p>
+        <p className="text-[11.5px] text-zinc-600 mt-1.5">A day lights up when you practise or claim a quest. A freeze saves your streak if you miss a day.</p>
       </div>
     </section>
   );
