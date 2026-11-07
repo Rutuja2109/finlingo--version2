@@ -92,6 +92,9 @@ export default function Paywall() {
             </div>
           )}
 
+          <div className="rounded-2xl bg-emerald-50 border-2 border-emerald-200 px-3.5 py-3 mb-3 text-[13.5px] text-zinc-800" data-testid="one-plan-note">
+            <b>One plan, everything included.</b> Everything below comes with a single subscription. There is no extra charge for any feature.
+          </div>
           <ul className="bg-white border border-zinc-200 rounded-3xl p-4 mb-5 space-y-3">
             {perks.map(({ Icon, t: label }, i) => (
               <li key={label} className={`flex items-center gap-3 font-semibold text-[15px] ${i === 0 && why ? "text-[#FF6B35]" : ""}`}>

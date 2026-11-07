@@ -64,7 +64,7 @@ export default function CoursePath() {
           <span className="w-10 h-10 rounded-xl bg-amber-400 text-white grid place-items-center shrink-0"><Crown className="w-5 h-5" /></span>
           <span className="flex-1">
             <span className="block font-[Outfit] font-extrabold text-[15px]">Free preview: {course.free_concepts || 2} lessons</span>
-            <span className="block text-[13px] text-zinc-600">Go Pro to open every lesson in this course.</span>
+            <span className="block text-[13px] text-zinc-600">One Pro plan (₹49 a month) opens every lesson and every feature.</span>
           </span>
         </button>
       )}

@@ -22,7 +22,7 @@ export default function ProFeatures() {
     <section className="mb-8" data-testid="feature-showcase">
       <div className="flex items-center justify-between mb-2.5 px-1">
         <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-600">Everything in FinLearn</p>
-        {!isPro && <Link to="/pro?from=home" data-testid="features-go-pro" className="text-[12px] font-extrabold text-[#FF6B35]">Go Pro →</Link>}
+        {!isPro && <Link to="/pro?from=home" data-testid="features-go-pro" className="text-[12px] font-extrabold text-[#FF6B35]">All for ₹49/month →</Link>}
       </div>
       <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2 snap-x">
         {ITEMS.map(({ key, to, Icon, t, d, c, pro, note }) => {
@@ -40,6 +40,11 @@ export default function ProFeatures() {
           );
         })}
       </div>
+      {!isPro && (
+        <p className="mt-1 text-[12.5px] text-zinc-700 bg-amber-50 border border-amber-200 rounded-2xl px-3.5 py-2.5" data-testid="one-price-note">
+          <b>One Pro plan unlocks all the PRO features above.</b> ₹49 a month in total, not per feature.
+        </p>
+      )}
     </section>
   );
 }

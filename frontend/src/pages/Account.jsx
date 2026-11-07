@@ -30,7 +30,7 @@ export default function Account() {
 
       <Link to="/pro" data-testid="account-plan" className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
         <Crown className="w-5 h-5 text-amber-600" />
-        <span className="flex-1">{isPro ? "FinLearn Pro" : "Free plan"}<span className="block text-xs font-semibold text-zinc-600 font-[Manrope]">{isPro ? (sub?.admin ? "Admin access" : sub?.until ? `Active until ${new Date(sub.until).toLocaleDateString()}` : "Active") : "Tap to see Pro, from ₹49 a month"}</span></span>
+        <span className="flex-1">{isPro ? "FinLearn Pro" : "Free plan"}<span className="block text-xs font-semibold text-zinc-600 font-[Manrope]">{isPro ? (sub?.admin ? "Admin access" : sub?.until ? `Active until ${new Date(sub.until).toLocaleDateString()}` : "Active") : "One plan, every feature: ₹49 a month"}</span></span>
       </Link>
 
       <div className="bg-white border border-zinc-200 rounded-3xl p-6 mb-4">

@@ -644,7 +644,7 @@ function ResultScreen({ result, concept, onAgain }) {
           className="w-full mb-5 flex items-center gap-3 text-left rounded-2xl p-4 text-white bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899]">
           <Crown className="w-7 h-7 shrink-0" />
           <span className="flex-1"><span className="block font-[Outfit] font-extrabold text-[15px]">Keep your streak going</span>
-            <span className="block text-[12.5px] text-white/90">Free lessons end soon. Unlock every lesson for ₹33 a month.</span></span>
+            <span className="block text-[12.5px] text-white/90">Free lessons end soon. One plan unlocks every lesson and tool: ₹49 a month.</span></span>
         </button>
       )}
 

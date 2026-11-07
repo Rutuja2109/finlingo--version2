@@ -148,12 +148,12 @@ export default function FeaturePreview() {
           <li key={p} className="flex items-start gap-2.5 text-[14.5px] font-semibold"><span className="w-5 h-5 rounded-full bg-emerald-500 text-white grid place-items-center shrink-0 mt-0.5"><Check className="w-3 h-3" strokeWidth={4} /></span>{p}</li>
         ))}
       </ul>
-      <p className="text-[12.5px] text-zinc-500">Part of FinLearn Pro, with every lesson, trading practice, My money, missions, calculators and boss battles. From ₹33 a month.</p>
+      <p className="text-[12.5px] text-zinc-500">Included in the one FinLearn Pro plan. ₹49 a month unlocks everything together (every lesson, practice trading, My money, missions, calculators and boss battles). No extra charge for any feature.</p>
 
       <div className="fixed bottom-[64px] lg:bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-zinc-200 px-5 pt-3 pb-3">
         <div className="max-w-lg mx-auto">
           <Link to={`/pro?from=${feature}`} data-testid="preview-unlock" className="block text-center w-full rounded-2xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-lg py-3.5 active:scale-[0.98]">
-            Unlock with Pro
+            Unlock everything · ₹49/month
           </Link>
           <button onClick={() => nav(-1)} className="block mx-auto mt-1.5 text-[13px] font-semibold text-zinc-500">Maybe later</button>
         </div>
