@@ -52,6 +52,9 @@ ok("claiming a quest that is not today's -> 404", c.post(f"{U}/quests/claim", he
 ok("opening the chest early -> 400", c.post(f"{U}/quests/chest", headers=H).status_code == 400)
 
 # Do everything a quest could ask for
+if not db.user_progress.find_one({"user_id": uid, "status": {"$in": ["completed", "mastered"]}}):  # fresh test database: finish one lesson first
+    first = db.concepts.find_one({}, {"_id": 0, "id": 1}, sort=[("order", 1)])
+    c.post(f"{U}/progress/complete-concept", headers=H, json={"concept_id": first["id"], "score": 100})
 concept = next(p["concept_id"] for p in db.user_progress.find({"user_id": uid, "status": {"$in": ["completed", "mastered"]}}) if db.concepts.find_one({"id": p["concept_id"]}))
 res = c.post(f"{U}/progress/complete-concept", headers=H, json={"concept_id": concept, "score": 100})
 ok("complete lesson with 100%", res.status_code == 200)

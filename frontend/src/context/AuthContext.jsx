@@ -10,6 +10,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // null = loading, false = logged out
   const [stats, setStats] = useState(null);
   const [sub, setSub] = useState(null); // Pro status from the server
+  const [subFailed, setSubFailed] = useState(false);
 
   // Reminders are scheduled one after another (never two at once) and re-planned whenever the learner's day changes,
   // so practising today cancels today's nudges.
@@ -43,8 +44,9 @@ export function AuthProvider({ children }) {
         try { if (await restore(data.product_id)) data = (await api.get("/subscription/status")).data; } catch { /* ignore */ }
       }
       setSub(data);
+      setSubFailed(false);
       return data;
-    } catch { return null; }
+    } catch { setSubFailed(true); return null; }
   }, []);
 
   // Practising (or a new day) changes which reminders still make sense.
@@ -161,7 +163,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, stats, sub, isPro: !!(sub && sub.pro), refreshSub, login, loginWithGoogle, register, logout, deleteAccount,refreshStats, setStats, setUser }}>
+    <AuthContext.Provider value={{ user, stats, sub, subFailed, isPro: !!(sub && sub.pro), refreshSub, login, loginWithGoogle, register, logout, deleteAccount,refreshStats, setStats, setUser }}>
       {children}
     </AuthContext.Provider>
   );

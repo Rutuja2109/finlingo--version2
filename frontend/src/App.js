@@ -38,7 +38,13 @@ function Protected({ children }) {
 
 // Pro-only screens: free accounts go to the paywall (it says which feature they tried to open).
 function ProOnly({ feature, children }) {
-  const { sub, isPro } = useAuth();
+  const { sub, isPro, subFailed, refreshSub } = useAuth();
+  if (!sub && subFailed) return (
+    <div className="min-h-[40vh] grid place-items-center text-center px-6" data-testid="plan-check-failed">
+      <div><p className="font-bold mb-3">We could not check your plan. Please check your connection.</p>
+        <button onClick={refreshSub} className="rounded-xl bg-[#FF6B35] text-white font-bold px-5 py-2.5">Try again</button></div>
+    </div>
+  );
   if (!sub) return <div className="min-h-[40vh] grid place-items-center text-zinc-500">Loading...</div>;
   if (!isPro) return <Navigate to={`/pro?from=${feature}`} replace />;
   return children;
