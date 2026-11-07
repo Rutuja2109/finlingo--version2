@@ -137,6 +137,8 @@ export default function Dashboard() {
       </section>
 
       <TodayStrip />
+      <ProFeatures />
+      <StreakWeek />
       <TrialCard />
 
       {/* Daily goal */}
@@ -155,9 +157,7 @@ export default function Dashboard() {
         <p className="text-sm text-zinc-600 mt-2">{Math.min(todayXp, dailyGoal)} / {dailyGoal} XP today</p>
       </section>
 
-      <StreakWeek />
       <DailyQuests />
-      <ProFeatures />
 
       {/* Courses */}
       <section>
