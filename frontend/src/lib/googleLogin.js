@@ -13,7 +13,8 @@ export async function googleIdToken(webClientId) {
   // that already used this app, so a first-time sign-in finds nothing and fails.
   const res = await SocialLogin.login({
     provider: "google",
-    options: { scopes: ["email", "profile"], filterByAuthorizedAccounts: false, autoSelectEnabled: false },
+    // No "scopes" here: on Android the plugin refuses them unless MainActivity is modified, and the ID token already carries email and name.
+    options: { filterByAuthorizedAccounts: false, autoSelectEnabled: false },
   });
   const token = res?.result?.idToken;
   if (!token) throw new Error("Google did not return a sign-in token");
