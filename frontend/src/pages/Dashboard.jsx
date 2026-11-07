@@ -137,9 +137,9 @@ export default function Dashboard() {
       </section>
 
       <TodayStrip />
+      <TrialCard />
       <ProFeatures />
       <StreakWeek />
-      <TrialCard />
 
       {/* Daily goal */}
       <section className="bg-white border border-zinc-200 rounded-3xl p-4 mb-6" data-testid="daily-goal">
