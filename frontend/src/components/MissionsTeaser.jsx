@@ -10,8 +10,8 @@ export default function MissionsTeaser() {
   if (!d) return null;
   const f = d.missions.find((m) => m.featured);
   return (
-    <Link to="/missions" data-testid="missions-teaser" className="flex items-center gap-3 bg-white border border-zinc-200 rounded-3xl p-4 mb-10">
-      <span className="w-11 h-11 rounded-2xl grid place-items-center bg-[#FF6B35]/10 text-[#FF6B35] shrink-0"><Flag className="w-5 h-5" /></span>
+    <Link to="/missions" data-testid="missions-teaser" className="flex items-center gap-3 bg-rose-50 border-2 border-rose-300 rounded-3xl p-4 mb-10">
+      <span className="w-11 h-11 rounded-2xl grid place-items-center bg-rose-500 text-white shrink-0"><Flag className="w-5 h-5" /></span>
       <span className="flex-1 min-w-0">
         <span className="block text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500">Real-life missions · {d.done_count} of {d.total} done</span>
         <span className="block font-[Outfit] font-extrabold text-[15px] truncate">{f ? `This week: ${f.title}` : "All missions done!"}</span>

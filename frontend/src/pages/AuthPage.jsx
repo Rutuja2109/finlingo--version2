@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 import { Eye, EyeOff } from "lucide-react";
 import { api, PRIVACY_URL } from "@/lib/api";
-import { googleIdToken, wasCancelled } from "@/lib/googleLogin";
+import { googleIdToken, wasCancelled, failureHint } from "@/lib/googleLogin";
 
 export default function AuthPage({ mode = "login" }) {
   const { login, register, loginWithGoogle } = useAuth();
@@ -31,7 +31,7 @@ export default function AuthPage({ mode = "login" }) {
       const res = await loginWithGoogle(idToken);
       if (res.ok) nav("/dashboard"); else setErr(res.error);
     } catch (e) {
-      if (!wasCancelled(e)) setErr("Google sign-in did not work. Please try again, or use your email.");
+      if (!wasCancelled(e)) setErr(`Google sign-in did not work. Please try again, or use your email.${failureHint(e) ? ` (${failureHint(e)})` : ""}`);
     }
     setBusy(false);
   };

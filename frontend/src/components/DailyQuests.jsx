@@ -45,7 +45,7 @@ export default function DailyQuests() {
   const mood = allDone || n === 3 ? "cheer" : "happy";
 
   return (
-    <section className="mb-10" data-testid="daily-quests">
+    <section id="quests" className="mb-10 scroll-mt-20" data-testid="daily-quests">
       <div className="rounded-3xl bg-gradient-to-br from-[#6366F1] via-[#8B5CF6] to-[#EC4899] text-white p-5 relative overflow-hidden mb-3">
         <div className="absolute -right-1 -top-1 opacity-40 pointer-events-none"><Lumi size={96} mood={mood} /></div>
         <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/90 mb-1 relative"><Target className="w-3.5 h-3.5 inline -mt-0.5 mr-1" />Daily quests</p>

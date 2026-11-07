@@ -10,8 +10,8 @@ export default function ExplainerTeaser() {
   if (!e) return null;
   const Icon = e.kind === "news" ? Newspaper : Lightbulb;
   return (
-    <Link to="/explainer" data-testid="explainer-teaser" className="flex items-center gap-3 bg-white border border-zinc-200 rounded-3xl p-4 mb-4">
-      <span className="w-11 h-11 rounded-2xl grid place-items-center bg-amber-50 text-amber-600 shrink-0"><Icon className="w-5 h-5" /></span>
+    <Link to="/explainer" data-testid="explainer-teaser" className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-3xl p-4 mb-4">
+      <span className="w-11 h-11 rounded-2xl grid place-items-center bg-amber-400 text-white shrink-0"><Icon className="w-5 h-5" /></span>
       <span className="flex-1 min-w-0">
         <span className="block text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500">{e.kind === "news" ? "In the news" : "Idea of the day"} · 60 seconds</span>
         <span className="block font-[Outfit] font-extrabold text-[15px] leading-snug line-clamp-2">{e.headline}</span>
