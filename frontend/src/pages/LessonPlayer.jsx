@@ -6,6 +6,10 @@ import Lumi from "@/components/Lumi";
 import { sound } from "@/lib/sound";
 import { haptics } from "@/lib/haptics";
 import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw, Repeat, Crown } from "lucide-react";
+import { ChatLesson, SwipeLesson, SliderLesson, BudgetLesson } from "@/components/lessonTypes";
+
+// Lesson types that are marked right or wrong (and re-asked when missed).
+const SCORED = ["mcq", "scenario", "swipe"];
 import { trackLessonCompleted, trackConceptCompleted, trackCaseStudyViewed } from "@/lib/firebase";
 
 // ----------------------------------------------------------------------
@@ -28,6 +32,7 @@ export default function LessonPlayer() {
   const [answered, setAnswered] = useState(null);         // {correct: bool} for the current attempt
   const [done, setDone] = useState(null);
   const [totalAttempted, setTotalAttempted] = useState(0);
+  const [replay, setReplay] = useState(0);               // bumps whenever a missed lesson is queued again, so it starts fresh
   const [lumiMood, setLumiMood] = useState("happy");
   const [lumiAnim, setLumiAnim] = useState("lumi-float");
   const [lumiKey,  setLumiKey]  = useState(0);
@@ -61,7 +66,7 @@ export default function LessonPlayer() {
   const initialQueueLen = total;
   const progressPct = Math.max(0, Math.min(100, ((initialQueueLen - queue.length + (answered ? 1 : 0)) / initialQueueLen) * 100));
 
-  const scoreable = (lessons || []).filter((l) => l.type === "mcq" || l.type === "scenario").length || 1;
+  const scoreable = (lessons || []).filter((l) => SCORED.includes(l.type)).length || 1;
   const needsAnswerTypes = ["mcq", "scenario"];
 
   // --- Answer handlers ---
@@ -96,6 +101,7 @@ export default function LessonPlayer() {
     if (answered && answered.correct === false) {
       // Re-queue the wrong question at the end
       newQueue = [...newQueue, currentIdx];
+      setReplay((r) => r + 1);
     }
     setPicked(null);
     setAnswered(null);
@@ -103,7 +109,7 @@ export default function LessonPlayer() {
     if (newQueue.length === 0) {
       // Done — submit progress
       const correctFirstTry = scoreable - Array.from(wrongFirstTry).filter((i) =>
-        lessons[i] && (lessons[i].type === "mcq" || lessons[i].type === "scenario")
+        lessons[i] && SCORED.includes(lessons[i].type)
       ).length;
       const score = Math.round((correctFirstTry / scoreable) * 100);
       try {
@@ -122,7 +128,7 @@ export default function LessonPlayer() {
   };
 
   // ---- Render ----
-  const needsAnswer = current.type === "mcq" || current.type === "scenario";
+  const needsAnswer = SCORED.includes(current.type);
   const continueEnabled = !needsAnswer || answered !== null;
   const isFinalShift = queue.length === 1 && (!needsAnswer || (answered && answered.correct === true));
 
@@ -165,6 +171,10 @@ export default function LessonPlayer() {
         {current.type === "flashcard" && <FlashLesson l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
         {current.type === "match" && <MatchLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
         {current.type === "scenario" && <ScenarioLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
+        {current.type === "swipe" && <SwipeLesson key={`${currentIdx}-${replay}`} l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
+        {current.type === "chat" && <ChatLesson key={`${currentIdx}-${replay}`} l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
+        {current.type === "slider" && <SliderLesson key={currentIdx} l={current}/>}
+        {current.type === "budget" && <BudgetLesson key={`${currentIdx}-${replay}`} l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
       </div>
 
       {/* Always-visible action bar: Continue never hides below the content */}

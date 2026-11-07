@@ -611,18 +611,36 @@ async def seed_finance_courses(db):
             await _delete_course_tree(db, existing["id"])
         to_build.append(course)
 
-    if not to_build:
-        return
+    if to_build:
+        cs, chs, ms, cps, ls = flatten_for_db(to_build)
+        if cs:
+            await db.courses.insert_many(cs)
+        if chs:
+            await db.chapters.insert_many(chs)
+        if ms:
+            await db.modules.insert_many(ms)
+        if cps:
+            await db.concepts.insert_many(cps)
+        if ls:
+            await db.lessons.insert_many(ls)
+        print(f"[seed] Finance tracks seeded: {len(cs)} courses, {len(cps)} concepts, {len(ls)} lessons")
 
-    cs, chs, ms, cps, ls = flatten_for_db(to_build)
-    if cs:
-        await db.courses.insert_many(cs)
-    if chs:
+    await _add_extra_chapters(db)
+
+
+async def _add_extra_chapters(db):
+    """Append newer chapters to existing courses without re-seeding them, so learners keep their progress."""
+    from seed_data import flatten_for_db
+    from seed_money_more import build_money_chapter_two, CHAPTER_KEY
+
+    extras = [("money-basics", CHAPTER_KEY, build_money_chapter_two)]
+    for slug, key, builder in extras:
+        course = await db.courses.find_one({"slug": slug})
+        if not course or await db.chapters.find_one({"course_id": course["id"], "key": key}):
+            continue
+        _, chs, ms, cps, ls = flatten_for_db([{"id": course["id"], "chapters": [builder(course["id"])]}])
         await db.chapters.insert_many(chs)
-    if ms:
         await db.modules.insert_many(ms)
-    if cps:
         await db.concepts.insert_many(cps)
-    if ls:
         await db.lessons.insert_many(ls)
-    print(f"[seed] Finance tracks seeded: {len(cs)} courses, {len(cps)} concepts, {len(ls)} lessons")
+        print(f"[seed] Added chapter '{key}' to {slug}: {len(cps)} concepts, {len(ls)} lessons")
