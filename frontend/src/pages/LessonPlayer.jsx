@@ -9,7 +9,7 @@ import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw, Repeat, Crown } fro
 import { ChatLesson, SwipeLesson, SliderLesson, BudgetLesson } from "@/components/lessonTypes";
 
 // Lesson types that are marked right or wrong (and re-asked when missed).
-const SCORED = ["mcq", "scenario", "swipe"];
+const SCORED = ["mcq", "scenario", "swipe", "match"];
 import { trackLessonCompleted, trackConceptCompleted, trackCaseStudyViewed } from "@/lib/firebase";
 
 // ----------------------------------------------------------------------
@@ -169,7 +169,7 @@ export default function LessonPlayer() {
         {current.type === "case_study" && <CaseStudyLesson l={current} conceptId={conceptId} onShown={() => { if (!answered) handleAnswer(true); }}/>}
         {current.type === "mcq" && <McqLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
         {current.type === "flashcard" && <FlashLesson l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}
-        {current.type === "match" && <MatchLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
+        {current.type === "match" && <MatchLesson key={`${currentIdx}-${replay}`} l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
         {current.type === "scenario" && <ScenarioLesson l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
         {current.type === "swipe" && <SwipeLesson key={`${currentIdx}-${replay}`} l={current} picked={picked} answered={answered} onAnswer={handleAnswer}/>}
         {current.type === "chat" && <ChatLesson key={`${currentIdx}-${replay}`} l={current} onShown={() => { if (!answered) handleAnswer(true); }}/>}

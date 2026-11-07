@@ -9,26 +9,30 @@ from seed_finance import _choice, _outcome
 CHAPTER_KEY = "plan-it-and-grow-it"
 
 
-def _chat(title, scene, messages, takeaway):
+def _chat(title, scene, messages, takeaway, labels=None):
     return {"id": _id(), "type": "chat", "content": {
-        "title": title, "scene": scene, "takeaway": takeaway,
+        "title": title, "scene": scene, "takeaway": takeaway, **({"labels": labels} if labels else {}),
         "messages": [{"who": w, "name": n, "text": t} for (w, n, t) in messages]}}
 
 
-def _swipe(instruction, cards):
+def _swipe(instruction, cards, labels=None):
     return {"id": _id(), "type": "swipe", "content": {
-        "instruction": instruction, "cards": [{"text": t, "answer": a, "why": y} for (t, a, y) in cards]}}
+        "instruction": instruction, **({"labels": labels} if labels else {}), "cards": [{"text": t, "answer": a, "why": y} for (t, a, y) in cards]}}
 
 
-def _slider(title, intro, kind, controls, takeaway):
+def _match(instruction, pairs):
+    return {"id": _id(), "type": "match", "content": {"instruction": instruction, "pairs": [{"left": l, "right": r} for (l, r) in pairs]}}
+
+
+def _slider(title, intro, kind, controls, takeaway, labels=None):
     return {"id": _id(), "type": "slider", "content": {
-        "title": title, "intro": intro, "kind": kind, "takeaway": takeaway,
+        "title": title, "intro": intro, "kind": kind, "takeaway": takeaway, **({"labels": labels} if labels else {}),
         "controls": [{"key": k, "label": lb, "min": mn, "max": mx, "step": st, "value": v, "prefix": pf, "suffix": sf}
                      for (k, lb, mn, mx, st, v, pf, sf) in controls]}}
 
 
-def _budget(title, intro, income, start, takeaway):
-    return {"id": _id(), "type": "budget", "content": {"title": title, "intro": intro, "income": income, "start": start, "takeaway": takeaway}}
+def _budget(title, intro, income, start, takeaway, labels=None):
+    return {"id": _id(), "type": "budget", "content": {"title": title, "intro": intro, "income": income, "start": start, "takeaway": takeaway, **({"labels": labels} if labels else {})}}
 
 
 def build_money_chapter_two(course_id):

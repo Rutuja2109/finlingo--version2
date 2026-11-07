@@ -633,7 +633,20 @@ async def _add_extra_chapters(db):
     from seed_data import flatten_for_db
     from seed_money_more import build_money_chapter_two, CHAPTER_KEY
 
-    extras = [("money-basics", CHAPTER_KEY, build_money_chapter_two)]
+    from seed_stock_more import build_stock_chapter_two, CHAPTER_KEY as STOCK_KEY
+    from seed_crypto_more import build_crypto_chapter_two, CHAPTER_KEY as CRYPTO_KEY
+    from seed_tax_more import build_tax_chapter_two, CHAPTER_KEY as TAX_KEY
+    from seed_insurance_more import build_insurance_chapter_two, CHAPTER_KEY as INS_KEY
+    from seed_hindi_more import build_hindi_chapter_two, CHAPTER_KEY as HI_KEY
+
+    extras = [
+        ("money-basics", CHAPTER_KEY, build_money_chapter_two),
+        ("stock-market-basics", STOCK_KEY, build_stock_chapter_two),
+        ("bitcoin-and-crypto", CRYPTO_KEY, build_crypto_chapter_two),
+        ("taxes-made-simple", TAX_KEY, build_tax_chapter_two),
+        ("insurance-basics", INS_KEY, build_insurance_chapter_two),
+        ("paison-ki-baat-hindi", HI_KEY, build_hindi_chapter_two),
+    ]
     for slug, key, builder in extras:
         course = await db.courses.find_one({"slug": slug})
         if not course or await db.chapters.find_one({"course_id": course["id"], "key": key}):

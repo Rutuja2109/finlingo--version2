@@ -18,13 +18,25 @@ export function inflate({ price, years, ratePct }) {
   return { future: price * f, worth: price / f };
 }
 
+// After a fall of `lossPct`, the gain needed just to get back to where you started (a 50% fall needs a 100% gain).
+export const recoveryNeeded = (lossPct) => (lossPct >= 100 ? Infinity : (1 / (1 - lossPct / 100) - 1) * 100);
+
+// The same monthly investing in a cheap plan versus a costly one: costs come off the yearly return.
+export function costDrag({ monthly, years, ratePct, lowCostPct, highCostPct }) {
+  const low = sipFuture({ monthly, years, ratePct: ratePct - lowCostPct });
+  const high = sipFuture({ monthly, years, ratePct: ratePct - highCostPct });
+  return { low: low.value, high: high.value, lost: low.value - high.value, invested: low.invested };
+}
+
 // Years for money to double at a yearly rate (rule of 72, rounded to one decimal).
 export const doublingYears = (ratePct) => Math.round((72 / ratePct) * 10) / 10;
 
-// Rupees in Indian style: 12,34,567 / lakh / crore.
-export function inr(n) {
+// Rupees in Indian style: 12,34,567 / lakh / crore. `u` can rename the units (e.g. Hindi: { lakh: "लाख", crore: "करोड़" }).
+export function inr(n, u = {}) {
+  const lakh = u.lakh || "lakh";
+  const crore = u.crore || "crore";
   const v = Math.round(n);
-  if (v >= 1e7) return `₹${(v / 1e7).toFixed(2).replace(/\.?0+$/, "")} crore`;
-  if (v >= 1e5) return `₹${(v / 1e5).toFixed(2).replace(/\.?0+$/, "")} lakh`;
+  if (v >= 1e7) return `₹${(v / 1e7).toFixed(2).replace(/\.?0+$/, "")} ${crore}`;
+  if (v >= 1e5) return `₹${(v / 1e5).toFixed(2).replace(/\.?0+$/, "")} ${lakh}`;
   return `₹${v.toLocaleString("en-IN")}`;
 }
