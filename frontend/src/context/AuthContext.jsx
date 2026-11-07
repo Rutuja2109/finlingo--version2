@@ -9,7 +9,9 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // null = loading, false = logged out
   const [stats, setStats] = useState(null);
-  const [sub, setSub] = useState(null); // Pro status from the server
+  // Pro status from the server. The last known value is kept so tabs open instantly; it is refreshed in the background.
+  const [sub, setSub] = useState(() => { try { return JSON.parse(localStorage.getItem("fl_sub") || "null"); } catch { return null; } });
+  const saveSub = (d) => { try { localStorage.setItem("fl_sub", JSON.stringify(d)); } catch { /* ignore */ } };
   const [subFailed, setSubFailed] = useState(false);
 
   // Reminders are scheduled one after another (never two at once) and re-planned whenever the learner's day changes,
@@ -44,6 +46,7 @@ export function AuthProvider({ children }) {
         try { if (await restore(data.product_id)) data = (await api.get("/subscription/status")).data; } catch { /* ignore */ }
       }
       setSub(data);
+      saveSub(data);
       setSubFailed(false);
       return data;
     } catch { setSubFailed(true); return null; }
@@ -72,16 +75,24 @@ export function AuthProvider({ children }) {
 
   const loadMe = useCallback(async () => {
     try {
-      const { data } = await api.get("/auth/me");
+      // Three requests at once instead of one after another (each round trip to the server costs about half a second).
+      const [me, s, plan] = await Promise.all([api.get("/auth/me"), api.get("/stats/me"), api.get("/subscription/status").catch(() => null)]);
+      const data = me.data;
       setUser(data);
-      const s = await api.get("/stats/me");
       setStats(s.data);
-      refreshSub();
+      if (plan) {
+        setSub(plan.data); saveSub(plan.data); setSubFailed(false);
+        if (!plan.data.pro && !plan.data.admin && plan.data.billing_ready) refreshSub(); // may find a purchase Google already knows
+      } else {
+        refreshSub();
+      }
       identifyUser(data.id, data.name, data.email);
       await reminderPermission(s.data);
     } catch {
       setUser(false);
       setStats(null);
+      setSub(null);
+      try { localStorage.removeItem("fl_sub"); } catch { /* ignore */ }
     }
   }, [reminderPermission, refreshSub]);
 
@@ -146,6 +157,7 @@ export function AuthProvider({ children }) {
     setUser(false);
     setStats(null);
     setSub(null);
+    try { localStorage.removeItem("fl_sub"); } catch { /* ignore */ }
   };
 
   const deleteAccount = async (password) => {
@@ -156,6 +168,7 @@ export function AuthProvider({ children }) {
       setUser(false);
       setStats(null);
       setSub(null);
+      try { localStorage.removeItem("fl_sub"); } catch { /* ignore */ }
       return { ok: true };
     } catch (e) {
       return { ok: false, error: formatApiError(e) };
