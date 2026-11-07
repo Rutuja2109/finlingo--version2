@@ -26,6 +26,7 @@ import Account from "@/pages/Account";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Paywall from "@/pages/Paywall";
+import FeaturePreview from "@/pages/FeaturePreview";
 
 function Protected({ children }) {
   const { user } = useAuth();
@@ -46,7 +47,7 @@ function ProOnly({ feature, children }) {
     </div>
   );
   if (!sub) return <div className="min-h-[40vh] grid place-items-center text-zinc-500">Loading...</div>;
-  if (!isPro) return <Navigate to={`/pro?from=${feature}`} replace />;
+  if (!isPro) return <Navigate to={`/preview/${feature}`} replace />;
   return children;
 }
 
@@ -92,6 +93,7 @@ function AppRouter() {
       <Route path="/revise" element={<Protected><Revision/></Protected>}/>
       <Route path="/boss/:chapterId" element={<Protected><ProOnly feature="boss"><BossBattle/></ProOnly></Protected>}/>
       <Route path="/pro" element={<Protected><Paywall/></Protected>}/>
+      <Route path="/preview/:feature" element={<Protected><FeaturePreview/></Protected>}/>
       <Route path="*" element={<Navigate to="/" replace/>}/>
     </Routes>
   );
