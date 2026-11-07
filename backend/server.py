@@ -263,6 +263,7 @@ async def register(payload: RegisterIn, response: Response):
         "password_hash": hash_password(payload.password),
         "created_at": datetime.now(timezone.utc).isoformat(),
         "avatar_color": _pick_color(email),
+        **pro.trial_fields(),
     }
     await db.users.insert_one(user_doc)
     await db.user_stats.insert_one({
@@ -461,6 +462,7 @@ async def google_login(payload: GoogleLoginIn, response: Response):
             "password_hash": "", "google_linked": True, "google_sub": sub, "picture": picture,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "avatar_color": _pick_color(email),
+            **pro.trial_fields(),
         }
         await db.users.insert_one(dict(user_doc))
         await db.user_stats.insert_one({

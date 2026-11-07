@@ -98,10 +98,19 @@ try:
 
     A, aid = signup(EMAILS[0])
     B, bid = signup(EMAILS[1])
+    st = c.get(f"{U}/subscription/status", headers=A).json()
+    ok("new account starts a 7-day free Pro trial", st["pro"] is True and st["trial"]["active"] and st["trial"]["days_left"] == 7)
+    ok("trial opens practice trading", c.get(f"{U}/practice/state", headers=A).status_code == 200)
+    db.users.update_one({"id": aid}, {"$set": {"pro_until": iso(-1)}})
+    st = c.get(f"{U}/subscription/status", headers=A).json()
+    ok("after the trial: not Pro, trial marked ended", st["pro"] is False and st["trial"]["ended"] and not st["trial"]["active"])
+    ok("practice locks again after the trial", c.get(f"{U}/practice/state", headers=A).status_code == 402)
+    db.users.update_many({"id": {"$in": [aid, bid]}}, {"$unset": {"pro_until": "", "pro_source": ""}})  # plain free accounts for the checks below
 
     s = c.get(f"{U}/subscription/status", headers=A).json()
-    ok("new account is not Pro", s["pro"] is False and s["until"] is None)
+    ok("free account is not Pro", s["pro"] is False and s["until"] is None)
     ok("status lists both plans at the agreed prices", {p["id"]: p["price"] for p in s["plans"]} == {"monthly": 49, "yearly": 399})
+    ok("yearly plan carries the saving figures", next(p for p in s["plans"] if p["id"] == "yearly")["save_pct"] == 32 and next(p for p in s["plans"] if p["id"] == "yearly")["was"] == 588)
     ok("billing is reported ready when configured", s["billing_ready"] is True)
 
     # free vs locked lessons

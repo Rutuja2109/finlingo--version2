@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
 import { sound } from "@/lib/sound";
 import { haptics } from "@/lib/haptics";
-import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw, Repeat } from "lucide-react";
+import { Check, X, ChevronLeft, Sparkles, Trophy, RotateCcw, Repeat, Crown } from "lucide-react";
 import { trackLessonCompleted, trackConceptCompleted, trackCaseStudyViewed } from "@/lib/firebase";
 
 // ----------------------------------------------------------------------
@@ -579,6 +579,7 @@ function ScenarioLesson({ l, answered, onAnswer }) {
 // ---------- Result ----------
 function ResultScreen({ result, concept, onAgain }) {
   const nav = useNavigate();
+  const { isPro, sub } = useAuth();
   const isMastered = result.status === "mastered";
 
   useEffect(() => {
@@ -626,6 +627,15 @@ function ResultScreen({ result, concept, onAgain }) {
             <p key={a.code} className="text-sm font-semibold text-zinc-700">🏆 {a.title}</p>
           ))}
         </div>
+      )}
+
+      {!isPro && sub && (
+        <button onClick={() => nav("/pro?from=lessons")} data-testid="result-upsell"
+          className="w-full mb-5 flex items-center gap-3 text-left rounded-2xl p-4 text-white bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899]">
+          <Crown className="w-7 h-7 shrink-0" />
+          <span className="flex-1"><span className="block font-[Outfit] font-extrabold text-[15px]">Keep your streak going</span>
+            <span className="block text-[12.5px] text-white/90">Free lessons end soon. Unlock every lesson for ₹33 a month.</span></span>
+        </button>
       )}
 
       <div className="flex gap-3 justify-center">

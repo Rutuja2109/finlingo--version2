@@ -16,9 +16,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 FREE_CONCEPTS = 2
+TRIAL_DAYS = int(os.environ.get("TRIAL_DAYS", "7"))  # every new account gets this many days of Pro, no card needed
 PRODUCT_ID = "finlearn_pro"
 PLANS = [
-    {"id": "yearly", "base_plan": "yearly", "label": "Yearly", "price": 399, "per": "year", "note": "Best value: about ₹33 a month"},
+    {"id": "yearly", "base_plan": "yearly", "label": "Yearly", "price": 399, "per": "year", "was": 588, "per_month": 33, "save_pct": 32,
+     "badge": "BEST VALUE", "note": "Just ₹33 a month"},
     {"id": "monthly", "base_plan": "monthly", "label": "Monthly", "price": 49, "per": "month", "note": "Cancel any time"},
 ]
 ACTIVE_STATES = {"SUBSCRIPTION_STATE_ACTIVE", "SUBSCRIPTION_STATE_IN_GRACE_PERIOD", "SUBSCRIPTION_STATE_CANCELED"}
@@ -37,6 +39,22 @@ def parse_ts(s: Optional[str]) -> Optional[datetime]:
         return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
     except ValueError:
         return None
+
+
+def trial_fields() -> dict:
+    """Pro fields for a brand-new account: a free reverse trial (people use the good stuff first, then decide)."""
+    if TRIAL_DAYS <= 0:
+        return {}
+    return {"pro_until": (now() + timedelta(days=TRIAL_DAYS)).isoformat(), "pro_source": "trial"}
+
+
+def trial_state(user: dict) -> dict:
+    until = parse_ts(user.get("pro_until"))
+    if user.get("pro_source") != "trial" or not until:
+        return {"active": False, "ended": False, "ends_at": None, "days_left": 0}
+    left = until - now()
+    active = left.total_seconds() > 0
+    return {"active": active, "ended": not active, "ends_at": until.isoformat(), "days_left": max(0, -(-int(left.total_seconds()) // 86400))}
 
 
 def is_pro(user: dict) -> bool:
@@ -173,7 +191,7 @@ def make_router(db, get_current_user):
         until = parse_ts(user.get("pro_until"))
         return {
             "pro": is_pro(user), "until": until.isoformat() if until else None, "admin": user.get("role") == "admin",
-            "free_concepts": FREE_CONCEPTS, "product_id": PRODUCT_ID, "plans": PLANS, "billing_ready": service_account() is not None,
+            "trial": trial_state(user), "free_concepts": FREE_CONCEPTS, "product_id": PRODUCT_ID, "plans": PLANS, "billing_ready": service_account() is not None,
         }
 
     @r.post("/verify")
@@ -196,7 +214,8 @@ def make_router(db, get_current_user):
             {"$set": {"user_id": user["id"], "product_id": body.product_id, "state": res["state"], "order_id": res["order_id"],
                       "expiry": res["expiry"].isoformat(), "updated_at": now().isoformat()}}, upsert=True)
         await db.users.update_one({"id": user["id"]}, {"$set": {
-            "pro_until": res["expiry"].isoformat(), "pro_token": body.purchase_token, "pro_product": body.product_id}})
+            "pro_until": res["expiry"].isoformat(), "pro_token": body.purchase_token, "pro_product": body.product_id,
+            "pro_source": "play"}})
         return {"pro": True, "until": res["expiry"].isoformat()}
 
     @admin_router.post("/grant")
@@ -209,7 +228,7 @@ def make_router(db, get_current_user):
         if not target:
             raise HTTPException(status_code=404, detail="No user with that email")
         until = (now() + timedelta(days=days)).isoformat() if days else None
-        await db.users.update_one({"id": target["id"]}, {"$set": {"pro_until": until}})
+        await db.users.update_one({"id": target["id"]}, {"$set": {"pro_until": until, "pro_source": "grant"}})
         return {"email": target["email"], "pro_until": until}
 
     outer = APIRouter()

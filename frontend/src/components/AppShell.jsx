@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart, Wallet, Flag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Logo from "@/components/Logo";
+import ProStrip from "@/components/ProStrip";
 
 export default function AppShell({ children }) {
   const { user, stats, logout } = useAuth();
@@ -94,6 +95,7 @@ export default function AppShell({ children }) {
             </Link>
           </div>
         </div>
+        <ProStrip />
       </header>
       )}
 

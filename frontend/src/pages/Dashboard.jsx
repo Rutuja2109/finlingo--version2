@@ -12,6 +12,7 @@ import MissionsTeaser from "@/components/MissionsTeaser";
 import ExplainerTeaser from "@/components/ExplainerTeaser";
 import TodayStrip from "@/components/TodayStrip";
 import ProBanner from "@/components/ProBanner";
+import ProFeatures from "@/components/ProFeatures";
 import { streakState } from "@/lib/streak";
 
 const FREEZE_COST = 30;
@@ -120,6 +121,7 @@ export default function Dashboard() {
 
       <TodayStrip />
       <ProBanner />
+      <ProFeatures />
 
       {/* Daily goal + Continue */}
       <section className="grid md:grid-cols-3 gap-5 mb-10">
