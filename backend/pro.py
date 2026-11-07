@@ -16,6 +16,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 FREE_CONCEPTS = 2
+PRO_FREEZE_MAX = 5  # Pro members can hold more streak freezes (free accounts: 2)
 TRIAL_DAYS = int(os.environ.get("TRIAL_DAYS", "7"))  # every new account gets this many days of Pro, no card needed
 PRODUCT_ID = "finlearn_pro"
 PLANS = [
@@ -192,6 +193,19 @@ def make_router(db, get_current_user):
         return {
             "pro": is_pro(user), "until": until.isoformat() if until else None, "admin": user.get("role") == "admin",
             "trial": trial_state(user), "free_concepts": FREE_CONCEPTS, "product_id": PRODUCT_ID, "plans": PLANS, "billing_ready": service_account() is not None,
+        }
+
+    @r.get("/usage")
+    async def usage(user: dict = Depends(get_current_user)):
+        """What the learner has done with the Pro tools, for the trial checklist and the 'what you will keep' reminder."""
+        uid = user["id"]
+        acct = await db.practice_accounts.find_one({"user_id": uid}, {"_id": 0, "trades": 1}) or {}
+        return {
+            "trades": len(acct.get("trades", [])),
+            "spends": await db.money_entries.count_documents({"user_id": uid}),
+            "goals": await db.money_goals.count_documents({"user_id": uid}),
+            "missions": await db.mission_progress.count_documents({"user_id": uid}),
+            "lessons": await db.user_progress.count_documents({"user_id": uid, "status": {"$in": ["completed", "mastered"]}}),
         }
 
     @r.post("/verify")

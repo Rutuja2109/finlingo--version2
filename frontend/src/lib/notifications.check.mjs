@@ -1,5 +1,5 @@
 // Run: node frontend/src/lib/notifications.check.mjs
-import { planReminders } from "./notifications.js";
+import { planReminders, planTrialReminders } from "./notifications.js";
 
 let bad = 0;
 const ok = (name, cond) => { console.log((cond ? "OK  " : "BAD ") + name); if (!cond) bad++; };
@@ -47,6 +47,22 @@ ok("no streak: encourages starting one", /Start your streak/.test(byId(plan, 100
 plan = planReminders(at(2026, 11, 6, 9), 9, false);
 ok("long streak: the morning message cheers", /9 days strong/.test(byId(plan, 1001).title));
 ok("every reminder has a title, a body and a colour", plan.every((p) => p.title && p.body && /^#/.test(p.color)));
+
+// ---- trial reminders: 2 days and 1 day before the trial ends, at 6 pm, never in the past or after the end
+{
+  const ends = "2026-11-14T10:00:00";
+  let tp = planTrialReminders(ends, at(2026, 11, 8, 12));
+  ok("trial: two reminders when there is time", tp.length === 2 && tp[0].id === 2001 && tp[1].id === 2002);
+  ok("trial: 2 days before is 12 Nov 6 pm", day(tp[0].at) === "2026-11-12" && tp[0].at.getHours() === 18);
+  ok("trial: 1 day before is 13 Nov 6 pm", day(tp[1].at) === "2026-11-13" && tp[1].at.getHours() === 18);
+  tp = planTrialReminders(ends, at(2026, 11, 12, 20));
+  ok("trial: only the later one is left after the first has passed", tp.length === 1 && tp[0].id === 2002);
+  ok("trial: nothing once both have passed", planTrialReminders(ends, at(2026, 11, 13, 19)).length === 0);
+  tp = planTrialReminders("2026-11-09T08:00:00", at(2026, 11, 8, 12));
+  ok("trial: a very short trial gets just the one that still fits", tp.length === 1 && tp[0].id === 2002 && tp[0].at < new Date("2026-11-09T08:00:00"));
+  ok("trial: a bad date plans nothing", planTrialReminders("not a date").length === 0);
+  ok("trial: the wording is honest about the price and the way out", planTrialReminders(ends, at(2026, 11, 8, 12)).every((n) => /₹49|Cancel any time/.test(n.body)));
+}
 
 console.log(bad ? `\nFAILED: ${bad}` : "\nALL PASSED");
 process.exit(bad ? 1 : 0);

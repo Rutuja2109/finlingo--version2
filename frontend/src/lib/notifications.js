@@ -30,6 +30,9 @@ export async function requestNotificationPermission() {
   }
 }
 
+const REMINDER_IDS = [1001, 1002, 1003];
+const TRIAL_IDS = [2001, 2002];
+
 const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
 // Decides what to schedule. Plain function so it can be tested without a phone.
@@ -57,10 +60,11 @@ export async function scheduleReminders(streakDays = 0, reminderHour = 8, practi
   const LN = plugin.LN;
 
   try {
-    // Cancel existing reminders first
+    // Cancel only the daily reminders (the trial reminders have their own ids and must survive)
     const pending = await LN.getPending();
-    if (pending.notifications.length > 0) {
-      await LN.cancel({ notifications: pending.notifications.map((n) => ({ id: n.id })) });
+    const mine = pending.notifications.filter((n) => REMINDER_IDS.includes(n.id));
+    if (mine.length > 0) {
+      await LN.cancel({ notifications: mine.map((n) => ({ id: n.id })) });
     }
     const plan = planReminders(new Date(), streakDays, practicedToday, reminderHour);
     await LN.schedule({
@@ -85,6 +89,39 @@ export async function cancelReminders() {
       await LN.cancel({ notifications: pending.notifications.map((n) => ({ id: n.id })) });
     }
   } catch {}
+}
+
+// Two honest heads-ups before a free Pro trial ends (2 days and 1 day before, at 6 pm). Plain function, tested without a phone.
+export function planTrialReminders(endsAtISO, now = new Date()) {
+  const ends = new Date(endsAtISO);
+  if (isNaN(ends)) return [];
+  const at = (daysBefore) => { const d = new Date(ends); d.setDate(d.getDate() - daysBefore); d.setHours(18, 0, 0, 0); return d; };
+  return [
+    { id: 2001, at: at(2), title: "Your Pro trial ends in 2 days", body: "Your trades, spends and missions stay saved. One plan keeps every Pro feature for ₹49 a month." },
+    { id: 2002, at: at(1), title: "Your Pro trial ends tomorrow", body: "Keep practice trading, My money, missions and every lesson. Cancel any time." },
+  ].filter((n) => n.at > now && n.at < ends);
+}
+
+export async function scheduleTrialReminders(endsAtISO) {
+  const plugin = await getPlugin();
+  if (!plugin) return;
+  const LN = plugin.LN;
+  try {
+    await LN.cancel({ notifications: TRIAL_IDS.map((id) => ({ id })) });
+    const plan = planTrialReminders(endsAtISO);
+    if (plan.length === 0) return;
+    await LN.schedule({
+      notifications: plan.map((n) => ({ id: n.id, title: n.title, body: n.body, schedule: { at: n.at }, sound: null, smallIcon: "ic_launcher_foreground", iconColor: "#8B5CF6" })),
+    });
+  } catch (e) {
+    console.warn("Trial reminder scheduling failed:", e);
+  }
+}
+
+export async function cancelTrialReminders() {
+  const plugin = await getPlugin();
+  if (!plugin) return;
+  try { await plugin.LN.cancel({ notifications: TRIAL_IDS.map((id) => ({ id })) }); } catch { /* nothing scheduled */ }
 }
 
 // Lumi's reminders get more worried, then angry, as the day goes on and a streak is on the line.

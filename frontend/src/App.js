@@ -27,6 +27,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Paywall from "@/pages/Paywall";
 import FeaturePreview from "@/pages/FeaturePreview";
+import ProWelcome from "@/components/ProWelcome";
 
 function Protected({ children }) {
   const { user } = useAuth();
@@ -93,6 +94,7 @@ function AppRouter() {
       <Route path="/revise" element={<Protected><Revision/></Protected>}/>
       <Route path="/boss/:chapterId" element={<Protected><ProOnly feature="boss"><BossBattle/></ProOnly></Protected>}/>
       <Route path="/pro" element={<Protected><Paywall/></Protected>}/>
+      {process.env.NODE_ENV !== "production" && <Route path="/dev/pro-welcome" element={<ProWelcome onDone={() => window.history.back()}/>}/>}
       <Route path="/preview/:feature" element={<Protected><FeaturePreview/></Protected>}/>
       <Route path="*" element={<Navigate to="/" replace/>}/>
     </Routes>

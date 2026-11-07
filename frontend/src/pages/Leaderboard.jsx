@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Trophy, Flame, Zap } from "lucide-react";
+import { Trophy, Flame, Zap, Crown } from "lucide-react";
 
 export default function Leaderboard() {
   const [rows, setRows] = useState([]);
@@ -31,7 +31,7 @@ export default function Leaderboard() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-[Outfit] font-bold tracking-tight truncate">
-                {publicName(r.name)} {r.is_me && <span className="ml-1.5 text-[11px] uppercase tracking-wider font-bold text-[#FF6B35]">You</span>}
+                {publicName(r.name)} {r.pro && <Crown className="inline w-3.5 h-3.5 -mt-0.5 ml-0.5 text-amber-500" aria-label="Pro member" data-testid="pro-badge" />}{r.is_me && <span className="ml-1.5 text-[11px] uppercase tracking-wider font-bold text-[#FF6B35]">You</span>}
               </p>
               <p className="text-xs text-zinc-500">Level {r.level}</p>
             </div>

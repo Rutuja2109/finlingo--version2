@@ -590,6 +590,11 @@ function ScenarioLesson({ l, answered, onAnswer }) {
 function ResultScreen({ result, concept, onAgain }) {
   const nav = useNavigate();
   const { isPro, sub } = useAuth();
+  const [wall, setWall] = useState(null); // set when the next lesson is behind Pro: the best moment to ask
+  useEffect(() => {
+    if (isPro || !sub) return;
+    api.get("/progress/next").then((r) => { if (r.data?.locked) setWall(r.data); }).catch(() => {});
+  }, [isPro, sub]);
   const isMastered = result.status === "mastered";
 
   useEffect(() => {
@@ -639,7 +644,15 @@ function ResultScreen({ result, concept, onAgain }) {
         </div>
       )}
 
-      {!isPro && sub && (
+      {!isPro && sub && wall && (
+        <div className="mb-5 rounded-3xl p-5 text-white text-left bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899]" data-testid="result-wall">
+          <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/95">Free lessons done</p>
+          <p className="font-[Outfit] font-black text-2xl leading-tight mt-0.5">You finished the free lessons in {wall.course.name}!</p>
+          <p className="text-[13.5px] text-white/95 mt-1.5">Next up: "{wall.concept.title}". One Pro plan opens every lesson and tool for ₹49 a month.</p>
+          <button onClick={() => nav("/pro?from=wall")} data-testid="result-wall-cta" className="mt-3 w-full rounded-2xl bg-white text-[#FF6B35] font-[Outfit] font-extrabold py-3 active:scale-[0.98]">Keep going with Pro</button>
+        </div>
+      )}
+      {!isPro && sub && !wall && (
         <button onClick={() => nav("/pro?from=lessons")} data-testid="result-upsell"
           className="w-full mb-5 flex items-center gap-3 text-left rounded-2xl p-4 text-white bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899]">
           <Crown className="w-7 h-7 shrink-0" />

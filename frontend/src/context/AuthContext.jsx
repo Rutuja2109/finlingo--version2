@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import { api, formatApiError } from "@/lib/api";
-import { requestNotificationPermission, scheduleReminders, cancelReminders } from "@/lib/notifications";
+import { requestNotificationPermission, scheduleReminders, cancelReminders, scheduleTrialReminders, cancelTrialReminders } from "@/lib/notifications";
 import { restore, isNative } from "@/lib/billing";
 import { identifyUser, trackLogin, trackSignUp } from "@/lib/firebase";
 
@@ -38,6 +38,15 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  // Heads-ups before the free trial ends; removed as soon as the learner subscribes.
+  const syncTrialReminders = useCallback((d) => {
+    try {
+      if (!d || localStorage.getItem("fl_notif") !== "granted") return;
+      if (d.trial?.active && !d.admin) scheduleTrialReminders(d.trial.ends_at);
+      else cancelTrialReminders();
+    } catch { /* reminders are optional */ }
+  }, []);
+
   const refreshSub = useCallback(async () => {
     try {
       let { data } = await api.get("/subscription/status");
@@ -48,9 +57,10 @@ export function AuthProvider({ children }) {
       setSub(data);
       saveSub(data);
       setSubFailed(false);
+      syncTrialReminders(data);
       return data;
     } catch { setSubFailed(true); return null; }
-  }, []);
+  }, [syncTrialReminders]);
 
   // Practising (or a new day) changes which reminders still make sense.
   useEffect(() => {
@@ -82,6 +92,7 @@ export function AuthProvider({ children }) {
       setStats(s.data);
       if (plan) {
         setSub(plan.data); saveSub(plan.data); setSubFailed(false);
+        syncTrialReminders(plan.data);
         if (!plan.data.pro && !plan.data.admin && plan.data.billing_ready) refreshSub(); // may find a purchase Google already knows
       } else {
         refreshSub();
@@ -94,7 +105,7 @@ export function AuthProvider({ children }) {
       setSub(null);
       try { localStorage.removeItem("fl_sub"); } catch { /* ignore */ }
     }
-  }, [reminderPermission, refreshSub]);
+  }, [reminderPermission, refreshSub, syncTrialReminders]);
 
   useEffect(() => {
     loadMe();

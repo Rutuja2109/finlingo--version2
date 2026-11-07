@@ -66,6 +66,15 @@ try:
     n4 = nxt()
     ok("the next lesson after chapter 1 is the first of chapter 2", n4["concept"]["title"] == "Plan your month" and n4["done"] == 3)
 
+    # A finished lesson stays finished, even if it is replayed badly.
+    before = nxt()["done"]
+    c.post(f"{U}/progress/complete-concept", headers=H, json={"concept_id": n["concept"]["id"], "score": 0})
+    ok("replaying a finished lesson with a bad score does not un-finish it", nxt()["done"] == before)
+    first_prog = db.user_progress.find_one({"user_id": uid, "concept_id": n["concept"]["id"]})
+    ok("its status is still completed or mastered", first_prog["status"] in ("completed", "mastered"))
+    c.post(f"{U}/progress/complete-concept", headers=H, json={"concept_id": n["concept"]["id"], "score": 65})
+    ok("a lesson finished with 100 stays mastered after a 65 replay", db.user_progress.find_one({"user_id": uid, "concept_id": n["concept"]["id"]})["status"] == "mastered")
+
     # The course used most recently wins.
     stock = db.courses.find_one({"slug": "stock-market-basics"})
     chs = [x["id"] for x in db.chapters.find({"course_id": stock["id"]})]

@@ -593,6 +593,10 @@ async def complete_concept(payload: CompleteConceptIn, request: Request, user: d
         {"user_id": user["id"], "concept_id": payload.concept_id}, {"_id": 0}
     )
     already_rewarded = existing is not None and existing.get("status") in ("completed", "mastered")
+    # A finished lesson stays finished: replaying it badly must never take the completion (and the unlocks after it) away.
+    rank = {"active": 0, "completed": 1, "mastered": 2}
+    if existing and rank.get(existing.get("status"), 0) > rank[status_]:
+        status_ = existing["status"]
     if already_rewarded:
         # Give a small practice bonus so the screen never shows +0
         xp_earned = max(3, base_xp // 10)
@@ -765,12 +769,13 @@ async def buy_streak_freeze(user: dict = Depends(get_current_user)):
     """Spend coins on a streak freeze, which protects the streak from one missed day."""
     s = await db.user_stats.find_one({"user_id": user["id"]}, {"_id": 0}) or {}
     owned = s.get("streak_freezes", 0)
-    if owned >= STREAK_FREEZE_MAX:
-        raise HTTPException(status_code=400, detail=f"You can hold at most {STREAK_FREEZE_MAX} streak freezes")
+    cap = pro.PRO_FREEZE_MAX if pro.is_pro(user) else STREAK_FREEZE_MAX
+    if owned >= cap:
+        raise HTTPException(status_code=400, detail=f"You can hold at most {cap} streak freezes" + ("" if cap > STREAK_FREEZE_MAX else ". Pro members can hold more."))
     # Atomic: only deducts if the user still has enough coins and room for another freeze.
     res = await db.user_stats.update_one(
         {"user_id": user["id"], "coins": {"$gte": STREAK_FREEZE_COST},
-         "streak_freezes": {"$lt": STREAK_FREEZE_MAX}} if owned else
+         "streak_freezes": {"$lt": cap}} if owned else
         {"user_id": user["id"], "coins": {"$gte": STREAK_FREEZE_COST}},
         {"$inc": {"coins": -STREAK_FREEZE_COST, "streak_freezes": 1}},
     )
@@ -867,13 +872,14 @@ async def leaderboard(user: dict = Depends(get_current_user)):
         {"$unwind": "$u"},
         {"$project": {
             "_id": 0, "user_id": 1, "total_xp": 1, "level": 1, "streak_days": 1,
-            "name": "$u.name", "avatar_color": "$u.avatar_color",
+            "name": "$u.name", "avatar_color": "$u.avatar_color", "role": "$u.role", "pro_until": "$u.pro_until",
         }},
     ]
     rows = await db.user_stats.aggregate(pipeline).to_list(50)
     for i, r in enumerate(rows):
         r["rank"] = i + 1
         r["is_me"] = r["user_id"] == user["id"]
+        r["pro"] = pro.is_pro({"role": r.pop("role", None), "pro_until": r.pop("pro_until", None)})
     return rows
 
 

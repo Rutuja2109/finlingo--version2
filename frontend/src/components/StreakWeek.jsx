@@ -5,12 +5,14 @@ import { useAuth } from "@/context/AuthContext";
 import { streakState } from "@/lib/streak";
 
 const FREEZE_COST = 30;
-const FREEZE_MAX = 2;
+const FREEZE_MAX_FREE = 2;
+const FREEZE_MAX_PRO = 5; // Pro members can hold more freezes
 const WEEK_GOAL = 5;
 
 // Streak and the seven days of this week in one warm card: done days glow, today pulses, missed days stay neutral, future days are dashed.
 export default function StreakWeek() {
-  const { user, stats, refreshStats } = useAuth();
+  const { user, stats, refreshStats, isPro } = useAuth();
+  const FREEZE_MAX = isPro ? FREEZE_MAX_PRO : FREEZE_MAX_FREE;
   const [week, setWeek] = useState(null);
   const [buying, setBuying] = useState(false);
   const [msg, setMsg] = useState("");

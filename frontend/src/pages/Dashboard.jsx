@@ -10,6 +10,8 @@ import GoalPicker from "@/components/GoalPicker";
 import DailyQuests from "@/components/DailyQuests";
 import TodayStrip from "@/components/TodayStrip";
 import StreakWeek from "@/components/StreakWeek";
+import TrialCard from "@/components/TrialCard";
+import MilestoneModal from "@/components/MilestoneModal";
 import ProFeatures from "@/components/ProFeatures";
 import { streakState } from "@/lib/streak";
 
@@ -84,6 +86,7 @@ export default function Dashboard() {
 
   return (
     <div className="pb-24">
+      <MilestoneModal />
       {showGoal && (
         <GoalPicker
           current={stats?.daily_goal_minutes}
@@ -134,6 +137,7 @@ export default function Dashboard() {
       </section>
 
       <TodayStrip />
+      <TrialCard />
 
       {/* Daily goal */}
       <section className="bg-white border border-zinc-200 rounded-3xl p-4 mb-6" data-testid="daily-goal">
