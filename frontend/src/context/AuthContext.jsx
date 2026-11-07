@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import { api, formatApiError } from "@/lib/api";
 import { requestNotificationPermission, scheduleReminders, cancelReminders } from "@/lib/notifications";
+import { restore, isNative } from "@/lib/billing";
 import { identifyUser, trackLogin, trackSignUp } from "@/lib/firebase";
 
 const AuthContext = createContext(null);
@@ -8,6 +9,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // null = loading, false = logged out
   const [stats, setStats] = useState(null);
+  const [sub, setSub] = useState(null); // Pro status from the server
 
   // Reminders are scheduled one after another (never two at once) and re-planned whenever the learner's day changes,
   // so practising today cancels today's nudges.
@@ -31,6 +33,18 @@ export function AuthProvider({ children }) {
     } catch (e) {
       return null;
     }
+  }, []);
+
+  const refreshSub = useCallback(async () => {
+    try {
+      let { data } = await api.get("/subscription/status");
+      // Not Pro here but Google may already know a purchase (new phone, reinstall, failed earlier check).
+      if (!data.pro && !data.admin && isNative() && data.billing_ready) {
+        try { if (await restore(data.product_id)) data = (await api.get("/subscription/status")).data; } catch { /* ignore */ }
+      }
+      setSub(data);
+      return data;
+    } catch { return null; }
   }, []);
 
   // Practising (or a new day) changes which reminders still make sense.
@@ -60,13 +74,14 @@ export function AuthProvider({ children }) {
       setUser(data);
       const s = await api.get("/stats/me");
       setStats(s.data);
+      refreshSub();
       identifyUser(data.id, data.name, data.email);
       await reminderPermission(s.data);
     } catch {
       setUser(false);
       setStats(null);
     }
-  }, [reminderPermission]);
+  }, [reminderPermission, refreshSub]);
 
   useEffect(() => {
     loadMe();
@@ -78,8 +93,9 @@ export function AuthProvider({ children }) {
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
       setUser(data);
       const st = await refreshStats();
+      refreshSub();
       identifyUser(data.id, data.name, data.email);
-      trackLogin(email === "demo@finlingo.com" ? "demo" : "email");
+      trackLogin("email");
       await reminderPermission(st);
       return { ok: true };
     } catch (e) {
@@ -94,6 +110,7 @@ export function AuthProvider({ children }) {
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
       setUser(data);
       const st = await refreshStats();
+      refreshSub();
       identifyUser(data.id, data.name, data.email);
       if (data.new_account) trackSignUp("google"); else trackLogin("google");
       await reminderPermission(st);
@@ -109,6 +126,7 @@ export function AuthProvider({ children }) {
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
       setUser(data);
       await refreshStats();
+      refreshSub();
       identifyUser(data.id, data.name, data.email);
       trackSignUp("email");
       return { ok: true };
@@ -125,6 +143,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("fl_token");
     setUser(false);
     setStats(null);
+    setSub(null);
   };
 
   const deleteAccount = async (password) => {
@@ -134,6 +153,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("fl_token");
       setUser(false);
       setStats(null);
+      setSub(null);
       return { ok: true };
     } catch (e) {
       return { ok: false, error: formatApiError(e) };
@@ -141,7 +161,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, stats, login, loginWithGoogle, register, logout, deleteAccount,refreshStats, setStats, setUser }}>
+    <AuthContext.Provider value={{ user, stats, sub, isPro: !!(sub && sub.pro), refreshSub, login, loginWithGoogle, register, logout, deleteAccount,refreshStats, setStats, setUser }}>
       {children}
     </AuthContext.Provider>
   );

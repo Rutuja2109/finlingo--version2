@@ -88,3 +88,9 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 - data/loma.pdf (a copyrighted book) is in the public repo.
 
 
+
+## Money and brand (2026-11-07)
+- [x] New logo (rising bars and arrow) from design/brand/source-logo.webp, applied to icon, splash, store icon, in-app header (design/brand/make_logo.py). Play Store phone screenshots and feature graphic still to regenerate.
+- [x] "Try the demo" removed; the public demo account is deleted from the server on next start.
+- [x] Pro subscription built (₹49/month or ₹399/year, Google Play autopay): free = 2 lessons per course, quests, idea of the day. Tests: backend/tests/test_pro.py (42 checks, fake Google). Not tested with real Google Play yet: see docs/PLAY_SUBSCRIPTION_SETUP.md
+- [ ] (you) Play Console account, subscription product `finlearn_pro`, service account, license tester

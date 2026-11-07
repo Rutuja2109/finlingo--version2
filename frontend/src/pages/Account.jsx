@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
-import { LogOut, Trash2, Shield, Award } from "lucide-react";
+import { LogOut, Trash2, Shield, Award, Crown } from "lucide-react";
 import { PRIVACY_URL } from "@/lib/api";
 
 export default function Account() {
-  const { user, logout, deleteAccount } = useAuth();
+  const { user, logout, deleteAccount, sub, isPro } = useAuth();
   const [confirming, setConfirming] = useState(false);
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
@@ -26,6 +26,11 @@ export default function Account() {
 
       <Link to="/achievements" data-testid="account-awards" className="flex items-center gap-3 bg-white border border-zinc-200 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
         <Award className="w-5 h-5 text-[#FF6B35]" /> Your awards
+      </Link>
+
+      <Link to="/pro" data-testid="account-plan" className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
+        <Crown className="w-5 h-5 text-amber-600" />
+        <span className="flex-1">{isPro ? "FinLearn Pro" : "Free plan"}<span className="block text-xs font-semibold text-zinc-600 font-[Manrope]">{isPro ? (sub?.admin ? "Admin access" : sub?.until ? `Active until ${new Date(sub.until).toLocaleDateString()}` : "Active") : "Tap to see Pro, from ₹49 a month"}</span></span>
       </Link>
 
       <div className="bg-white border border-zinc-200 rounded-3xl p-6 mb-4">
@@ -57,7 +62,7 @@ export default function Account() {
           <p className="uppercase tracking-[0.2em] text-xs font-bold text-red-600 mb-1">Danger zone</p>
           <h2 className="font-[Outfit] font-bold text-xl mb-1">Delete account</h2>
           <p className="text-sm text-zinc-500 mb-4">
-            Permanently deletes your account, progress, XP and streaks. This cannot be undone.
+            Permanently deletes your account, progress, XP and streaks. This cannot be undone. It does not cancel a Pro subscription: cancel that in Google Play first.
           </p>
           {!confirming ? (
             <button

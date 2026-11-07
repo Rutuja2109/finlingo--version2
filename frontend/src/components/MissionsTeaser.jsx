@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Flag, ArrowRight } from "lucide-react";
 import { api } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
 
 // Small dashboard card that points to the real-life missions page.
 export default function MissionsTeaser() {
   const [d, setD] = useState(null);
-  useEffect(() => { api.get("/missions").then((r) => setD(r.data)).catch(() => {}); }, []);
+  const { isPro } = useAuth();
+  useEffect(() => { if (isPro) api.get("/missions").then((r) => setD(r.data)).catch(() => {}); }, [isPro]);
   if (!d) return null;
   const f = d.missions.find((m) => m.featured);
   return (

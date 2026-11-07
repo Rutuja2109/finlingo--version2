@@ -30,6 +30,7 @@ from money import make_router as make_money_router
 from missions import make_router as make_missions_router
 from explainers import make_router as make_explainer_router
 import google_auth
+import pro
 from starlette.concurrency import run_in_threadpool
 from quests import make_router as make_quests_router, bump as quest_bump
 from text_repair import repair_collection
@@ -216,11 +217,17 @@ async def seed_admin():
     admin_pw = os.environ.get("ADMIN_PASSWORD", "Admin@123")
     demo_email = os.environ.get("DEMO_EMAIL", "demo@finlingo.com").lower()
     demo_pw = os.environ.get("DEMO_PASSWORD", "Demo@123")
+    accounts = [(admin_email, admin_pw, "Admin", "admin")]
+    if os.environ.get("SEED_DEMO") == "1":
+        accounts.append((demo_email, demo_pw, "Demo Learner", "user"))  # local tests only
+    else:
+        # The public demo login is gone: remove the old well-known account.
+        gone = await db.users.find_one({"email": demo_email, "role": "user"})
+        if gone:
+            await db.users.delete_one({"id": gone["id"]})
+            await db.user_stats.delete_one({"user_id": gone["id"]})
 
-    for email, pw, name, role in [
-        (admin_email, admin_pw, "Admin", "admin"),
-        (demo_email, demo_pw, "Demo Learner", "user"),
-    ]:
+    for email, pw, name, role in accounts:
         existing = await db.users.find_one({"email": email})
         if not existing:
             user_id = str(uuid.uuid4())
@@ -229,6 +236,7 @@ async def seed_admin():
                 "password_hash": hash_password(pw),
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "avatar_color": "#FF6B35" if role == "admin" else "#10B981",
+                **({"pro_until": "2099-01-01T00:00:00+00:00"} if role == "user" else {}),  # local test account only
             })
             await db.user_stats.insert_one({
                 "user_id": user_id, "total_xp": 0, "level": 1, "coins": 50,
@@ -314,6 +322,9 @@ async def delete_account(payload: DeleteAccountIn, response: Response, user: dic
     await db.users.delete_one({"id": uid})
     clear_auth_cookies(response)
     return {"ok": True}
+
+
+require_pro = pro.make_require_pro(get_current_user)
 
 
 @api.get("/auth/me")
@@ -534,7 +545,11 @@ async def course_full(course_id: str, user: dict = Depends(get_current_user)):
         m["concepts"] = [c for c in concepts if c["module_id"] == m["id"]]
     for ch in chapters:
         ch["modules"] = [m for m in modules if m["chapter_id"] == ch["id"]]
+    free = None if pro.is_pro(user) else await pro.free_concept_ids(db, course_id)
+    for c in concepts:
+        c["locked"] = free is not None and c["id"] not in free
     course["chapters"] = chapters
+    course["free_concepts"] = pro.FREE_CONCEPTS
     return course
 
 
@@ -543,6 +558,8 @@ async def get_concept(concept_id: str, user: dict = Depends(get_current_user)):
     concept = await db.concepts.find_one({"id": concept_id}, {"_id": 0})
     if not concept:
         raise HTTPException(status_code=404, detail="Concept not found")
+    if await pro.concept_locked(db, user, concept):
+        raise HTTPException(status_code=402, detail="pro_required")
     lessons = await db.lessons.find({"concept_id": concept_id}, {"_id": 0}).sort("order", 1).to_list(50)
     concept["lessons"] = lessons
     prog = await db.user_progress.find_one(
@@ -558,6 +575,8 @@ async def complete_concept(payload: CompleteConceptIn, request: Request, user: d
     concept = await db.concepts.find_one({"id": payload.concept_id}, {"_id": 0})
     if not concept:
         raise HTTPException(status_code=404, detail="Concept not found")
+    if await pro.concept_locked(db, user, concept):
+        raise HTTPException(status_code=402, detail="pro_required")
 
     base_xp = int(concept.get("xp_reward", 15))
     # XP scales with score; +50% bonus on perfect
@@ -1030,7 +1049,7 @@ async def revisions_grade(payload: RevisionGradeIn, request: Request, user: dict
 
 # ---------- BOSS BATTLE ----------
 @api.get("/boss-battles/{chapter_id}")
-async def boss_battle(chapter_id: str, user: dict = Depends(get_current_user)):
+async def boss_battle(chapter_id: str, user: dict = Depends(require_pro)):
     """Return chapter info + a mixed quiz of MCQs sampled from that chapter's concepts."""
     chapter = await db.chapters.find_one({"id": chapter_id}, {"_id": 0})
     if not chapter:
@@ -1061,7 +1080,7 @@ async def boss_battle(chapter_id: str, user: dict = Depends(get_current_user)):
 
 
 @api.post("/boss-battles/submit")
-async def boss_battle_submit(payload: BossBattleSubmitIn, request: Request, user: dict = Depends(get_current_user)):
+async def boss_battle_submit(payload: BossBattleSubmitIn, request: Request, user: dict = Depends(require_pro)):
     # Server-side scoring: look up each question id and grade against stored correct answer
     if not payload.answers:
         raise HTTPException(status_code=400, detail="No answers submitted")
@@ -1139,11 +1158,12 @@ async def privacy_policy():
     return HTMLResponse(_privacy_page())
 
 
-api.include_router(make_practice_router(db, get_current_user, _xp_today_fields, learner_today, on_trade=lambda uid, day: quest_bump(db, uid, day, "trades")))
+api.include_router(make_practice_router(db, require_pro, _xp_today_fields, learner_today, on_trade=lambda uid, day: quest_bump(db, uid, day, "trades")))
 api.include_router(make_explainer_router(db, get_current_user, _xp_today_fields, learner_today, on_read=lambda uid, day: quest_bump(db, uid, day, "explainers")))
-api.include_router(make_missions_router(db, get_current_user, _xp_today_fields, learner_today))
-api.include_router(make_money_router(db, get_current_user, learner_today, on_entry=lambda uid, day: quest_bump(db, uid, day, "entries")))
-api.include_router(make_quests_router(db, get_current_user, learner_today))
+api.include_router(make_missions_router(db, require_pro, _xp_today_fields, learner_today))
+api.include_router(make_money_router(db, require_pro, learner_today, on_entry=lambda uid, day: quest_bump(db, uid, day, "entries")))
+api.include_router(pro.make_router(db, get_current_user))
+api.include_router(make_quests_router(db, get_current_user, learner_today, pro.is_pro))
 app.include_router(api)
 
 # CORS — open for mobile app (Capacitor sends null origin)

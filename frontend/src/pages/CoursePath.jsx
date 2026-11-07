@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { courseSubtitle } from "@/lib/course";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
-import { Lock, Check, Sparkles, ChevronLeft, Skull, Star, BookOpen, Zap } from "lucide-react";
+import { Lock, Check, Sparkles, ChevronLeft, Skull, Star, BookOpen, Zap, Crown } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { trackChapterStarted } from "@/lib/firebase";
 import Lumi from "@/components/Lumi";
 
@@ -10,6 +11,7 @@ export default function CoursePath() {
   const { courseId } = useParams();
   const nav = useNavigate();
   const [course, setCourse] = useState(null);
+  const { isPro } = useAuth();
 
   useEffect(() => {
     api.get(`/courses/${courseId}/full`).then(({ data }) => setCourse(data));
@@ -56,6 +58,17 @@ export default function CoursePath() {
         </div>
       </div>
 
+      {!isPro && (
+        <button onClick={() => nav("/pro")} data-testid="free-preview-banner"
+          className="w-full flex items-center gap-3 text-left rounded-2xl bg-amber-50 border-2 border-amber-300 p-3.5 mb-6">
+          <span className="w-10 h-10 rounded-xl bg-amber-400 text-white grid place-items-center shrink-0"><Crown className="w-5 h-5" /></span>
+          <span className="flex-1">
+            <span className="block font-[Outfit] font-extrabold text-[15px]">Free preview: {course.free_concepts || 2} lessons</span>
+            <span className="block text-[13px] text-zinc-600">Go Pro to open every lesson in this course.</span>
+          </span>
+        </button>
+      )}
+
       {/* Winding path */}
       <div className="relative px-4">
         {/* Vertical dashed spine */}
@@ -78,7 +91,7 @@ export default function CoursePath() {
               if (node.idx === 0) {
                 trackChapterStarted({ chapterId: node.ch.id, chapterTitle: node.ch.title, chapterOrder: node.ci + 1 });
               }
-              nav(`/concept/${node.concept.id}`);
+              nav(node.concept.locked ? "/pro" : `/concept/${node.concept.id}`);
             };
             return (
               <ConceptNode key={node.concept.id} concept={node.concept} color={course.color}
@@ -109,20 +122,23 @@ function ConceptNode({ concept, color, side, index, onClick }) {
   const isLocked = status === "locked";
   const isDone = status === "completed" || status === "mastered";
   const isMastered = status === "mastered";
-  const isAvailable = !isLocked && !isDone;
+  const proLocked = !!concept.locked;
+  const isAvailable = !isLocked && !isDone && !proLocked;
 
   return (
     <div className={`relative z-10 flex items-center my-3 ${side === "right" ? "flex-row-reverse" : "flex-row"}`}>
       {/* Node bubble */}
       <button
         data-testid={`concept-node-${concept.id}`}
-        disabled={isLocked}
+        disabled={isLocked && !proLocked}
         onClick={onClick}
         className={`relative w-[72px] h-[72px] rounded-[22px] grid place-items-center shadow-xl transition-all duration-300 shrink-0
-          ${!isLocked ? "active:scale-95 hover:scale-105 hover:-translate-y-1" : "cursor-not-allowed"}
+          ${!isLocked || proLocked ? "active:scale-95 hover:scale-105 hover:-translate-y-1" : "cursor-not-allowed"}
         `}
         style={{
-          background: isLocked
+          background: proLocked
+            ? "linear-gradient(135deg, #FBBF24, #F59E0B)"
+            : isLocked
             ? "#E4E4E7"
             : isDone
             ? "linear-gradient(135deg, #10B981, #059669)"
@@ -134,9 +150,14 @@ function ConceptNode({ concept, color, side, index, onClick }) {
             : `0 14px 28px -10px ${color}70`,
         }}
       >
-        {isLocked && <Lock className="w-6 h-6 text-zinc-500" />}
+        {proLocked && <Crown className="w-7 h-7 text-white" />}
+        {isLocked && !proLocked && <Lock className="w-6 h-6 text-zinc-500" />}
         {isDone && <Check className="w-8 h-8 text-white" strokeWidth={3} />}
         {isAvailable && <Lumi size={48} mood="happy" />}
+
+        {proLocked && (
+          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">PRO</span>
+        )}
 
         {isMastered && (
           <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#FBBF24] rounded-full grid place-items-center">
@@ -159,7 +180,8 @@ function ConceptNode({ concept, color, side, index, onClick }) {
       <div className={`flex-1 ${side === "right" ? "text-right pr-2" : "pl-2"}`}>
         <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Concept {index}</p>
         <p className="font-[Outfit] font-bold text-[15px] tracking-tight text-zinc-900 leading-tight">{concept.title}</p>
-        {!isLocked && (
+        {proLocked && <p className="text-xs font-bold text-amber-600 mt-0.5">Pro lesson</p>}
+        {!isLocked && !proLocked && (
           <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{concept.learning_objective}</p>
         )}
       </div>

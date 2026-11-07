@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import Lumi from "@/components/Lumi";
+import Logo from "@/components/Logo";
 import { Eye, EyeOff } from "lucide-react";
 import { api, PRIVACY_URL } from "@/lib/api";
 import { googleIdToken, wasCancelled, failureHint } from "@/lib/googleLogin";
@@ -10,9 +10,7 @@ export default function AuthPage({ mode = "login" }) {
   const { login, register, loginWithGoogle } = useAuth();
   const nav = useNavigate();
   const isLogin = mode === "login";
-  const [params] = useSearchParams();
-  const isDemo = isLogin && params.get("demo") === "1";
-  const [form, setForm] = useState({ email: isDemo ? "demo@finlingo.com" : "", password: isDemo ? "Demo@123" : "", name: "" });
+  const [form, setForm] = useState({ email: "", password: "", name: "" });
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const [showPw, setShowPw] = useState(false);
@@ -37,11 +35,10 @@ export default function AuthPage({ mode = "login" }) {
   };
 
   // Login and signup share this component, so reset the form when switching screens
-  // (otherwise the demo credentials carry over into the sign-up form).
   useEffect(() => {
-    setForm({ email: isDemo ? "demo@finlingo.com" : "", password: isDemo ? "Demo@123" : "", name: "" });
+    setForm({ email: "", password: "", name: "" });
     setErr("");
-  }, [mode, isDemo]);
+  }, [mode]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -62,7 +59,7 @@ export default function AuthPage({ mode = "login" }) {
         <div className="absolute bottom-0 right-0 w-[28rem] h-[28rem] rounded-full bg-[#EC4899]/30 blur-3xl" />
         <div className="relative z-10 flex flex-col justify-between h-full">
           <Link to="/" className="flex items-center gap-3" data-testid="auth-brand">
-            <Lumi size={44} />
+            <Logo size={44} />
             <span className="font-[Outfit] font-black text-2xl tracking-tight">FinLearn</span>
           </Link>
           <div>
@@ -81,7 +78,7 @@ export default function AuthPage({ mode = "login" }) {
       {/* Right form */}
       <div className="flex-1 grid place-items-center p-6">
         <form onSubmit={submit} className="w-full max-w-md bg-white border border-zinc-200 rounded-3xl p-8 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.15)]">
-          <div className="flex md:hidden justify-center mb-4"><Lumi size={56}/></div>
+          <div className="flex md:hidden justify-center mb-4"><Logo size={56} /></div>
           <h2 className="font-[Outfit] font-black text-3xl tracking-tight">
             {isLogin ? "Welcome back" : "Create your account"}
           </h2>
@@ -177,11 +174,6 @@ export default function AuthPage({ mode = "login" }) {
             </p>
           )}
 
-          {isDemo && (
-            <p className="text-xs text-zinc-500 text-center mt-3">
-              Demo account prefilled — just tap Log in.
-            </p>
-          )}
         </form>
       </div>
     </div>

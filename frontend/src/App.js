@@ -25,6 +25,7 @@ import BossBattle from "@/pages/BossBattle";
 import Account from "@/pages/Account";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
+import Paywall from "@/pages/Paywall";
 
 function Protected({ children }) {
   const { user } = useAuth();
@@ -33,6 +34,14 @@ function Protected({ children }) {
   }
   if (!user) return <Navigate to="/login" replace />;
   return <AppShell>{children}</AppShell>;
+}
+
+// Pro-only screens: free accounts go to the paywall (it says which feature they tried to open).
+function ProOnly({ feature, children }) {
+  const { sub, isPro } = useAuth();
+  if (!sub) return <div className="min-h-[40vh] grid place-items-center text-zinc-500">Loading...</div>;
+  if (!isPro) return <Navigate to={`/pro?from=${feature}`} replace />;
+  return children;
 }
 
 function PublicOnly({ children }) {
@@ -64,18 +73,19 @@ function AppRouter() {
       <Route path="/courses" element={<Protected><Courses/></Protected>}/>
       <Route path="/learn/:courseId" element={<Protected><CoursePath/></Protected>}/>
       <Route path="/concept/:conceptId" element={<Protected><LessonPlayer/></Protected>}/>
-      <Route path="/money" element={<Protected><Money/></Protected>}/>
-      <Route path="/calculators" element={<Protected><Calculators/></Protected>}/>
+      <Route path="/money" element={<Protected><ProOnly feature="money"><Money/></ProOnly></Protected>}/>
+      <Route path="/calculators" element={<Protected><ProOnly feature="calculators"><Calculators/></ProOnly></Protected>}/>
       <Route path="/explainer" element={<Protected><Explainer/></Protected>}/>
       <Route path="/admin/explainers" element={<Protected><ExplainerAdmin/></Protected>}/>
-      <Route path="/missions" element={<Protected><Missions/></Protected>}/>
-      <Route path="/practice" element={<Protected><Practice/></Protected>}/>
+      <Route path="/missions" element={<Protected><ProOnly feature="missions"><Missions/></ProOnly></Protected>}/>
+      <Route path="/practice" element={<Protected><ProOnly feature="practice"><Practice/></ProOnly></Protected>}/>
       <Route path="/leaderboard" element={<Protected><Leaderboard/></Protected>}/>
       <Route path="/achievements" element={<Protected><Achievements/></Protected>}/>
       <Route path="/account" element={<Protected><Account/></Protected>}/>
       <Route path="/admin"element={<Protected><Admin/></Protected>}/>
       <Route path="/revise" element={<Protected><Revision/></Protected>}/>
-      <Route path="/boss/:chapterId" element={<Protected><BossBattle/></Protected>}/>
+      <Route path="/boss/:chapterId" element={<Protected><ProOnly feature="boss"><BossBattle/></ProOnly></Protected>}/>
+      <Route path="/pro" element={<Protected><Paywall/></Protected>}/>
       <Route path="*" element={<Navigate to="/" replace/>}/>
     </Routes>
   );

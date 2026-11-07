@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Flame, Zap, Coins, LogOut, Settings, Trophy, Home, BookOpen, Award, Repeat, Sparkles, LineChart, Wallet, Flag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import Lumi from "@/components/Lumi";
+import Logo from "@/components/Logo";
 
 export default function AppShell({ children }) {
   const { user, stats, logout } = useAuth();
@@ -28,7 +28,7 @@ export default function AppShell({ children }) {
       >
         <div className="max-w-6xl mx-auto px-3 sm:px-5 h-16 flex items-center justify-between gap-2">
           <Link to="/dashboard" className="flex items-center gap-2.5" data-testid="brand-logo">
-            <Lumi size={36} />
+            <Logo size={36} />
             <span className="hidden sm:inline font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
           </Link>
 

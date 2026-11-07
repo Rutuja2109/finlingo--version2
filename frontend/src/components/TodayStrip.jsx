@@ -2,15 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Lightbulb, Target, Flag } from "lucide-react";
 import { api } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
 
 // Three bright tiles right under the greeting, so learners see at once what is waiting for them today.
 export default function TodayStrip() {
   const [d, setD] = useState({});
+  const { isPro } = useAuth();
   useEffect(() => {
     api.get("/explainer/today").then((r) => setD((o) => ({ ...o, ex: r.data }))).catch(() => {});
     api.get("/quests/today").then((r) => setD((o) => ({ ...o, q: r.data }))).catch(() => {});
-    api.get("/missions").then((r) => setD((o) => ({ ...o, m: r.data }))).catch(() => {});
-  }, []);
+    if (isPro) api.get("/missions").then((r) => setD((o) => ({ ...o, m: r.data }))).catch(() => {});
+  }, [isPro]);
   if (!d.ex && !d.q && !d.m) return null;
 
   const claimable = d.q ? d.q.quests.filter((x) => x.done && !x.claimed).length + (d.q.chest?.ready ? 1 : 0) : 0;
@@ -40,7 +42,7 @@ export default function TodayStrip() {
         <Tile to="/dashboard" onClick={goQuests} testid="tile-quests" grad="from-[#6366F1] to-[#8B5CF6]" Icon={Target}
           title="Daily quests" sub={d.q ? `${d.q.claimed_count} of 3 done` : "3 small goals"} badge={claimable > 0 ? "CLAIM!" : null} />
         <Tile to="/missions" testid="tile-missions" grad="from-[#EC4899] to-[#F43F5E]" Icon={Flag}
-          title="Missions" sub={d.m ? `${d.m.done_count} of ${d.m.total} done` : "Real-life actions"} badge={d.m && d.m.done_count === 0 ? "START" : null} />
+          title="Missions" sub={!isPro ? "Go Pro to unlock" : d.m ? `${d.m.done_count} of ${d.m.total} done` : "Real-life actions"} badge={!isPro ? "PRO" : d.m && d.m.done_count === 0 ? "START" : null} />
       </div>
     </section>
   );

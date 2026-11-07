@@ -22,11 +22,16 @@ QUESTS = {
 SLOTS = [["xp", "lesson"], ["perfect", "revise", "explainer"], ["trade", "log"]]
 
 
-def pick_quests(user_id: str, day: str, can_revise: bool) -> list:
+FREE_SLOT3 = ["explainer", "perfect", "revise", "xp"]  # free accounts cannot trade or log money, so ask something they can do
+
+
+def pick_quests(user_id: str, day: str, can_revise: bool, pro: bool = True) -> list:
     """Three quest ids for this user and day: one from each slot, stable for the whole day."""
     h = hashlib.sha256(f"{user_id}:{day}".encode()).digest()
     out = []
     for i, options in enumerate(SLOTS):
+        if i == 2 and not pro:
+            options = [o for o in FREE_SLOT3 if o not in out]
         opts = [o for o in options if not (o == "revise" and not can_revise)]
         out.append(opts[h[i] % len(opts)])
     return out
@@ -45,7 +50,7 @@ class ClaimIn(BaseModel):
     id: str
 
 
-def make_router(db, get_current_user, learner_today):
+def make_router(db, get_current_user, learner_today, pro_user=lambda u: True):
     r = APIRouter(prefix="/quests")
 
     def local_now(request: Request) -> datetime:
@@ -61,7 +66,7 @@ def make_router(db, get_current_user, learner_today):
         xp = stats.get("xp_today", 0) if stats.get("xp_today_date") == day else 0
         counts = {**doc.get("counts", {}), "xp": xp}
         can_revise = stats.get("lessons_completed", 0) >= 3
-        ids = doc.get("quest_ids") or pick_quests(user["id"], day, can_revise)
+        ids = doc.get("quest_ids") or pick_quests(user["id"], day, can_revise, pro_user(user))
         if not doc.get("quest_ids"):  # freeze the choice for the day so it cannot change mid-day
             await db.daily_quests.update_one({"user_id": user["id"], "date": day}, {"$set": {"quest_ids": ids}, "$setOnInsert": {"claimed": [], "chest": False}}, upsert=True)
         quests = []

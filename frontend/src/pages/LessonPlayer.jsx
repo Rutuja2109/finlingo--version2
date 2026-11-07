@@ -38,7 +38,7 @@ export default function LessonPlayer() {
       setConcept({ ...data, lessons });
       // Initialize queue with all lesson indices in order
       setQueue(lessons.map((_, i) => i));
-    });
+    }).catch((e) => { if (e?.response?.status === 402) nav("/pro", { replace: true }); });
   }, [conceptId]);
 
   if (!concept) return <div className="text-center py-20 text-zinc-500">Loading…</div>;
