@@ -84,7 +84,7 @@ class H(BaseHTTPRequestHandler):
 keysrv = HTTPServer(("127.0.0.1", 9099), H)
 threading.Thread(target=keysrv.serve_forever, daemon=True).start()
 
-env = {**os.environ, "GOOGLE_CLIENT_IDS": CLIENT, "GOOGLE_JWKS_URL": "http://127.0.0.1:9099/jwks"}
+env = {**os.environ, "DISABLE_RATE_LIMIT": "1", "GOOGLE_CLIENT_IDS": CLIENT, "GOOGLE_JWKS_URL": "http://127.0.0.1:9099/jwks"}
 srv = subprocess.Popen([sys.executable, "-m", "uvicorn", "server:app", "--port", "8002"], cwd=os.path.join(os.path.dirname(__file__), ".."),
                        env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 import httpx  # noqa: E402

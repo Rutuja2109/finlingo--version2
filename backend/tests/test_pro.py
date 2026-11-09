@@ -73,7 +73,7 @@ PURCHASES["tok-renew"] = sub(days=30)
 threading.Thread(target=HTTPServer(("127.0.0.1", 9098), Play).serve_forever, daemon=True).start()
 
 sa = json.dumps({"client_email": "svc@test.iam.gserviceaccount.com", "private_key": pem, "token_uri": "http://127.0.0.1:9098/token"})
-env = {**os.environ, "GOOGLE_PLAY_SERVICE_ACCOUNT_JSON": sa, "PLAY_API_BASE": "http://127.0.0.1:9098/v3", "PLAY_PACKAGE_NAME": "com.test.app"}
+env = {**os.environ, "DISABLE_RATE_LIMIT": "1", "PLAY_RTDN_SECRET": "rtdn-secret", "GOOGLE_PLAY_SERVICE_ACCOUNT_JSON": sa, "PLAY_API_BASE": "http://127.0.0.1:9098/v3", "PLAY_PACKAGE_NAME": "com.test.app"}
 env.pop("SEED_DEMO", None)
 srv = subprocess.Popen([sys.executable, "-m", "uvicorn", "server:app", "--port", "8005"], cwd=os.path.join(HERE, ".."),
                        env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -171,6 +171,31 @@ try:
     ok("a free account stops at 2 freezes and is told Pro holds more", rf.status_code == 400 and "at most 2" in rf.json()["detail"] and "Pro" in rf.json()["detail"])
     lb = {x["user_id"]: x for x in c.get(f"{U}/leaderboard", headers=A).json()}
     ok("the leaderboard marks Pro members, and only that (no dates leak)", lb[aid]["pro"] is True and lb[bid]["pro"] is False and "pro_until" not in lb[aid] and "role" not in lb[aid])
+
+    # ---- Google Play real-time notifications (renewals, refunds, chargebacks)
+    import base64
+    note = lambda data, tok="rtdn-secret": c.post(f"{U}/subscription/rtdn", params={"token": tok}, json={"message": {"data": base64.b64encode(json.dumps(data).encode()).decode()}})
+    sn = lambda t, ptype=2: {"packageName": "com.test.app", "subscriptionNotification": {"version": "1.0", "notificationType": ptype, "purchaseToken": t, "subscriptionId": "finlearn_pro"}}
+    ok("a notification without the secret is refused", note(sn("tok-active"), tok="wrong").status_code == 403)
+    ok("a notification with no secret at all is refused", c.post(f"{U}/subscription/rtdn", json={"message": {"data": ""}}).status_code == 403)
+    ok("a message for another app is ignored", note({"packageName": "com.other.app", "subscriptionNotification": {"purchaseToken": "tok-active"}}).json().get("ignored") == "other app")
+    ok("a test message is ignored", note({"packageName": "com.test.app", "testNotification": {"version": "1.0"}}).json().get("ignored"))
+    ok("a purchase we never linked to an account is ignored", note(sn("tok-never-seen")).json().get("ignored"))
+    ok("garbage is a 400", c.post(f"{U}/subscription/rtdn", params={"token": "rtdn-secret"}, json={"message": {"data": "!!notbase64!!"}}).status_code == 400)
+    before_until = c.get(f"{U}/subscription/status", headers=A).json()["until"]
+    PURCHASES["tok-active"] = sub(days=90)
+    ok("a renewal notification extends Pro", note(sn("tok-active", 2)).json()["active"] is True and c.get(f"{U}/subscription/status", headers=A).json()["until"] > before_until)
+    PURCHASES["tok-active"] = sub("SUBSCRIPTION_STATE_EXPIRED", -1)
+    ok("a refund or revoke notification ends Pro at once", note(sn("tok-active", 12)).json()["active"] is False and c.get(f"{U}/subscription/status", headers=A).json()["pro"] is False)
+    ok("and the Pro tools lock again", c.get(f"{U}/practice/state", headers=A).status_code == 402)
+    PURCHASES["tok-active"] = sub()
+    ok("the learner can restore Pro by verifying the purchase again", v("tok-active").status_code == 200 and c.get(f"{U}/subscription/status", headers=A).json()["pro"] is True)
+    db.users.update_one({"id": aid}, {"$set": {"pro_token": "someone-else"}})
+    PURCHASES["tok-active"] = sub("SUBSCRIPTION_STATE_EXPIRED", -1)
+    note(sn("tok-active", 12))
+    ok("an account that no longer owns the purchase is not changed", c.get(f"{U}/subscription/status", headers=A).json()["pro"] is True)
+    db.users.update_one({"id": aid}, {"$set": {"pro_token": "tok-active"}})
+    PURCHASES["tok-active"] = sub()
     full = c.get(f"{U}/courses/{first['id']}/full", headers=A).json()
     ok("nothing is marked locked for Pro", not any(x["locked"] for ch in full["chapters"] for m in ch["modules"] for x in m["concepts"]))
     ok("same account can verify again", v("tok-active").status_code == 200)

@@ -31,6 +31,8 @@ from missions import make_router as make_missions_router
 from explainers import make_router as make_explainer_router
 import google_auth
 import pro
+import security
+import mailer
 from starlette.concurrency import run_in_threadpool
 from quests import make_router as make_quests_router, bump as quest_bump
 from text_repair import repair_collection
@@ -118,7 +120,7 @@ async def get_current_user(request: Request) -> dict:
 # ---------- Models ----------
 class RegisterIn(BaseModel):
     email: EmailStr
-    password: str = Field(min_length=6)
+    password: str = Field(min_length=8)
     name: str = Field(min_length=1, max_length=50)
 
 
@@ -153,7 +155,7 @@ class ForgotPasswordIn(BaseModel):
 
 class ResetPasswordIn(BaseModel):
     token: str = Field(min_length=10)
-    new_password: str = Field(min_length=6)
+    new_password: str = Field(min_length=8)
 
 
 class GenerateCourseIn(BaseModel):
@@ -253,7 +255,8 @@ async def seed_admin():
 
 # ---------- AUTH ----------
 @api.post("/auth/register")
-async def register(payload: RegisterIn, response: Response):
+async def register(payload: RegisterIn, request: Request, response: Response):
+    security.enforce(request, "register", 30, 3600)  # generous: a hostel or mobile network shares one address
     email = payload.email.lower()
     if await db.users.find_one({"email": email}):
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -282,11 +285,17 @@ async def register(payload: RegisterIn, response: Response):
 
 
 @api.post("/auth/login")
-async def login(payload: LoginIn, response: Response):
+async def login(payload: LoginIn, request: Request, response: Response):
     email = payload.email.lower()
+    ip_key, mail_key = f"login-ip:{security.client_ip(request)}", f"login-email:{email}"
+    security.check_blocked(ip_key, 60, 600)     # a flood of failed logins from one address (generous: shared Wi-Fi)
+    security.check_blocked(mail_key, 8, 600)    # too many failed logins for one account
     user = await db.users.find_one({"email": email})
     if not user or not verify_password(payload.password, user.get("password_hash", "")):
+        security.record_failure(ip_key, 600)
+        security.record_failure(mail_key, 600)
         raise HTTPException(status_code=401, detail="Invalid email or password")
+    security.clear(mail_key)
     access = create_access_token(user["id"], email)
     refresh = create_refresh_token(user["id"])
     set_auth_cookies(response, access, refresh)
@@ -318,7 +327,7 @@ async def delete_account(payload: DeleteAccountIn, response: Response, user: dic
             raise HTTPException(status_code=401, detail="Incorrect password")
     uid = user["id"]
     for coll in ("user_stats", "user_progress", "user_enrollments", "boss_battles", "password_resets",
-                 "practice_accounts", "money_entries", "money_goals", "daily_quests", "mission_progress", "explainer_reads"):
+                 "practice_accounts", "money_entries", "money_goals", "daily_quests", "mission_progress", "explainer_reads", "subscriptions"):
         await db[coll].delete_many({"user_id": uid})
     await db.users.delete_one({"id": uid})
     clear_auth_cookies(response)
@@ -353,40 +362,58 @@ async def refresh_token(request: Request, response: Response):
         raise HTTPException(status_code=401, detail="Invalid refresh token")
 
 
+def _public_base(request: Request) -> str:
+    """The address people reach the server at, for links in emails. Set PUBLIC_BASE_URL to be sure."""
+    env = os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
+    if env:
+        return env
+    base = str(request.base_url).rstrip("/")
+    return base.replace("http://", "https://", 1) if os.environ.get("RENDER") else base
+
+
 @api.post("/auth/forgot-password")
 async def forgot_password(payload: ForgotPasswordIn, request: Request):
-    """There is no email service yet, so a reset link cannot be delivered to its owner.
-
-    The token must NEVER be returned to the caller: that would let anyone who knows an email reset that person's
-    password. It is only handed back when DEV_RESET_LINKS=1 AND the request comes from this same machine
-    (local development and tests). Always answers the same way, so it does not reveal whether an email exists.
-    """
-    generic = {
-        "ok": True, "reset_token": None, "reset_path": None, "delivery": "unavailable",
-        "message": "We cannot email reset links yet. If you signed up with Google, use Continue with Google.",
-    }
-    caller = request.client.host if request.client else ""
-    if os.environ.get("DEV_RESET_LINKS") != "1" or caller not in ("127.0.0.1", "::1", "localhost"):
-        return generic
-
+    """Sends a reset link by email. The link is NEVER returned to the caller (that would let anyone take over any account),
+    except in local development (DEV_RESET_LINKS=1 from this same machine). Always answers the same way, so it does not
+    reveal whether an email has an account."""
+    security.enforce(request, "forgot-ip", 30, 3600)
     email = payload.email.lower()
+    security.enforce(request, "forgot-email", 5, 3600, who=email)
+    caller = request.client.host if request.client else ""
+    dev = os.environ.get("DEV_RESET_LINKS") == "1" and caller in ("127.0.0.1", "::1", "localhost")
+    if not mailer.configured() and not dev:
+        return {"ok": True, "reset_token": None, "reset_path": None, "delivery": "unavailable",
+                "message": "We cannot email reset links yet. If you signed up with Google, use Continue with Google."}
+    sent = {"ok": True, "reset_token": None, "reset_path": None, "delivery": "email",
+            "message": "If that email has a FinLearn account, we have sent a message with the next step. Check your inbox and spam folder."}
+
     user = await db.users.find_one({"email": email})
     if not user:
-        return generic
+        return sent
+    if not user.get("password_hash"):  # Google-only account: there is no password to reset
+        await mailer.send_email(email, *mailer.google_only_email(user.get("name", "there")))
+        return sent
 
     token = str(uuid.uuid4()).replace("-", "") + str(uuid.uuid4()).replace("-", "")
-    expires_at = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+    await db.password_resets.update_many({"user_id": user["id"], "used": False}, {"$set": {"used": True}})  # older links stop working
     await db.password_resets.insert_one({
         "id": str(uuid.uuid4()), "user_id": user["id"],
-        "token": token, "expires_at": expires_at, "used": False,
+        "token_hash": security.token_hash(token),  # only the hash is stored
+        "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(), "used": False,
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
-    return {**generic, "reset_token": token, "reset_path": f"/reset-password?token={token}", "delivery": "dev"}
+    link = f"{_public_base(request)}/reset-password?token={token}"
+    if mailer.configured():
+        await mailer.send_email(email, *mailer.reset_email(user.get("name", "there"), link))
+    if dev:
+        return {**sent, "reset_token": token, "reset_path": f"/reset-password?token={token}", "delivery": "dev"}
+    return sent
 
 
-@api.post("/auth/reset-password")
-async def reset_password(payload: ResetPasswordIn, response: Response):
-    doc = await db.password_resets.find_one({"token": payload.token, "used": False}, {"_id": 0})
+async def _consume_reset(token: str, new_password: str) -> dict:
+    """Checks a reset link and sets the new password. Raises HTTPException with a plain message if the link is no good."""
+    doc = await db.password_resets.find_one(
+        {"$or": [{"token_hash": security.token_hash(token)}, {"token": token}], "used": False}, {"_id": 0})
     if not doc:
         raise HTTPException(status_code=400, detail="Invalid or already-used token")
     expires_at = doc["expires_at"]
@@ -396,18 +423,20 @@ async def reset_password(payload: ResetPasswordIn, response: Response):
         expires_at = expires_at.replace(tzinfo=timezone.utc)
     if expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=400, detail="Reset link has expired")
-
     user = await db.users.find_one({"id": doc["user_id"]})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    await db.users.update_one({"id": user["id"]}, {"$set": {"password_hash": hash_password(new_password)}})
+    await db.password_resets.update_one({"id": doc["id"]}, {"$set": {"used": True, "used_at": datetime.now(timezone.utc).isoformat()}})
+    if mailer.configured():
+        await mailer.send_email(user["email"], *mailer.changed_email(user.get("name", "there")))
+    return user
 
-    await db.users.update_one(
-        {"id": user["id"]}, {"$set": {"password_hash": hash_password(payload.new_password)}}
-    )
-    await db.password_resets.update_one(
-        {"token": payload.token}, {"$set": {"used": True,
-                                            "used_at": datetime.now(timezone.utc).isoformat()}}
-    )
+
+@api.post("/auth/reset-password")
+async def reset_password(payload: ResetPasswordIn, request: Request, response: Response):
+    security.enforce(request, "reset", 30, 3600)
+    user = await _consume_reset(payload.token, payload.new_password)
     # Auto-login on successful reset
     access = create_access_token(user["id"], user["email"])
     refresh = create_refresh_token(user["id"])
@@ -424,11 +453,12 @@ async def reset_password(payload: ResetPasswordIn, response: Response):
 async def auth_config():
     """What the app needs to show sign-in options. The client id is public by design."""
     ids = google_auth.client_ids()
-    return {"google_client_id": ids[0] if ids else None, "support_email": os.environ.get("PRIVACY_EMAIL", "").strip() or None}
+    return {"google_client_id": ids[0] if ids else None, "support_email": os.environ.get("PRIVACY_EMAIL", "").strip() or None, "email_reset": mailer.configured()}
 
 
 @api.post("/auth/google")
-async def google_login(payload: GoogleLoginIn, response: Response):
+async def google_login(payload: GoogleLoginIn, request: Request, response: Response):
+    security.enforce(request, "google", 120, 600)
     """Sign in (or sign up) with a Google ID token. We verify it ourselves, then issue our own login."""
     ids = google_auth.client_ids()
     if not ids:
@@ -1196,22 +1226,86 @@ async def health():
     return {"status": "ok"}
 
 
+@api.get("/health/deep")
+async def health_deep():
+    """For uptime monitors: checks that the database answers, not just that the web process is up."""
+    try:
+        await asyncio.wait_for(db.command("ping"), timeout=5)
+    except Exception:
+        raise HTTPException(status_code=503, detail="database unavailable")
+    return {"status": "ok", "db": "ok"}
+
+
 # ---------- MOUNT ----------
-PRIVACY_UPDATED = "5 November 2026"
+PRIVACY_UPDATED = "9 November 2026"
+
+
+def _fill(text: str) -> str:
+    import html
+    operator = html.escape(os.environ.get("PRIVACY_OPERATOR", "").strip() or "[operator name not set yet]")
+    email = html.escape(os.environ.get("PRIVACY_EMAIL", "").strip() or "[support email not set yet]")
+    return text.replace("{{OPERATOR}}", operator).replace("{{EMAIL}}", email).replace("{{UPDATED}}", PRIVACY_UPDATED)
 
 
 def _privacy_page() -> str:
     """Public privacy policy. Operator name and contact email come from environment variables."""
-    import html
-    operator = html.escape(os.environ.get("PRIVACY_OPERATOR", "").strip() or "[operator name not set yet]")
-    email = html.escape(os.environ.get("PRIVACY_EMAIL", "").strip() or "[support email not set yet]")
-    text = (ROOT_DIR / "privacy.html").read_text(encoding="utf-8")
-    return text.replace("{{OPERATOR}}", operator).replace("{{EMAIL}}", email).replace("{{UPDATED}}", PRIVACY_UPDATED)
+    return _fill((ROOT_DIR / "privacy.html").read_text(encoding="utf-8"))
 
 
 @app.get("/privacy", response_class=HTMLResponse, include_in_schema=False)
 async def privacy_policy():
     return HTMLResponse(_privacy_page())
+
+
+@app.get("/terms", response_class=HTMLResponse, include_in_schema=False)
+async def terms_page():
+    return HTMLResponse(_fill((ROOT_DIR / "pages" / "terms.html").read_text(encoding="utf-8")))
+
+
+@app.get("/delete-account", response_class=HTMLResponse, include_in_schema=False)
+async def delete_account_page():
+    return HTMLResponse(_fill((ROOT_DIR / "pages" / "delete_account.html").read_text(encoding="utf-8")))
+
+
+def _reset_html(title: str, body: str, status_code: int = 200) -> HTMLResponse:
+    text = (ROOT_DIR / "pages" / "reset.html").read_text(encoding="utf-8")
+    return HTMLResponse(text.replace("{{TITLE}}", title).replace("{{BODY}}", body), status_code=status_code)
+
+
+def _reset_form(token: str, error: str = "") -> HTMLResponse:
+    import html
+    err = f'<div class="err" role="alert">{html.escape(error)}</div>' if error else ""
+    return _reset_html("Choose a new password", f'''<p>Type a new password for your FinLearn account. At least 8 characters.</p>{err}
+<form method="post" action="/reset-password">
+<input type="hidden" name="token" value="{html.escape(token)}">
+<label for="p1">New password</label><input id="p1" name="password" type="password" minlength="8" required autocomplete="new-password">
+<label for="p2">Type it again</label><input id="p2" name="password2" type="password" minlength="8" required autocomplete="new-password">
+<button type="submit">Save new password</button></form>''')
+
+
+@app.get("/reset-password", response_class=HTMLResponse, include_in_schema=False)
+async def reset_page(token: str = ""):
+    """The page an emailed reset link opens (in any browser, so it works whether or not the app is installed)."""
+    if len(token) < 10:
+        return _reset_html("This link is not valid", "<p>The reset link is incomplete. Please use the link from your email, or ask for a new one in the app.</p>", 400)
+    return _reset_form(token)
+
+
+@app.post("/reset-password", response_class=HTMLResponse, include_in_schema=False)
+async def reset_page_submit(request: Request, token: str = Form(""), password: str = Form(""), password2: str = Form("")):
+    try:
+        security.enforce(request, "reset", 30, 3600)
+    except HTTPException:
+        return _reset_html("Please wait", "<p>Too many attempts. Please wait a few minutes and try again.</p>", 429)
+    if len(password) < 8:
+        return _reset_form(token, "Your password must be at least 8 characters.")
+    if password != password2:
+        return _reset_form(token, "The two passwords do not match.")
+    try:
+        await _consume_reset(token, password)
+    except HTTPException as e:
+        return _reset_html("This link did not work", f"<p>{'That link has expired.' if 'expired' in str(e.detail) else 'That link was already used or is not valid.'} Please ask for a new one in the app (Log in, then Forgot password).</p>", 400)
+    return _reset_html("Password changed", '<div class="ok">Your password has been changed.</div><p>Open the FinLearn app and log in with your new password.</p>')
 
 
 api.include_router(make_practice_router(db, require_pro, _xp_today_fields, learner_today, on_trade=lambda uid, day: quest_bump(db, uid, day, "trades")))
@@ -1230,6 +1324,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    return security.add_security_headers(response, is_html=response.headers.get("content-type", "").startswith("text/html"))
+
+
+# Error monitoring: only active when SENTRY_DSN is set (free plan at sentry.io); no personal data is sent.
+if os.environ.get("SENTRY_DSN"):
+    try:
+        import sentry_sdk
+        sentry_sdk.init(dsn=os.environ["SENTRY_DSN"], traces_sample_rate=0.05, send_default_pii=False,
+                        environment=os.environ.get("SENTRY_ENV", "production"))
+    except Exception as _e:  # monitoring must never stop the app from starting
+        print(f"[sentry] not started: {type(_e).__name__}")
 
 
 logging.basicConfig(level=logging.INFO,

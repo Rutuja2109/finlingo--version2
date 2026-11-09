@@ -19,7 +19,7 @@ export default function ResetPassword() {
   const submit = async (e) => {
     e.preventDefault();
     setErr("");
-    if (pw.length < 6) { setErr("Password must be at least 6 characters"); return; }
+    if (pw.length < 8) { setErr("Password must be at least 8 characters"); return; }
     if (pw !== pw2) { setErr("Passwords don't match"); return; }
     setBusy(true);
     try {
@@ -42,12 +42,12 @@ export default function ResetPassword() {
 
         <form onSubmit={submit}>
           <Field label="New password">
-            <input type="password" required minLength={6} value={pw} onChange={(e) => setPw(e.target.value)}
-              data-testid="reset-pw" placeholder="Min 6 characters"
+            <input type="password" required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)}
+              data-testid="reset-pw" placeholder="At least 8 characters"
               className="w-full px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"/>
           </Field>
           <Field label="Confirm password">
-            <input type="password" required minLength={6} value={pw2} onChange={(e) => setPw2(e.target.value)}
+            <input type="password" required minLength={8} value={pw2} onChange={(e) => setPw2(e.target.value)}
               data-testid="reset-pw2"
               className="w-full px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"/>
           </Field>

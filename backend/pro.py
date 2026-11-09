@@ -4,6 +4,8 @@ Free: the first FREE_CONCEPTS lessons of every course, daily quests, idea of the
 Pro: everything else (all lessons, practice trading, My money, missions, boss battles, calculators).
 Purchases happen in the Play Store app; the server never trusts the phone, it asks Google (Play Developer API).
 """
+import base64
+import hmac
 import json
 import os
 import time
@@ -12,7 +14,7 @@ from typing import Optional
 
 import httpx
 import jwt
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import BaseModel
 
 FREE_CONCEPTS = 2
@@ -207,6 +209,37 @@ def make_router(db, get_current_user):
             "missions": await db.mission_progress.count_documents({"user_id": uid}),
             "lessons": await db.user_progress.count_documents({"user_id": uid, "status": {"$in": ["completed", "mastered"]}}),
         }
+
+    @r.post("/rtdn")
+    async def rtdn(token: str = "", body: dict = Body(...)):
+        """Google Play's real-time notifications (renewals, cancellations, refunds, chargebacks), delivered by a Pub/Sub push
+        subscription pointed at /api/subscription/rtdn?token=<PLAY_RTDN_SECRET>. We re-ask Google about the purchase, so the
+        message itself is never trusted, and a refunded or revoked subscription stops being Pro right away."""
+        secret = os.environ.get("PLAY_RTDN_SECRET", "")
+        if not secret or not hmac.compare_digest(token.encode(), secret.encode()):
+            raise HTTPException(status_code=403, detail="Forbidden")
+        try:
+            data = json.loads(base64.b64decode(body["message"]["data"]))
+        except Exception:
+            raise HTTPException(status_code=400, detail="Bad message")
+        if data.get("packageName") != package_name():
+            return {"ok": True, "ignored": "other app"}
+        note = data.get("subscriptionNotification")
+        if not note or not note.get("purchaseToken"):
+            return {"ok": True, "ignored": "not a subscription event"}  # test messages and one-time products
+        tok = note["purchaseToken"]
+        known = await db.subscriptions.find_one({"purchase_token": tok})
+        if not known:
+            return {"ok": True, "ignored": "purchase not linked to an account yet"}  # the app's own verify call links it
+        try:
+            res = await play_lookup(tok, note.get("subscriptionId") or PRODUCT_ID, ack=False)
+        except Exception:
+            raise HTTPException(status_code=503, detail="Could not reach Google Play")  # Pub/Sub will deliver it again
+        until = res["expiry"].isoformat() if res["active"] and res["expiry"] else now().isoformat()
+        await db.subscriptions.update_one({"purchase_token": tok}, {"$set": {"state": res["state"], "expiry": until, "updated_at": now().isoformat()}})
+        # Only the account that currently owns this purchase changes, and a manual grant is never touched.
+        await db.users.update_one({"id": known["user_id"], "pro_token": tok}, {"$set": {"pro_until": until}})
+        return {"ok": True, "active": res["active"]}
 
     @r.post("/verify")
     async def verify(body: VerifyIn, user: dict = Depends(get_current_user)):

@@ -4,6 +4,8 @@ const DEFAULT_BACKEND_URL = "https://finlingo-api.onrender.com";
 const BASE = (process.env.REACT_APP_BACKEND_URL || DEFAULT_BACKEND_URL).replace(/\/+$/, "");
 export const API = `${BASE}/api`;
 export const PRIVACY_URL = `${BASE}/privacy`;
+export const TERMS_URL = `${BASE}/terms`;
+export const DELETE_INFO_URL = `${BASE}/delete-account`;
 
 export const api = axios.create({
   baseURL: API,

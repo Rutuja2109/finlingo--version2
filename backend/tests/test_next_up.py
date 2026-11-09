@@ -18,7 +18,7 @@ def ok(name, cond):
         fails.append(name)
 
 
-env = {**os.environ}
+env = {**os.environ, "DISABLE_RATE_LIMIT": "1"}
 env.pop("SEED_DEMO", None)
 srv = subprocess.Popen([sys.executable, "-m", "uvicorn", "server:app", "--port", "8006"], cwd=os.path.join(HERE, ".."), env=env,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Crown, Check, X, LineChart, Wallet, Target, Calculator, BookOpen, Skull, Gift, Snowflake, Award, ShieldCheck, ChevronDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { buy, restore, cancelled, manage, isNative } from "@/lib/billing";
-import { formatApiError } from "@/lib/api";
+import { formatApiError, PRIVACY_URL, TERMS_URL } from "@/lib/api";
 import Lumi from "@/components/Lumi";
 import ProWelcome from "@/components/ProWelcome";
 
@@ -164,6 +164,7 @@ export default function Paywall() {
           <div className="text-[11.5px] text-zinc-600 leading-relaxed space-y-1" data-testid="pro-terms">
             <p>Renews automatically every {chosen?.per || "period"} at ₹{chosen?.price} until you cancel. Payment is charged to your Google Play account.</p>
             <p>Cancel in Google Play, then Payments and subscriptions, then Subscriptions, then FinLearn. You keep Pro until the end of the period you paid for.</p>
+            <p><a href={TERMS_URL} target="_blank" rel="noopener noreferrer" className="underline font-semibold" data-testid="paywall-terms-link">Terms</a> · <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="underline font-semibold">Privacy policy</a></p>
           </div>
           {native && <button onClick={doRestore} disabled={busy} className="block mx-auto mt-3 text-sm font-bold text-[#FF6B35] underline">Restore my purchase</button>}
         </>

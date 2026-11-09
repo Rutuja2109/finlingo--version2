@@ -24,6 +24,7 @@ db = MongoClient(os.environ["MONGO_URL"])[os.environ["DB_NAME"]]
 
 def start(port, extra):
     env = {k: v for k, v in os.environ.items() if k != "DEV_RESET_LINKS"}
+    env["DISABLE_RATE_LIMIT"] = "1"
     env.update(extra)
     p = subprocess.Popen([sys.executable, "-m", "uvicorn", "server:app", "--port", str(port)], cwd=here, env=env,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

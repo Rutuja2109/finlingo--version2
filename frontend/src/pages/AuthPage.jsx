@@ -123,10 +123,10 @@ export default function AuthPage({ mode = "login" }) {
           <Field label="Password" testid="input-password">
             <div className="relative">
               <input
-                type={showPw ? "text" : "password"} required minLength={6}
+                type={showPw ? "text" : "password"} required minLength={8}
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                placeholder="Min 6 characters"
+                placeholder="At least 8 characters"
                 autoComplete={isLogin ? "current-password" : "new-password"}
                 className="w-full pl-4 pr-12 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
               />

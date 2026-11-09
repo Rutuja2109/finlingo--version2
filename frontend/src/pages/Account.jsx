@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import { LogOut, Trash2, Shield, Award, Crown } from "lucide-react";
-import { PRIVACY_URL } from "@/lib/api";
+import { PRIVACY_URL, TERMS_URL } from "@/lib/api";
 
 export default function Account() {
   const { user, logout, deleteAccount, sub, isPro } = useAuth();
@@ -51,6 +51,11 @@ export default function Account() {
         <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" data-testid="account-privacy"
           className="inline-flex items-center gap-2 font-[Outfit] font-bold text-[#FF6B35] hover:underline">
           <Shield className="w-4 h-4" /> Privacy policy
+        </a>
+        <br />
+        <a href={TERMS_URL} target="_blank" rel="noopener noreferrer" data-testid="account-terms"
+          className="inline-flex items-center gap-2 font-[Outfit] font-bold text-[#FF6B35] hover:underline mt-2">
+          <Shield className="w-4 h-4" /> Terms and subscription terms
         </a>
         <p className="text-xs text-zinc-500 mt-3">
           FinLearn is for education only and is not financial advice.
