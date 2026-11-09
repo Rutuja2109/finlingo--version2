@@ -6,6 +6,7 @@ Environment variables
   SMTP: SMTP_HOST, SMTP_PORT (587), SMTP_USER, SMTP_PASSWORD, MAIL_FROM ("FinLearn <you@example.com>"),
         SMTP_STARTTLS ("0" for a plain test server), SMTP_SSL ("1" for port 465)
   Resend: RESEND_API_KEY, MAIL_FROM
+  Web relay (free, for hosts that block SMTP): MAIL_RELAY_URL, MAIL_RELAY_SECRET (a Google Apps Script web app, see docs)
 """
 import logging
 import os
@@ -19,6 +20,8 @@ log = logging.getLogger(__name__)
 
 
 def configured() -> bool:
+    if os.environ.get("MAIL_RELAY_URL") and os.environ.get("MAIL_RELAY_SECRET"):
+        return True
     if os.environ.get("RESEND_API_KEY") and os.environ.get("MAIL_FROM"):
         return True
     return bool(os.environ.get("SMTP_HOST") and os.environ.get("MAIL_FROM"))
@@ -46,7 +49,14 @@ async def send_email(to: str, subject: str, text: str, html: str = "") -> bool:
     if not configured():
         return False
     try:
-        if os.environ.get("RESEND_API_KEY"):
+        if os.environ.get("MAIL_RELAY_URL") and os.environ.get("MAIL_RELAY_SECRET"):
+            async with httpx.AsyncClient(timeout=30, follow_redirects=True) as c:
+                r = await c.post(os.environ["MAIL_RELAY_URL"], json={"secret": os.environ["MAIL_RELAY_SECRET"], "to": to,
+                                 "subject": subject, "text": text, "html": html, "name": "FinLearn"})
+                r.raise_for_status()
+                if not r.json().get("ok"):
+                    raise RuntimeError("relay refused")
+        elif os.environ.get("RESEND_API_KEY"):
             async with httpx.AsyncClient(timeout=20) as c:
                 r = await c.post("https://api.resend.com/emails", headers={"Authorization": f"Bearer {os.environ['RESEND_API_KEY']}"},
                                  json={"from": os.environ["MAIL_FROM"], "to": [to], "subject": subject, "text": text, **({"html": html} if html else {})})

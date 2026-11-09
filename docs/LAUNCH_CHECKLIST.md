@@ -39,6 +39,7 @@ Status key: DONE = built and tested here. YOU = needs your account or decision. 
 
 ### 2.4 Password-reset email
 Pick one:
+- **Free Render plan (SMTP ports are blocked there): Google Apps Script relay.** Sign in to the Gmail account, open script.google.com > New project, paste `docs/gmail_relay.gs`, replace the SECRET text with your own long random text. Deploy > New deployment > Web app > Execute as: Me, Who has access: Anyone > Deploy, and allow the permissions. Copy the Web app URL. In Render set `MAIL_RELAY_URL=<that URL>` and `MAIL_RELAY_SECRET=<the same secret>`. About 100 emails a day.
 - **Gmail (easiest, free, about 500 emails a day):** turn on 2-step verification for the Gmail account, create an App password (Google Account > Security > App passwords), then set `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`, `SMTP_USER=<the gmail address>`, `SMTP_PASSWORD=<the 16-character app password>`, `MAIL_FROM=FinLearn <the gmail address>`.
 - **Brevo (free, 300 a day, nicer sender):** make an account, create an SMTP key, set the same variables from Brevo's SMTP settings.
 After saving, open the app > Log in > Forgot password. The page becomes a real form. Test with your own address.
