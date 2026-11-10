@@ -251,6 +251,8 @@ async def seed_admin():
                     {"email": email},
                     {"$set": {"password_hash": hash_password(pw)}},
                 )
+            if role == "admin" and existing.get("role") != "admin":  # ADMIN_EMAIL names an account that already exists
+                await db.users.update_one({"email": email}, {"$set": {"role": "admin"}})
 
 
 # ---------- AUTH ----------

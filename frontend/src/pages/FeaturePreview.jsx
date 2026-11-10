@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { X, Crown, Check, LineChart, Wallet, Flag, Calculator, Skull, Heart, Target, TrendingUp, TrendingDown } from "lucide-react";
+import { X, Crown, Check, LineChart, Wallet, Flag, Calculator, Skull, Heart, Target, History as HistoryIcon, BarChart3, Coins, Bitcoin, Rocket, ArrowUp, ArrowDown, Flame, Plus, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
+import Lumi from "@/components/Lumi";
 import { useAuth } from "@/context/AuthContext";
 
 // What a free learner sees when they tap a Pro feature: a sample of the real screen and what it gives them,
@@ -8,62 +9,154 @@ import { useAuth } from "@/context/AuthContext";
 
 const Card = ({ children, className = "" }) => <div className={`bg-white border border-zinc-200 rounded-2xl p-3.5 ${className}`}>{children}</div>;
 
+const inr = (n) => "₹" + Number(n).toLocaleString("en-IN");
+const Lbl = ({ children }) => <p className="text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500 mb-1.5 px-1">{children}</p>;
+const Coach = ({ title, tone = "", children }) => {
+  const cls = { warn: "bg-amber-50 border-amber-300", good: "bg-emerald-50 border-emerald-300" }[tone] || "bg-white border-zinc-200";
+  return (
+    <div className={`flex gap-3 items-start border rounded-2xl px-3 py-2.5 mt-2.5 text-[13px] leading-relaxed ${cls}`}>
+      <Lumi size={44} mood="happy" className="shrink-0" />
+      <div><b className="font-[Outfit]">{title}</b><br />{children}</div>
+    </div>
+  );
+};
+
+// Same layout as the real Practice screen, filled with sample numbers.
 function PracticeMock() {
+  const assets = [["NIFTY", "#2563EB", BarChart3, true], ["GOLD", "#F59E0B", Coins], ["BTC", "#FF9500", Bitcoin], ["RKT", "#EC4899", Rocket]];
   return (
-    <div className="space-y-2.5">
-      <Card>
-        <p className="text-[11px] font-bold tracking-widest text-zinc-500 uppercase">Practice money, not real money</p>
-        <p className="font-[Outfit] font-black text-2xl">₹1,00,000</p>
-        <div className="flex gap-1.5 mt-2 overflow-hidden">
-          {["Nifty 50", "Gold", "Bitcoin", "Rocket Tech"].map((a, i) => (
-            <span key={a} className={`px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap ${i === 0 ? "bg-[#FF6B35] text-white" : "bg-zinc-100 text-zinc-600"}`}>{a}</span>
-          ))}
-        </div>
-      </Card>
-      <Card>
-        <div className="flex items-center justify-between mb-1"><span className="font-bold text-sm">Nifty 50 Index Fund</span><span className="text-emerald-600 text-sm font-bold flex items-center gap-1"><TrendingUp className="w-4 h-4" />+2.4%</span></div>
-        <svg viewBox="0 0 200 70" className="w-full h-16"><polyline fill="none" stroke="#10B981" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" points="0,52 20,48 40,54 60,38 80,42 100,30 120,34 140,22 160,26 180,14 200,18" /></svg>
-        <div className="grid grid-cols-2 gap-2 mt-1"><span className="rounded-xl bg-emerald-500 text-white text-center font-bold text-sm py-2">Buy</span><span className="rounded-xl bg-zinc-100 text-zinc-500 text-center font-bold text-sm py-2">Sell</span></div>
-      </Card>
-      <Card className="flex items-center gap-2 text-[13px] text-zinc-600"><TrendingDown className="w-4 h-4 text-rose-500 shrink-0" />Replay a market crash and see what really happens to your money.</Card>
-    </div>
-  );
-}
-
-function MoneyMock() {
-  const rows = [["Food", 4200, 6000, "#F59E0B"], ["Travel", 1800, 3000, "#2563EB"], ["Fun", 2500, 2500, "#EC4899"]];
-  return (
-    <div className="space-y-2.5">
-      <Card>
-        <div className="flex justify-between text-sm"><span className="text-zinc-500 font-bold">Income</span><span className="font-black">₹25,000</span></div>
-        <div className="flex justify-between text-sm"><span className="text-zinc-500 font-bold">Spent</span><span className="font-black text-rose-600">₹8,500</span></div>
-        <div className="flex justify-between text-sm"><span className="text-zinc-500 font-bold">Left</span><span className="font-black text-emerald-600">₹16,500</span></div>
-      </Card>
-      <Card className="space-y-2.5">
-        {rows.map(([n, v, cap, c]) => (
-          <div key={n}><div className="flex justify-between text-[13px] font-bold"><span>{n}</span><span className="text-zinc-500">₹{v.toLocaleString("en-IN")} of ₹{cap.toLocaleString("en-IN")}</span></div>
-            <div className="h-2 rounded-full bg-zinc-100 mt-1 overflow-hidden"><div className="h-full rounded-full" style={{ width: `${(v / cap) * 100}%`, background: c }} /></div></div>
+    <div>
+      <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899] text-center">
+        <div className="font-[Outfit] font-black text-2xl tracking-tight">₹90,000</div>
+        <div className="text-[11.5px] font-semibold opacity-90">Practice money, not real money</div>
+      </div>
+      <div className="grid grid-cols-3 gap-1 bg-zinc-200/70 rounded-2xl p-1 mt-3">
+        {[["Trade", LineChart, true], ["Portfolio", Wallet], ["History", HistoryIcon]].map(([l, I, on]) => (
+          <span key={l} className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-[13px] font-bold ${on ? "bg-white shadow text-[#FF6B35]" : "text-zinc-500"}`}><I className="w-4 h-4" />{l}</span>
         ))}
-      </Card>
-      <Card><div className="flex items-center gap-2 text-sm font-bold"><Target className="w-4 h-4 text-indigo-500" />Goa trip</div>
-        <div className="h-2 rounded-full bg-zinc-100 mt-2 overflow-hidden"><div className="h-full rounded-full bg-indigo-500" style={{ width: "40%" }} /></div>
-        <p className="text-[12px] text-zinc-500 mt-1">₹6,000 saved of ₹15,000</p></Card>
+      </div>
+      <div className="flex gap-3 px-2 pt-3 pb-2">
+        {assets.map(([s, c, I, on]) => (
+          <div key={s} className="shrink-0 w-14 text-center">
+            <div className={`w-[48px] h-[48px] rounded-full grid place-items-center text-white mx-auto mb-1 border-[3px] ${on ? "border-zinc-900" : "border-transparent"}`} style={{ background: c }}><I className="w-5 h-5" /></div>
+            <span className={`text-[11px] font-bold ${on ? "text-zinc-900" : "text-zinc-500"}`}>{s}</span>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-end justify-between mb-1">
+        <div><div className="text-[12.5px] font-bold text-zinc-500">Nifty 50 Index Fund</div><div className="font-[Outfit] font-black text-[26px] tracking-tight leading-tight">₹252.40</div></div>
+        <span className="font-[Outfit] font-extrabold text-[13px] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">+2.41%</span>
+      </div>
+      <div className="bg-white border border-zinc-200 rounded-[20px] px-2 pt-2 pb-1">
+        <svg viewBox="0 0 200 80" preserveAspectRatio="none" className="w-full h-20"><polyline fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" points="0,58 14,54 28,60 42,44 56,48 70,36 84,42 98,28 112,34 126,22 140,30 154,18 168,24 184,12 200,16" /></svg>
+      </div>
+      <div className="flex justify-between my-2">
+        {["1MIN", "5MIN", "15MIN", "1H", "1D", "1W"].map((k) => <span key={k} className={`font-[Outfit] font-extrabold text-xs px-2 py-1.5 rounded-[10px] ${k === "1D" ? "bg-zinc-900 text-white" : "text-zinc-400"}`}>{k}</span>)}
+      </div>
+      <p className="text-[12.5px] text-zinc-500 mx-1 mb-2">You hold <b>₹10,240</b> of NIFTY · profit/loss <b className="text-emerald-700">+₹240</b></p>
+      <div className="grid grid-cols-2 gap-2.5">
+        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-red-500"><ArrowDown className="w-4 h-4" />Sell</span>
+        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-emerald-500"><ArrowUp className="w-4 h-4" />Buy</span>
+      </div>
+      <Coach title="Lumi says">An index fund holds 50 big companies at once, so one bad company cannot sink you.</Coach>
+      <span className="mx-auto mt-3 flex w-fit items-center gap-1.5 border-2 border-red-500 text-red-700 bg-white rounded-2xl px-3 py-2 font-[Outfit] font-extrabold text-[13px]"><Flame className="w-4 h-4" />Replay a market crash</span>
     </div>
   );
 }
 
-function MissionsMock() {
-  const rows = [["Check your last 5 bank spends", true, "+30 XP"], ["Start a ₹500 SIP in a demo app", false, "+60 XP"], ["Ask a parent what an FD is", false, "+40 XP"]];
+// Same layout as the real My money screen, with sample numbers.
+function MoneyMock() {
+  const B = { needs: ["Needs", "#2563EB", 50, 8200, 48], wants: ["Wants", "#EC4899", 30, 5100, 30], savings: ["Savings", "#10B981", 20, 3700, 22] };
+  const rows = [["Wed 5 Nov", [["Groceries and food", "Weekly vegetables", 640, "#2563EB"], ["Eating out", "Lunch with friends", 420, "#EC4899"]]],
+    ["Tue 4 Nov", [["Income", "Pocket money", 5000, null], ["SIP and investing", "", 500, "#10B981"]]]];
   return (
-    <div className="space-y-2.5">
-      {rows.map(([t, done, xp]) => (
-        <Card key={t} className="flex items-center gap-3">
-          <span className={`w-9 h-9 rounded-xl grid place-items-center shrink-0 ${done ? "bg-emerald-500 text-white" : "bg-rose-50 text-rose-500"}`}>{done ? <Check className="w-5 h-5" strokeWidth={3} /> : <Flag className="w-5 h-5" />}</span>
-          <span className="flex-1 font-bold text-[14px] leading-snug">{t}</span>
-          <span className="text-[12px] font-black text-amber-600">{xp}</span>
-        </Card>
-      ))}
-      <Card className="text-[13px] text-zinc-600">Do it in real life, mark it done, earn XP and coins. Learning that actually changes your habits.</Card>
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <span className="w-9 h-9 grid place-items-center rounded-full bg-white"><ChevronLeft className="w-5 h-5" /></span>
+        <span className="font-[Outfit] font-black text-lg">November 2026</span>
+        <span className="w-9 h-9 grid place-items-center rounded-full bg-white"><ChevronRight className="w-5 h-5" /></span>
+      </div>
+      <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#2563EB] via-[#6366F1] to-[#EC4899]">
+        <div className="grid grid-cols-3 text-center gap-2">
+          {[["Income", "₹17,000"], ["Spent", "₹13,300"], ["Left", "₹3,700"]].map(([l, v]) => <div key={l}><div className="text-[11px] font-semibold opacity-90">{l}</div><div className="font-[Outfit] font-black text-lg">{v}</div></div>)}
+        </div>
+        <p className="text-center text-[11.5px] opacity-90 mt-2">Savings you set aside are not counted as spent.</p>
+      </div>
+      <div className="mt-3 bg-white border border-zinc-200 rounded-[20px] p-3.5">
+        <Lbl>Your 50 / 30 / 20 split</Lbl>
+        <div className="flex h-3.5 rounded-full overflow-hidden bg-zinc-100 mb-3">{Object.values(B).map(([, c, , , p]) => <div key={c} style={{ width: `${p}%`, background: c }} />)}</div>
+        {Object.values(B).map(([l, c, t, v, p]) => (
+          <div key={l} className="flex items-center justify-between py-1.5 text-sm">
+            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-full" style={{ background: c }} /><b>{l}</b></span>
+            <span className="text-zinc-500">{inr(v)} · <b className="text-emerald-700">{p}%</b> of {t}%</span>
+          </div>
+        ))}
+      </div>
+      <Coach title="Nicely balanced" tone="good">Your split is close to 50 / 30 / 20. Keep saving before you spend.</Coach>
+      <span className="w-full mt-3 rounded-2xl py-3.5 bg-[#FF6B35] text-white font-[Outfit] font-black text-base flex items-center justify-center gap-2"><Plus className="w-5 h-5" />Add money in or out</span>
+      <div className="mt-4"><Lbl>This month</Lbl>
+        {rows.map(([d, list]) => (
+          <div key={d} className="mb-2"><div className="text-[12px] font-bold text-zinc-400 px-1 mb-1">{d}</div>
+            <div className="bg-white border border-zinc-200 rounded-2xl px-3">
+              {list.map(([n, note, amt, c], i) => (
+                <div key={n + i} className="flex items-center gap-2 py-2.5 border-t first:border-t-0 border-zinc-100 text-sm">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: c || "#10B981" }} />
+                  <div className="flex-1 min-w-0"><b>{n}</b>{note && <div className="text-[12px] text-zinc-500 truncate">{note}</div>}</div>
+                  <b className={c ? "" : "text-emerald-700"}>{c ? "−" : "+"}{inr(amt)}</b>
+                </div>
+              ))}
+            </div></div>
+        ))}
+      </div>
+      <div className="mt-4"><Lbl>Savings goals</Lbl>
+        <div className="bg-white border border-zinc-200 rounded-2xl p-3.5">
+          <b className="font-[Outfit] text-base">New phone</b><div className="text-[12.5px] text-zinc-500">₹12,000 of ₹30,000</div>
+          <div className="h-2.5 rounded-full bg-zinc-100 overflow-hidden my-2"><div className="h-full bg-emerald-500" style={{ width: "40%" }} /></div>
+          <div className="text-[13px]">Save <b>₹3,000</b> a month for 6 months</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Same cards as the real Real-life missions screen, with real mission examples.
+function MissionsMock() {
+  const Row = ({ t, xp, color, done, open, children, auto }) => (
+    <div className={`bg-white border rounded-2xl mb-2.5 ${done ? "border-emerald-200" : "border-zinc-200"}`}>
+      <div className="flex items-center gap-3 px-3.5 py-3">
+        <span className="w-9 h-9 rounded-xl grid place-items-center shrink-0" style={{ background: `${color}1A`, color }}>{done ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <Flag className="w-5 h-5" />}</span>
+        <span className="flex-1 min-w-0"><span className={`block font-[Outfit] font-extrabold text-[15px] ${done ? "text-zinc-400 line-through" : ""}`}>{t}</span>
+          <span className="block text-[12px] text-zinc-500">{done ? "Done" : `+${xp} XP · +${Math.round(xp / 2)} coins`}{auto && !done ? " · checks itself" : ""}</span></span>
+        {open ? <ChevronUp className="w-5 h-5 text-zinc-400" /> : <ChevronDown className="w-5 h-5 text-zinc-400" />}
+      </div>
+      {open && <div className="px-3.5 pb-3.5 -mt-1">{children}</div>}
+    </div>
+  );
+  return (
+    <div>
+      <div className="bg-white border border-zinc-200 rounded-2xl p-3.5 mb-3">
+        <div className="flex justify-between text-[13px] font-bold mb-1.5"><span>Your progress</span><span>3 of 18 done</span></div>
+        <div className="h-2.5 rounded-full bg-zinc-100 overflow-hidden"><div className="h-full bg-emerald-500" style={{ width: "17%" }} /></div>
+      </div>
+      <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899] mb-4 relative overflow-hidden">
+        <div className="absolute -right-1 -top-1 opacity-40 pointer-events-none"><Lumi size={84} mood="cheer" /></div>
+        <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/90 relative">Mission of the week</p>
+        <h2 className="font-[Outfit] font-black text-xl mt-1 max-w-[72%] relative">Find one subscription you can cancel</h2>
+      </div>
+      <Lbl>Know your spending</Lbl>
+      <Row t="Check your UPI history" xp={20} color="#EC4899" open>
+        <p className="text-[13px] text-zinc-600 mb-2">Small UPI payments hide where your money really goes.</p>
+        <ol className="text-[13px] text-zinc-700 list-decimal pl-5 space-y-1 mb-3"><li>Open your UPI app and look at the last 7 days of payments.</li><li>Find your three biggest spends.</li><li>Ask yourself: need or want?</li></ol>
+        <div className="w-full border-2 border-zinc-200 rounded-xl px-3 py-2 text-[13px] text-zinc-400 mb-2">What surprised you? (optional)</div>
+        <div className="w-full rounded-2xl py-3 bg-[#FF6B35] text-white font-[Outfit] font-black text-[15px] text-center">I did it</div>
+      </Row>
+      <Row t="Log 5 spends in My money this week" xp={30} color="#EC4899" auto />
+      <Row t="Find one subscription you can cancel" xp={20} color="#EC4899" />
+      <Lbl>Build savings</Lbl>
+      <Row t="Set up an automatic transfer to savings" xp={30} color="#10B981" />
+      <Row t="Put your first ₹1,000 in an emergency fund" xp={30} color="#10B981" done />
+      <Lbl>Protect yourself</Lbl>
+      <Row t="Turn on two-step verification" xp={25} color="#7C3AED" />
     </div>
   );
 }
@@ -140,7 +233,7 @@ export default function FeaturePreview() {
       <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-500 mb-2">A look inside</p>
       <div className="rounded-3xl bg-zinc-100 p-3 mb-4 relative" aria-label="Sample of the screen">
         <Mock />
-        <span className="absolute top-2 right-3 text-[10px] font-bold text-zinc-400">SAMPLE</span>
+        <span className="absolute top-2 right-3 text-[10px] font-bold text-zinc-400 bg-white/80 rounded px-1">SAMPLE</span>
       </div>
 
       <ul className="space-y-2.5 mb-4">
