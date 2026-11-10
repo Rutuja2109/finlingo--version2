@@ -34,7 +34,7 @@ Status key: DONE = built and tested here. YOU = needs your account or decision. 
 1. Google Cloud > your project > OAuth consent screen: add the app name, support email, privacy policy link `https://<server>/privacy` and terms link `https://<server>/terms`.
 2. Domain: Google wants authorized domains you own. Use a cheap domain or a Firebase Hosting page (`finlingo-9a7ee.web.app`) that links to the privacy and terms pages. `onrender.com` cannot be authorised.
 3. Click **Publish app** (move out of Testing). With only basic scopes (email, profile) no long review should be needed.
-4. After your first upload to Play, copy the **App signing key SHA-1** (Play Console > Setup > App signing) and add a third Android OAuth client with it (package `com.finlearn.app`). Without it Google sign-in fails for people who install from Play.
+4. After your first upload to Play, copy the **App signing key SHA-1** (Play Console > Setup > App signing) and add a third Android OAuth client with it (package `com.finlearnindia.app`). Without it Google sign-in fails for people who install from Play.
 5. In Google Cloud > APIs & Services > Credentials, open the Firebase browser API key and restrict it to the Android app (package and SHA-1).
 
 ### 2.4 Password-reset email

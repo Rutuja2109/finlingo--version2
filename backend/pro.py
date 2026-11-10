@@ -115,7 +115,7 @@ def service_account() -> Optional[dict]:
 
 
 def package_name() -> str:
-    return os.environ.get("PLAY_PACKAGE_NAME", "com.finlearn.app")
+    return os.environ.get("PLAY_PACKAGE_NAME", "com.finlearnindia.app")
 
 
 def api_base() -> str:

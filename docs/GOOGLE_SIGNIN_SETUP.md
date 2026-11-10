@@ -20,7 +20,7 @@ server the client ID. Nothing here costs money. Allow about 20 minutes.
 - Copy the **Client ID** (ends in `.apps.googleusercontent.com`). This is the value you need below.
 
 **B. Android** (one for each key your app is signed with)
-- Package name: `com.finlearn.app`
+- Package name: `com.finlearnindia.app`
 - SHA-1 for your **release** key (the one in `finlearn-keys`): `84:A6:1C:5B:C8:B7:7E:CA:65:E9:A8:61:71:90:FB:7D:38:82:7B:F8`
 - Create a second Android client with the SHA-1 of the **debug/test build** if you want Google sign-in to work in test builds: `B1:38:52:21:FC:42:3E:41:8F:31:A3:EF:6D:DD:E7:2A:0C:B3:80:3C`
 - **If you use Play App Signing** (the default for new Play apps): after you upload your first release, Play Console → *Test and release → Setup → App signing* shows an **App signing key certificate SHA-1**. Create a third Android client with that SHA-1, otherwise Google sign-in will fail for people who install from the Play Store.

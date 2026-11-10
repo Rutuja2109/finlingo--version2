@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">FinLearn</string>
     <string name="title_activity_main">FinLearn</string>
-    <string name="package_name">com.finlearn.app</string>
-    <string name="custom_url_scheme">com.finlearn.app</string>
+    <string name="package_name">com.finlearnindia.app</string>
+    <string name="custom_url_scheme">com.finlearnindia.app</string>
 </resources>

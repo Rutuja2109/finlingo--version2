@@ -43,7 +43,7 @@ npx cap sync android
 
 ## 4. Build the release bundle
 1. Open `frontend/android` in Android Studio.
-2. Check `applicationId` (`com.finlearn.app`), `versionCode` and `versionName` in `app/build.gradle`.
+2. Check `applicationId` (`com.finlearnindia.app`), `versionCode` and `versionName` in `app/build.gradle`.
 3. Build > Generate Signed Bundle > Android App Bundle. Create a keystore and back it up; losing it means you can never update the app.
 4. `allowMixedContent` in `capacitor.config.json` can be set to false once the backend is https.
 

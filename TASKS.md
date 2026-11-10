@@ -5,7 +5,7 @@ All "built" items below were pushed and are live on the server as of commit 5a2c
 
 ## Decisions made
 - [x] Currency: rupees (India)
-- [x] App name: FinLearn (package com.finlearn.app: confirm it is free when you create the app in Play Console)
+- [x] App name: FinLearn (package com.finlearnindia.app: confirm it is free when you create the app in Play Console)
 - [x] LOMA: one course only ("Institutional Investing", the rebranded one); stale "LOMA 357" copy hidden
 
 ## Live on the server

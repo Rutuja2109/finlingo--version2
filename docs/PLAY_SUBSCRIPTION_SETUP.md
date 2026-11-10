@@ -19,7 +19,7 @@ The code is ready. Nothing can be bought until these steps are done. Prices: ₹
    - Google Cloud (same project) > IAM > Service accounts > Create. No roles needed. Create a JSON key and keep the file private.
    - Play Console > Users and permissions > Invite new users > the service account email > permissions: "View financial data" and "Manage orders and subscriptions". (It can take up to a day to start working.)
    - Enable the **Google Play Android Developer API** in the Cloud project.
-   - On Render, add env var `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` = the whole JSON file contents. Optional: `PLAY_PACKAGE_NAME` (default `com.finlearn.app`).
+   - On Render, add env var `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` = the whole JSON file contents. Optional: `PLAY_PACKAGE_NAME` (default `com.finlearnindia.app`).
 5. **License testers**: Play Console > Settings > License testing: add your Gmail. Test purchases are free and renew every few minutes.
 6. Install from the testing track and buy on the phone. Check Account shows "FinLearn Pro".
 
