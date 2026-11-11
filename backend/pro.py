@@ -4,6 +4,7 @@ Free: the first FREE_CONCEPTS lessons of every course, daily quests, idea of the
 Pro: everything else (all lessons, practice trading, My money, missions, boss battles, calculators).
 Purchases happen in the Play Store app; the server never trusts the phone, it asks Google (Play Developer API).
 """
+import logging
 import base64
 import hmac
 import json
@@ -103,6 +104,9 @@ async def concept_locked(db, user: dict, concept: dict) -> bool:
 
 
 # ---------- Google Play Developer API ----------
+log = logging.getLogger(__name__)
+
+
 def service_account() -> Optional[dict]:
     raw = os.environ.get("GOOGLE_PLAY_SERVICE_ACCOUNT_JSON", "").strip()
     if not raw:
@@ -252,8 +256,13 @@ def make_router(db, get_current_user):
             raise HTTPException(status_code=409, detail="This purchase belongs to another account")
         try:
             res = await play_lookup(body.purchase_token, body.product_id)
-        except Exception:
-            raise HTTPException(status_code=502, detail="Could not reach Google Play. Please try again.")
+        except Exception as e:
+            # Log why (Google's status and reason, never the token or key) so a setup problem is visible in the server log.
+            resp = getattr(e, "response", None)
+            why = f"{resp.status_code} {resp.text[:300]}" if resp is not None else f"{type(e).__name__}: {str(e)[:200]}"
+            log.error("play verify failed: %s", why)
+            code = resp.status_code if resp is not None else "network"
+            raise HTTPException(status_code=502, detail=f"Could not reach Google Play ({code}). Please try again.")
         if not res["active"]:
             raise HTTPException(status_code=402, detail="That purchase is not active")
         await db.subscriptions.update_one(

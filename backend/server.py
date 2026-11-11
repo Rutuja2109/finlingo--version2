@@ -1312,7 +1312,7 @@ async def reset_page_submit(request: Request, token: str = Form(""), password: s
 
 api.include_router(make_practice_router(db, require_pro, _xp_today_fields, learner_today, on_trade=lambda uid, day: quest_bump(db, uid, day, "trades")))
 api.include_router(make_explainer_router(db, get_current_user, _xp_today_fields, learner_today, on_read=lambda uid, day: quest_bump(db, uid, day, "explainers")))
-api.include_router(make_missions_router(db, require_pro, _xp_today_fields, learner_today))
+api.include_router(make_missions_router(db, require_pro, _xp_today_fields, learner_today, any_user=get_current_user))
 api.include_router(make_money_router(db, require_pro, learner_today, on_entry=lambda uid, day: quest_bump(db, uid, day, "entries")))
 api.include_router(pro.make_router(db, get_current_user))
 api.include_router(make_quests_router(db, get_current_user, learner_today, pro.is_pro))

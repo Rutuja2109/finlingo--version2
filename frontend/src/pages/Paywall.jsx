@@ -80,7 +80,7 @@ export default function Paywall() {
       const found = await restore(sub.product_id);
       await refreshSub();
       if (found) setWelcome(true); else setMsg("No active purchase found for this Google account.");
-    } catch { setMsg("Could not check Google Play. Please try again."); }
+    } catch (e) { setMsg(formatApiError(e) || "Could not check Google Play. Please try again."); }
     setBusy(false);
   };
 

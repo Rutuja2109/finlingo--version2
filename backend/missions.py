@@ -111,7 +111,7 @@ class CompleteIn(BaseModel):
     note: Optional[str] = None
 
 
-def make_router(db, get_current_user, xp_today_fields, learner_today):
+def make_router(db, get_current_user, xp_today_fields, learner_today, any_user=None):
     r = APIRouter(prefix="/missions")
 
     async def check_auto(user_id: str, check: str, today: date) -> bool:
@@ -129,6 +129,18 @@ def make_router(db, get_current_user, xp_today_fields, learner_today):
         if check == "crash":
             return bool(acct.get("last_result"))
         return False
+
+    if any_user is not None:
+        @r.get("/featured")
+        async def featured(request: Request, user: dict = Depends(any_user)):
+            """This week's mission for the Home card. Open to every account (free users see it as a taster)."""
+            rows = await db.mission_progress.find({"user_id": user["id"]}, {"_id": 0, "mission_id": 1}).to_list(200)
+            done = {x["mission_id"] for x in rows}
+            feat = featured_mission(done, week_key(learner_today(request)))
+            m = BY_ID.get(feat) if feat else None
+            return {"mission": ({"id": m["id"], "title": m["title"], "why": m["why"], "xp": m["xp"], "coins": m["xp"] // 2,
+                                 "steps": len(m["steps"])} if m else None),
+                    "done_count": len(done), "total": len(MISSIONS)}
 
     @r.get("")
     async def listing(request: Request, user: dict = Depends(get_current_user)):

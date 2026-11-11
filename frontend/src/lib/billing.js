@@ -21,15 +21,18 @@ export async function buy(productId, basePlan) {
   await api.post("/subscription/verify", { product_id: productId, purchase_token: tx.purchaseToken });
 }
 
-// Re-send purchases Google already has (new phone, reinstall, or a verify that failed earlier). True if one worked.
+// Re-send purchases Google already has (new phone, reinstall, or a verify that failed earlier).
+// True if one worked, false if Google has none; throws the server's answer if Google has one but the server refused it.
 export async function restore(productId) {
   if (!isNative()) return false;
   const { purchases } = await NativePurchases.getPurchases({ productType: PURCHASE_TYPE.SUBS });
+  let lastErr = null;
   for (const p of purchases || []) {
     if (p.productIdentifier === productId && p.purchaseToken) {
-      try { await api.post("/subscription/verify", { product_id: productId, purchase_token: p.purchaseToken }); return true; } catch { /* try next */ }
+      try { await api.post("/subscription/verify", { product_id: productId, purchase_token: p.purchaseToken }); return true; } catch (e) { lastErr = e; }
     }
   }
+  if (lastErr) throw lastErr;
   return false;
 }
 
