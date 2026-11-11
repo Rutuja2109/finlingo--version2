@@ -2,6 +2,17 @@
 
 Status key: DONE = built and tested here. YOU = needs your account or decision. Last updated 9 Nov 2026.
 
+## 0. Progress (11 Nov 2026)
+- DONE: Play Console app created. Package is `com.finlearnindia.app` (`com.finlearn.app` was taken). Target SDK 36, min SDK 24.
+- DONE: Subscription `finlearn_pro` with base plans `monthly` ₹49 and `yearly` ₹399, India only, both active.
+- DONE: Payments profile, service account `finlearn-play@finlingo-9a7ee.iam.gserviceaccount.com` (Play: view financial data, manage orders and subscriptions), key in Render.
+- DONE: Real-time notifications: topic `projects/finlingo-9a7ee/topics/play-rtdn`, push subscription `play-rtdn-push`, Render log shows 200.
+- DONE: Password-reset email through the Google Apps Script relay (`docs/gmail_relay.gs`).
+- DONE: Internal test track (tester list "FinLearn owner"), license testing on that list. Test purchase on 11 Nov went through in Play.
+- OPEN: the server did not mark that test purchase as Pro. Version 1.0.2 (code 3) shows the server's exact reason; upload it to internal testing and press "Restore my purchase".
+- OPEN: Google sign-in in the Play build: add an Android OAuth client for `com.finlearnindia.app` with the SHA-1 from Play Console > Test and release > App integrity > App signing.
+- OPEN: store listing, Data safety, content rating, target audience, financial features declaration, closed test (12 testers, 14 days), production.
+
 ## 1. Already built and tested (no action)
 - Subscriptions: ₹49/month or ₹399/year, 7-day free trial, server-side purchase check, refund/cancel notifications (RTDN), Pro perks.
 - Sign-in: email and Google (code done; see 2.3). Password reset by email (see 2.4).
