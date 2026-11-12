@@ -28,6 +28,12 @@ export default function Account() {
         <Award className="w-5 h-5 text-[#FF6B35]" /> Your awards
       </Link>
 
+      {user?.role === "admin" && (
+        <Link to="/admin" data-testid="account-admin" className="flex items-center gap-3 bg-zinc-900 text-white rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
+          <Shield className="w-5 h-5 text-[#FF6B35]" /> Admin tools (give Pro, AI lab)
+        </Link>
+      )}
+
       <Link to="/pro" data-testid="account-plan" className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
         <Crown className="w-5 h-5 text-amber-600" />
         <span className="flex-1">{isPro ? "FinLearn Pro" : "Free plan"}<span className="block text-xs font-semibold text-zinc-600 font-[Manrope]">{isPro ? (sub?.admin ? "Admin access" : sub?.until ? `Active until ${new Date(sub.until).toLocaleDateString()}` : "Active") : "One plan, every feature: ₹49 a month"}</span></span>

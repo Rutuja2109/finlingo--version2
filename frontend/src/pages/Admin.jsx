@@ -62,6 +62,7 @@ export default function Admin() {
 
   return (
     <div className="pb-24 max-w-5xl">
+      <GrantPro />
       <div className="mb-7">
         <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Admin · AI Lab</p>
         <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tight">Generate a course from a PDF</h1>
@@ -181,5 +182,37 @@ function StatusPill({ status }) {
       <s.Ic className={`w-3.5 h-3.5 ${status !== "completed" && status !== "failed" ? "animate-spin" : ""}`}/>
       {s.t}
     </span>
+  );
+}
+
+// Give someone FinLearn Pro without a purchase (Play reviewers, testers, promos). 0 days removes a manual grant.
+function GrantPro() {
+  const [email, setEmail] = useState("");
+  const [days, setDays] = useState("90");
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const go = async (e) => {
+    e.preventDefault();
+    setBusy(true); setMsg("");
+    try {
+      const { data } = await api.post("/admin/pro/grant", { email: email.trim(), days: parseInt(days, 10) || 0 });
+      setMsg(data?.pro_until ? `Done. Pro until ${new Date(data.pro_until).toLocaleDateString()}.` : "Done. Manual grant removed.");
+    } catch (err) { setMsg(err?.response?.data?.detail || "Could not do that. Check the email."); }
+    setBusy(false);
+  };
+  return (
+    <section className="bg-white border border-zinc-200 rounded-3xl p-6 mb-6" data-testid="grant-pro">
+      <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Admin · Pro access</p>
+      <h2 className="font-[Outfit] font-black text-xl mt-1">Give someone Pro</h2>
+      <p className="text-zinc-500 text-sm mt-1 mb-3">For Google Play reviewers and testers. It does not charge anyone. Use 0 days to take it away.</p>
+      <form onSubmit={go} className="flex flex-col sm:flex-row gap-2">
+        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="their account email" type="email" required data-testid="grant-email"
+          className="flex-1 px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35]" />
+        <input value={days} onChange={(e) => setDays(e.target.value.replace(/\D/g, ""))} inputMode="numeric" data-testid="grant-days"
+          className="w-24 px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35]" aria-label="Days" />
+        <button disabled={busy} data-testid="grant-go" className="px-5 py-3 rounded-xl bg-[#FF6B35] text-white font-[Outfit] font-bold disabled:opacity-60">{busy ? "Please wait…" : "Grant Pro"}</button>
+      </form>
+      {msg && <p className="text-sm mt-2 font-semibold" data-testid="grant-msg">{msg}</p>}
+    </section>
   );
 }
