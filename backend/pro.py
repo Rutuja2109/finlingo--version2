@@ -260,7 +260,7 @@ def make_router(db, get_current_user):
             # Log why (Google's status and reason, never the token or key) so a setup problem is visible in the server log.
             resp = getattr(e, "response", None)
             why = f"{resp.status_code} {resp.text[:300]}" if resp is not None else f"{type(e).__name__}: {str(e)[:200]}"
-            log.error("play verify failed: %s", why)
+            log.error("play verify failed (service account %s, package %s): %s", (service_account() or {}).get("client_email"), package_name(), why)
             code = resp.status_code if resp is not None else "network"
             raise HTTPException(status_code=502, detail=f"Could not reach Google Play ({code}). Please try again.")
         if not res["active"]:
