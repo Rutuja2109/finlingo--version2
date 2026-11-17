@@ -46,8 +46,11 @@ db = client[os.environ["DB_NAME"]]
 
 # ---------- Auth utilities ----------
 JWT_ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MIN = 60 * 24  # 1 day, simpler for learning app
-REFRESH_TOKEN_EXPIRE_DAYS = 30
+# A login lasts 180 days and renews itself (see /auth/me), so a learner who opens the app now and then
+# stays signed in until they log out. Anyone who leaves for 180 days has to sign in again.
+ACCESS_TOKEN_EXPIRE_MIN = 60 * 24 * 180
+RENEW_WHEN_LEFT_DAYS = 90
+REFRESH_TOKEN_EXPIRE_DAYS = 180
 
 
 def jwt_secret() -> str:
@@ -340,7 +343,19 @@ require_pro = pro.make_require_pro(get_current_user)
 
 
 @api.get("/auth/me")
-async def me(user: dict = Depends(get_current_user)):
+async def me(request: Request, response: Response, user: dict = Depends(get_current_user)):
+    # Sliding login: when less than RENEW_WHEN_LEFT_DAYS remain, hand the app a fresh token in a header.
+    try:
+        token = request.cookies.get("access_token")
+        if not token:
+            auth = request.headers.get("Authorization", "")
+            token = auth[7:] if auth.startswith("Bearer ") else ""
+        payload = jwt.decode(token, jwt_secret(), algorithms=[JWT_ALGORITHM])
+        left = datetime.fromtimestamp(payload["exp"], timezone.utc) - datetime.now(timezone.utc)
+        if left < timedelta(days=RENEW_WHEN_LEFT_DAYS):
+            response.headers["X-New-Token"] = create_access_token(user["id"], user["email"])
+    except Exception:
+        pass  # renewal is a bonus; never fail the request over it
     return user
 
 
@@ -1325,6 +1340,7 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["X-New-Token"],
 )
 
 

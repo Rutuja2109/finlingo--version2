@@ -42,7 +42,13 @@ api.interceptors.request.use((config) => {
 }, (error) => { requestEnded(); return Promise.reject(error); });
 
 api.interceptors.response.use(
-  (res) => { requestEnded(); return res; },
+  (res) => {
+    requestEnded();
+    // The server renews a login that is getting old; keep the fresh one so the learner stays signed in.
+    const fresh = res.headers && res.headers["x-new-token"];
+    if (fresh) { try { localStorage.setItem("fl_token", fresh); } catch { /* ignore */ } }
+    return res;
+  },
   (error) => { requestEnded(); return Promise.reject(error); },
 );
 

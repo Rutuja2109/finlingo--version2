@@ -89,6 +89,7 @@ export function AuthProvider({ children }) {
       const [me, s, plan] = await Promise.all([api.get("/auth/me"), api.get("/stats/me"), api.get("/subscription/status").catch(() => null)]);
       const data = me.data;
       setUser(data);
+      try { localStorage.setItem("fl_user", JSON.stringify(data)); } catch { /* ignore */ }
       setStats(s.data);
       if (plan) {
         setSub(plan.data); saveSub(plan.data); setSubFailed(false);
@@ -99,11 +100,22 @@ export function AuthProvider({ children }) {
       }
       identifyUser(data.id, data.name, data.email);
       await reminderPermission(s.data);
-    } catch {
+    } catch (e) {
+      // Only a 401 means the login is really gone. A sleeping server, no signal or a slow network must NOT sign the learner out.
+      const status = e?.response?.status;
+      let cached = null;
+      try { cached = JSON.parse(localStorage.getItem("fl_user") || "null"); } catch { /* ignore */ }
+      const hasToken = (() => { try { return !!localStorage.getItem("fl_token"); } catch { return false; } })();
+      if (status !== 401 && hasToken && cached) {
+        setUser(cached);
+        try { const sub = JSON.parse(localStorage.getItem("fl_sub") || "null"); if (sub) setSub(sub); } catch { /* ignore */ }
+        setTimeout(() => loadMe(), 20000); // try again in a moment
+        return;
+      }
       setUser(false);
       setStats(null);
       setSub(null);
-      try { localStorage.removeItem("fl_sub"); } catch { /* ignore */ }
+      try { localStorage.removeItem("fl_sub"); localStorage.removeItem("fl_user"); if (status === 401) localStorage.removeItem("fl_token"); } catch { /* ignore */ }
     }
   }, [reminderPermission, refreshSub, syncTrialReminders]);
 
@@ -115,6 +127,7 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await api.post("/auth/login", { email, password });
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
+      try { localStorage.setItem("fl_user", JSON.stringify(data)); } catch { /* ignore */ }
       setUser(data);
       const st = await refreshStats();
       refreshSub();
@@ -132,6 +145,7 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await api.post("/auth/google", { id_token: idToken });
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
+      try { localStorage.setItem("fl_user", JSON.stringify(data)); } catch { /* ignore */ }
       setUser(data);
       const st = await refreshStats();
       refreshSub();
@@ -148,6 +162,7 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await api.post("/auth/register", { email, password, name });
       if (data.access_token) localStorage.setItem("fl_token", data.access_token);
+      try { localStorage.setItem("fl_user", JSON.stringify(data)); } catch { /* ignore */ }
       setUser(data);
       await refreshStats();
       refreshSub();
@@ -168,7 +183,7 @@ export function AuthProvider({ children }) {
     setUser(false);
     setStats(null);
     setSub(null);
-    try { localStorage.removeItem("fl_sub"); } catch { /* ignore */ }
+    try { localStorage.removeItem("fl_sub"); localStorage.removeItem("fl_user"); } catch { /* ignore */ }
   };
 
   const deleteAccount = async (password) => {
@@ -179,7 +194,7 @@ export function AuthProvider({ children }) {
       setUser(false);
       setStats(null);
       setSub(null);
-      try { localStorage.removeItem("fl_sub"); } catch { /* ignore */ }
+      try { localStorage.removeItem("fl_sub"); localStorage.removeItem("fl_user"); } catch { /* ignore */ }
       return { ok: true };
     } catch (e) {
       return { ok: false, error: formatApiError(e) };
