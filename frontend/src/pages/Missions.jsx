@@ -52,7 +52,7 @@ export default function Missions() {
           </span>
           <span className="flex-1 min-w-0">
             <span className={`block font-[Outfit] font-extrabold text-[15px] ${m.done ? "text-zinc-400 line-through" : ""}`}>{m.title}</span>
-            <span className="block text-[12px] text-zinc-500">{m.done ? tx("missions.done") : `+${m.xp} XP · +${m.coins} coins`}{m.kind === "auto" && !m.done ? tx("missions.checks_itself") : ""}</span>
+            <span className="block text-[12px] text-zinc-500">{m.done ? tx("missions.done") : `+${m.xp} XP · +${m.coins} coins`}{m.kind === "auto" && !m.done ? ` · ${tx("missions.checks_itself").trim().replace(/^·\s*/, "")}` : ""}</span>
           </span>
           {isOpen ? <ChevronUp className="w-5 h-5 text-zinc-400" /> : <ChevronDown className="w-5 h-5 text-zinc-400" />}
         </button>

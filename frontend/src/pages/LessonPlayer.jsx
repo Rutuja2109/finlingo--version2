@@ -352,7 +352,7 @@ function McqLesson({ l, picked, answered, onAnswer }) {
       </div>
       {answered !== null && (
         <div className={`mt-5 p-4 rounded-2xl fade-up ${answered.correct ? "bg-[#10B981]/10 text-[#065F46]" : "bg-[#EF4444]/10 text-[#7F1D1D]"}`} data-testid="mcq-feedback">
-          <strong className="font-[Outfit]">{answered.correct ? tx("lessonPlayer.nailed_it") : tx("lessonPlayer.not_quite")}</strong>
+          <strong className="font-[Outfit]">{answered.correct ? tx("lessonPlayer.nailed_it") : tx("lessonPlayer.not_quite")}</strong>{" "}
           {l.content.explanation}
           {!answered.correct && (
             <p className="mt-2 text-xs font-semibold opacity-80">{tx("lessonPlayer.we_ll_ask_this_again_later")}</p>

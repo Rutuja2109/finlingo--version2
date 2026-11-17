@@ -157,7 +157,7 @@ export default function AuthPage({ mode = "login" }) {
           )}
 
           <p className="text-sm text-zinc-500 text-center mt-5">
-            {isLogin ? t("authPage.new_here") : t("authPage.have_an_account")}
+            {isLogin ? t("authPage.new_here") : t("authPage.have_an_account")}{" "}
             <Link to={isLogin ? "/signup" : "/login"} data-testid="auth-switch" className="text-[#FF6B35] font-semibold">
               {isLogin ? t("authPage.create_account") : t("authPage.log_in")}
             </Link>
