@@ -37,7 +37,7 @@ Translate from English into {lang}. Rules:
 - Use the standard local words for finance terms. Use informal 'you' where the language has it.
 Input is a JSON list of {{"k": id, "t": English text}}. Reply with ONLY a JSON list of {{"k": same id, "t": translation}}, same order, nothing else."""
 
-NUM = re.compile(r"\d[\d,\.]*")
+NUM = re.compile(r"\d(?:[\d,\.]*\d)?")  # a number never ends in the comma or full stop that follows it
 PH = re.compile(r"\{[^{}]+\}|</?\w+[^>]*>")
 
 
