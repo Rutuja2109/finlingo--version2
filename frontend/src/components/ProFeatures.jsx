@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { BookOpen, LineChart, Wallet, Flag, Calculator, Skull, Target, Lightbulb, Lock } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 // "Everything in FinLearn": every feature in one scroll row, so nothing stays hidden. Free vs Pro is visible at a glance.
 const ITEMS = [
@@ -16,13 +17,14 @@ const ITEMS = [
 ];
 
 export default function ProFeatures() {
+  const { t: tx } = useTranslation();
   const { isPro, sub } = useAuth();
   if (!sub) return null;
   return (
     <section className="mb-8" data-testid="feature-showcase">
       <div className="flex items-center justify-between mb-2.5 px-1">
-        <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-600">Everything in FinLearn</p>
-        {!isPro && <Link to="/pro?from=home" data-testid="features-go-pro" className="text-[12px] font-extrabold text-[#FF6B35]">All for ₹49/month →</Link>}
+        <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-600">{tx("proFeatures.everything_in_finlearn")}</p>
+        {!isPro && <Link to="/pro?from=home" data-testid="features-go-pro" className="text-[12px] font-extrabold text-[#FF6B35]">{tx("proFeatures.all_for_49_month")}</Link>}
       </div>
       <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2 snap-x">
         {ITEMS.map(({ key, to, Icon, t, d, c, pro, note }) => {
@@ -31,7 +33,7 @@ export default function ProFeatures() {
             <Link key={t} to={locked ? `/preview/${key}` : to} data-testid={`feature-${t}`}
               className="snap-start shrink-0 w-[148px] rounded-3xl bg-white border border-zinc-200 p-3.5 relative active:scale-[0.97] transition">
               <span className={`absolute top-2.5 right-2.5 rounded-full text-[10px] font-black px-2 py-0.5 ${pro ? "bg-zinc-900 text-white" : "bg-emerald-100 text-emerald-700"}`}>
-                {pro ? "PRO" : "FREE"}
+                {pro ? tx("proFeatures.pro") : tx("proFeatures.free")}
               </span>
               <span className="w-11 h-11 rounded-2xl grid place-items-center text-white mb-3" style={{ background: c }}>{locked ? <Lock className="w-5 h-5" /> : <Icon className="w-5 h-5" />}</span>
               <span className="block font-[Outfit] font-extrabold text-[15px] leading-tight">{t}</span>
@@ -42,7 +44,7 @@ export default function ProFeatures() {
       </div>
       {!isPro && (
         <p className="mt-1 text-[12.5px] text-zinc-700 bg-amber-50 border border-amber-200 rounded-2xl px-3.5 py-2.5" data-testid="one-price-note">
-          <b>One Pro plan unlocks all the PRO features above.</b> ₹49 a month in total, not per feature.
+          <b>{tx("proFeatures.one_pro_plan_unlocks_all_the")}</b> ₹49 a month in total, not per feature.
         </p>
       )}
     </section>

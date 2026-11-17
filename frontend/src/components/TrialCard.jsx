@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Check, ArrowRight, Gift, Hourglass, LineChart, Wallet, Flag } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const STEPS = [
   { key: "trades", label: "Make a practice trade", to: "/practice", Icon: LineChart },
@@ -13,6 +14,7 @@ const STEPS = [
 // During the free week: a short "try these" list (people subscribe after using a Pro feature, not after reading about it).
 // In the last 2 days and after the trial: what they made and that it is saved, with a clear way to keep it.
 export default function TrialCard() {
+  const { t: tx } = useTranslation();
   const { sub } = useAuth();
   const [u, setU] = useState(null);
   const t = sub?.trial;
@@ -38,17 +40,17 @@ export default function TrialCard() {
         <div className="flex items-center gap-3">
           <span className="w-11 h-11 rounded-2xl grid place-items-center bg-violet-600 text-white shrink-0"><Hourglass className="w-5 h-5" /></span>
           <div className="flex-1 min-w-0">
-            <p className="font-[Outfit] font-black text-[17px] leading-tight">{t.ended ? "Your Pro trial has ended" : `Your Pro trial ends in ${t.days_left} day${t.days_left === 1 ? "" : "s"}`}</p>
+            <p className="font-[Outfit] font-black text-[17px] leading-tight">{t.ended ? tx("trialCard.your_pro_trial_has_ended") : `Your Pro trial ends in ${t.days_left} day${t.days_left === 1 ? "" : "s"}`}</p>
             <p className="text-[13px] text-zinc-700 mt-0.5">
               {made ? <>You made <b>{made}</b>. {t.ended ? "It is saved and comes back the moment you subscribe." : "It stays saved, and every Pro tool stays open if you keep Pro."}</>
-                : "You have not tried the Pro tools yet. Try one before the trial is over."}
+                : tx("trialCard.you_have_not_tried_the_pro")}
             </p>
           </div>
         </div>
         <Link to="/pro?from=trial" data-testid="trial-keep" className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold py-3 active:scale-[0.98]">
-          {t.ended ? "Get Pro back" : "Keep everything"} · ₹49/month <ArrowRight className="w-4 h-4" />
+          {t.ended ? tx("trialCard.get_pro_back") : tx("trialCard.keep_everything")} · ₹49/month <ArrowRight className="w-4 h-4" />
         </Link>
-        <p className="text-[11.5px] text-zinc-600 text-center mt-1.5">One plan covers every feature. Cancel any time.</p>
+        <p className="text-[11.5px] text-zinc-600 text-center mt-1.5">{tx("trialCard.one_plan_covers_every_feature_cancel")}</p>
       </section>
     );
   }
@@ -60,7 +62,7 @@ export default function TrialCard() {
       <div className="flex items-center gap-3 mb-2.5">
         <span className="w-11 h-11 rounded-2xl grid place-items-center bg-gradient-to-br from-[#8B5CF6] to-[#EC4899] text-white shrink-0"><Gift className="w-5 h-5" /></span>
         <div className="flex-1 min-w-0">
-          <p className="font-[Outfit] font-black text-[17px] leading-tight">Try these in your free week</p>
+          <p className="font-[Outfit] font-black text-[17px] leading-tight">{tx("trialCard.try_these_in_your_free_week")}</p>
           <p className="text-[12.5px] text-zinc-600">{t.days_left} days of Pro left · {tried} of {STEPS.length} tried</p>
         </div>
       </div>

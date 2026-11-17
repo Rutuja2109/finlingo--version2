@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Footprints, Flame, GraduationCap, Trophy, Star, Lock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ALL = [
   { code: "first_step", title: "First Step", desc: "Complete your first concept", icon: Footprints, color: "#10B981" },
@@ -12,14 +13,15 @@ const ALL = [
 ];
 
 export default function Achievements() {
+  const { t } = useTranslation();
   const { stats } = useAuth();
   const earned = new Set(stats?.achievements || []);
 
   return (
     <div className="pb-24">
       <div className="mb-7">
-        <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Your trophies</p>
-        <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tight">Achievements</h1>
+        <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">{t("achievements.your_trophies")}</p>
+        <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tight">{t("achievements.achievements")}</h1>
         <p className="text-zinc-500 mt-1">{earned.size} of {ALL.length} unlocked.</p>
       </div>
 
@@ -38,7 +40,7 @@ export default function Achievements() {
               <p className="text-sm text-zinc-500">{a.desc}</p>
               {got && (
                 <span className="absolute top-4 right-4 text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-full text-white"
-                  style={{ background: a.color }}>Unlocked</span>
+                  style={{ background: a.color }}>{t("achievements.unlocked")}</span>
               )}
             </div>
           );

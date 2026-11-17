@@ -4,8 +4,10 @@ import { Flame, Zap, Coins, Settings, Trophy, Home, BookOpen, Award, Repeat, Spa
 import { useAuth } from "@/context/AuthContext";
 import Logo from "@/components/Logo";
 import ProStrip from "@/components/ProStrip";
+import { useTranslation } from "react-i18next";
 
 export default function AppShell({ children }) {
+  const { t: tx } = useTranslation();
   const { user, stats } = useAuth();
   const nav = useNavigate();
   const loc = useLocation();
@@ -30,7 +32,7 @@ export default function AppShell({ children }) {
         <div className="max-w-6xl mx-auto px-3 sm:px-5 h-16 flex items-center justify-between gap-2">
           <Link to="/dashboard" className="flex items-center gap-2.5" data-testid="brand-logo">
             <Logo size={36} />
-            <span className="hidden sm:inline font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
+            <span className="hidden sm:inline font-[Outfit] font-black text-xl tracking-tight">{tx("appShell.finlearn")}</span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
@@ -78,9 +80,9 @@ export default function AppShell({ children }) {
             <Link
               to="/account"
               data-testid="btn-account"
-              aria-label="Account and settings"
+              aria-label={tx("appShell.account_and_settings")}
               className="w-9 h-9 grid place-items-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition"
-              title="Account"
+              title={tx("appShell.account")}
             >
               <Settings className="w-4 h-4" />
             </Link>

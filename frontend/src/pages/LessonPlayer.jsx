@@ -11,6 +11,7 @@ import { ChatLesson, SwipeLesson, SliderLesson, BudgetLesson } from "@/component
 // Lesson types that are marked right or wrong (and re-asked when missed).
 const SCORED = ["mcq", "scenario", "swipe", "match"];
 import { trackLessonCompleted, trackConceptCompleted, trackCaseStudyViewed } from "@/lib/firebase";
+import { useTranslation } from "react-i18next";
 
 // ----------------------------------------------------------------------
 // Duolingo-style lesson player
@@ -22,6 +23,7 @@ import { trackLessonCompleted, trackConceptCompleted, trackCaseStudyViewed } fro
 // ----------------------------------------------------------------------
 
 export default function LessonPlayer() {
+  const { t: tx } = useTranslation();
   const { conceptId } = useParams();
   const nav = useNavigate();
   const { refreshStats } = useAuth();
@@ -46,7 +48,7 @@ export default function LessonPlayer() {
     }).catch((e) => { if (e?.response?.status === 402) nav("/pro", { replace: true }); });
   }, [conceptId]);
 
-  if (!concept) return <div className="text-center py-20 text-zinc-500">Loading…</div>;
+  if (!concept) return <div className="text-center py-20 text-zinc-500">{tx("lessonPlayer.loading")}</div>;
   if (done) {
     return <ResultScreen result={done} concept={concept} onAgain={() => {
       setDone(null);
@@ -135,7 +137,7 @@ export default function LessonPlayer() {
   return (
     <div className="max-w-3xl mx-auto pb-2 flex flex-col" style={{ minHeight: "calc(100dvh - 1.5rem)" }}>
       <div className="flex items-center gap-3 mb-5">
-        <button onClick={() => nav(-1)} data-testid="lesson-exit" aria-label="Exit lesson" className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 grid place-items-center">
+        <button onClick={() => nav(-1)} data-testid="lesson-exit" aria-label={tx("lessonPlayer.exit_lesson")} className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 grid place-items-center">
           <ChevronLeft className="w-5 h-5"/>
         </button>
         <div className="flex-1 h-2.5 rounded-full bg-zinc-100 overflow-hidden">
@@ -151,7 +153,7 @@ export default function LessonPlayer() {
         </div>
       </div>
 
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-zinc-500">Concept</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-zinc-500">{tx("lessonPlayer.concept")}</p>
       <h1 className="font-[Outfit] font-black text-2xl md:text-3xl tracking-tight mb-6">{concept.title}</h1>
 
       {/* Re-queue indicator: shown when user is on a repeat question */}
@@ -192,7 +194,7 @@ export default function LessonPlayer() {
               : "bg-[#FF6B35] hover:bg-[#FF5618] text-white"
           }`}
         >
-          {isFinalShift && queue.length === 1 ? "Finish" : (answered && !answered.correct ? "Got it — try later" : "Continue")}
+          {isFinalShift && queue.length === 1 ? tx("lessonPlayer.finish") : (answered && !answered.correct ? tx("lessonPlayer.got_it_try_later") : tx("lessonPlayer.continue"))}
         </button>
       </div>
     </div>
@@ -201,10 +203,11 @@ export default function LessonPlayer() {
 
 // ---------- Lesson types ----------
 function TeachLesson({ l }) {
+  const { t: tx } = useTranslation();
   const c = l.content || {};
   return (
     <div className="fade-up">
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#10B981] mb-2">Learn</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#10B981] mb-2">{tx("lessonPlayer.learn")}</p>
       <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-4">{c.heading}</h2>
       <p className="text-zinc-700 leading-relaxed mb-4 text-[15px]">{c.body}</p>
       {Array.isArray(c.bullets) && c.bullets.length > 0 && (
@@ -222,17 +225,18 @@ function TeachLesson({ l }) {
 }
 
 function ExampleLesson({ l }) {
+  const { t: tx } = useTranslation();
   const c = l.content || {};
   return (
     <div className="fade-up">
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">Real-world example</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">{tx("lessonPlayer.real_world_example")}</p>
       <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-4">{c.heading}</h2>
       <div className="bg-gradient-to-br from-[#2563EB]/5 to-[#EC4899]/5 border-l-4 border-[#2563EB] p-5 rounded-r-2xl mb-4">
         <p className="text-zinc-700 leading-relaxed italic">{c.scenario}</p>
       </div>
       {c.lesson && (
         <div className="bg-[#FBBF24]/15 border border-[#FBBF24]/30 rounded-2xl p-4">
-          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#92400E] mb-1">The lesson</p>
+          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#92400E] mb-1">{tx("lessonPlayer.the_lesson")}</p>
           <p className="text-zinc-800 font-semibold">{c.lesson}</p>
         </div>
       )}
@@ -271,11 +275,12 @@ function expandIntro(concept) {
 }
 
 function InfoLesson({ l }) {
+  const { t: tx } = useTranslation();
   const c = l.content;
   if (c.kind === "plain") {
     return (
       <div className="fade-up">
-        <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#FF6B35] mb-2">In plain English</p>
+        <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#FF6B35] mb-2">{tx("lessonPlayer.in_plain_english")}</p>
         <div className="bg-gradient-to-br from-[#FF6B35]/5 to-[#EC4899]/5 border border-[#FF6B35]/15 rounded-2xl p-5">
           <p className="text-zinc-800 text-lg leading-relaxed">{c.text}</p>
         </div>
@@ -285,7 +290,7 @@ function InfoLesson({ l }) {
   if (c.kind === "example") {
     return (
       <div className="fade-up">
-        <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">Real-life example</p>
+        <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">{tx("lessonPlayer.real_life_example")}</p>
         <div className="bg-[#2563EB]/5 border-l-4 border-[#2563EB] p-5 rounded-r-2xl">
           <p className="text-zinc-800 text-lg leading-relaxed">{c.text}</p>
         </div>
@@ -294,7 +299,7 @@ function InfoLesson({ l }) {
   }
   return (
     <div className="fade-up">
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#10B981] mb-2">Key takeaways</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#10B981] mb-2">{tx("lessonPlayer.key_takeaways")}</p>
       <ul className="space-y-3">
         {(c.items || []).map((k, i) => (
           <li key={i} className="flex gap-3 text-zinc-800 leading-relaxed">
@@ -308,6 +313,7 @@ function InfoLesson({ l }) {
 }
 
 function McqLesson({ l, picked, answered, onAnswer }) {
+  const { t: tx } = useTranslation();
   const [pickedIdx, setPickedIdx] = useState(null);
 
   // Reset local pickedIdx when the parent clears answered (i.e., on advance)
@@ -323,7 +329,7 @@ function McqLesson({ l, picked, answered, onAnswer }) {
 
   return (
     <div className="fade-up">
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#FF6B35] mb-2">Quick check</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#FF6B35] mb-2">{tx("lessonPlayer.quick_check")}</p>
       <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-6">{l.content.question}</h2>
       <div className="grid gap-3">
         {l.content.options.map((opt, i) => {
@@ -347,10 +353,10 @@ function McqLesson({ l, picked, answered, onAnswer }) {
       </div>
       {answered !== null && (
         <div className={`mt-5 p-4 rounded-2xl fade-up ${answered.correct ? "bg-[#10B981]/10 text-[#065F46]" : "bg-[#EF4444]/10 text-[#7F1D1D]"}`} data-testid="mcq-feedback">
-          <strong className="font-[Outfit]">{answered.correct ? "Nailed it! " : "Not quite. "}</strong>
+          <strong className="font-[Outfit]">{answered.correct ? tx("lessonPlayer.nailed_it") : tx("lessonPlayer.not_quite")}</strong>
           {l.content.explanation}
           {!answered.correct && (
-            <p className="mt-2 text-xs font-semibold opacity-80">↻ We'll ask this again later in the lesson.</p>
+            <p className="mt-2 text-xs font-semibold opacity-80">{tx("lessonPlayer.we_ll_ask_this_again_later")}</p>
           )}
         </div>
       )}
@@ -359,10 +365,11 @@ function McqLesson({ l, picked, answered, onAnswer }) {
 }
 
 function FlashLesson({ l, onShown }) {
+  const { t: tx } = useTranslation();
   const [flipped, setFlipped] = useState(false);
   return (
     <div className="fade-up">
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">Flashcard</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#2563EB] mb-2">{tx("lessonPlayer.flashcard")}</p>
       <div
         data-testid="flashcard"
         onClick={() => { setFlipped(!flipped); sound.flip(); if (!flipped) onShown(); }}
@@ -370,7 +377,7 @@ function FlashLesson({ l, onShown }) {
       >
         <div>
           <p className="uppercase text-[10px] tracking-[0.3em] font-bold text-zinc-500 mb-3">
-            {flipped ? "Answer" : "Question · tap to reveal"}
+            {flipped ? tx("lessonPlayer.answer") : tx("lessonPlayer.question_tap_to_reveal")}
           </p>
           <p className="font-[Outfit] font-bold text-xl md:text-2xl tracking-tight">
             {flipped ? l.content.back : l.content.front}
@@ -382,6 +389,7 @@ function FlashLesson({ l, onShown }) {
 }
 
 function MatchLesson({ l, answered, onAnswer }) {
+  const { t: tx } = useTranslation();
   const pairs = l.content.pairs || [];
   const [shuffledRight] = useState(() => [...pairs].sort(() => Math.random() - 0.5));
   const [selectedLeft, setSelectedLeft] = useState(null);
@@ -403,7 +411,7 @@ function MatchLesson({ l, answered, onAnswer }) {
 
   return (
     <div className="fade-up">
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#8B5CF6] mb-2">Match the pairs</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#8B5CF6] mb-2">{tx("lessonPlayer.match_the_pairs")}</p>
       <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-6">{l.content.instruction}</h2>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -442,6 +450,7 @@ function MatchLesson({ l, answered, onAnswer }) {
 }
 
 function CaseStudyLesson({ l, onShown, conceptId }) {
+  const { t: tx } = useTranslation();
   const c = l.content || {};
   const [step, setStep] = useState(0);
   const steps = c.steps || [];
@@ -455,7 +464,7 @@ function CaseStudyLesson({ l, onShown, conceptId }) {
   return (
     <div className="fade-up">
       <div className="flex items-center gap-2 mb-3">
-        <span className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#8B5CF6]">Case Study</span>
+        <span className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#8B5CF6]">{tx("lessonPlayer.case_study")}</span>
         <span className="text-[10px] text-zinc-500 font-bold">{step + 1} / {steps.length}</span>
       </div>
 
@@ -480,14 +489,12 @@ function CaseStudyLesson({ l, onShown, conceptId }) {
 
       {!isLast && (
         <button onClick={() => setStep(step + 1)}
-          className="mt-4 px-5 py-2.5 rounded-xl bg-[#8B5CF6] text-white font-bold text-sm hover:bg-[#7C3AED] transition">
-          Next →
-        </button>
+          className="mt-4 px-5 py-2.5 rounded-xl bg-[#8B5CF6] text-white font-bold text-sm hover:bg-[#7C3AED] transition">{tx("lessonPlayer.next")}</button>
       )}
 
       {isLast && c.lesson && (
         <div className="mt-4 bg-[#10B981]/10 border border-[#10B981]/30 rounded-2xl p-4">
-          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#065F46] mb-1">The Lesson</p>
+          <p className="text-xs uppercase tracking-[0.25em] font-bold text-[#065F46] mb-1">{tx("lessonPlayer.the_lesson_2")}</p>
           <p className="text-zinc-800 font-semibold">{c.lesson}</p>
         </div>
       )}
@@ -504,13 +511,14 @@ const VERDICT_STYLE = {
 const rupees = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
 function OutcomeBars({ outcome }) {
+  const { t: tx } = useTranslation();
   const [bLabel, bVal] = outcome.before;
   const [aLabel, aVal] = outcome.after;
   const max = Math.max(bVal, aVal, 1);
   const lost = aVal < bVal;
   return (
     <div className="mt-4 bg-white border border-zinc-200 rounded-2xl p-4 fade-up" data-testid="scenario-outcome">
-      <p className="uppercase tracking-[0.2em] text-[10px] font-bold text-zinc-500 mb-3">What happened next</p>
+      <p className="uppercase tracking-[0.2em] text-[10px] font-bold text-zinc-500 mb-3">{tx("lessonPlayer.what_happened_next")}</p>
       <div className="flex justify-between text-sm mb-1"><span>{bLabel}</span><b className="font-[Outfit]">{rupees(bVal)}</b></div>
       <div className="h-3 rounded-full bg-zinc-100 overflow-hidden mb-3">
         <div className="h-full rounded-full bg-zinc-300 transition-all duration-700" style={{ width: `${(bVal / max) * 100}%` }} />
@@ -526,6 +534,7 @@ function OutcomeBars({ outcome }) {
 }
 
 function ScenarioLesson({ l, answered, onAnswer }) {
+  const { t: tx } = useTranslation();
   const [pickedIdx, setPickedIdx] = useState(null);
 
   useEffect(() => { if (answered === null) setPickedIdx(null); }, [answered]);
@@ -543,7 +552,7 @@ function ScenarioLesson({ l, answered, onAnswer }) {
 
   return (
     <div className="fade-up">
-      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#EC4899] mb-2">Real-life situation</p>
+      <p className="uppercase tracking-[0.25em] text-[11px] font-bold text-[#EC4899] mb-2">{tx("lessonPlayer.real_life_situation")}</p>
       <div className="bg-zinc-50 border-l-4 border-[#EC4899] p-4 rounded-r-2xl mb-5">
         <p className="text-zinc-700 italic">{l.content.scene}</p>
       </div>
@@ -580,7 +589,7 @@ function ScenarioLesson({ l, answered, onAnswer }) {
       {picked && picked.outcome && <OutcomeBars outcome={picked.outcome} />}
 
       {answered !== null && !answered.correct && (
-        <p className="mt-3 text-xs font-semibold text-[#7F1D1D] opacity-80">↻ We'll ask this again later in the lesson.</p>
+        <p className="mt-3 text-xs font-semibold text-[#7F1D1D] opacity-80">{tx("lessonPlayer.we_ll_ask_this_again_later")}</p>
       )}
     </div>
   );
@@ -588,6 +597,7 @@ function ScenarioLesson({ l, answered, onAnswer }) {
 
 // ---------- Result ----------
 function ResultScreen({ result, concept, onAgain }) {
+  const { t: tx } = useTranslation();
   const nav = useNavigate();
   const { isPro, sub } = useAuth();
   const [wall, setWall] = useState(null); // set when the next lesson is behind Pro: the best moment to ask
@@ -624,7 +634,7 @@ function ResultScreen({ result, concept, onAgain }) {
         <Lumi size={160} mood={isMastered ? "celebrate" : "happy"} className={isMastered ? "lumi-celebrate" : "lumi-float"} />
       </div>
       <h1 className="font-[Outfit] font-black text-4xl tracking-tight mb-2">
-        {isMastered ? "Concept mastered!" : result.status === "completed" ? "Nicely done!" : "Keep going!"}
+        {isMastered ? tx("lessonPlayer.concept_mastered") : result.status === "completed" ? tx("lessonPlayer.nicely_done") : tx("lessonPlayer.keep_going")}
       </h1>
       <p className="text-zinc-500 mb-8">{concept.title}</p>
 
@@ -637,7 +647,7 @@ function ResultScreen({ result, concept, onAgain }) {
       {result.new_achievements?.length > 0 && (
         <div className="mb-6 bg-gradient-to-br from-[#FBBF24]/15 to-[#FF6B35]/15 rounded-3xl p-5 border border-[#FBBF24]/40" data-testid="achievement-unlock">
           <Trophy className="w-7 h-7 mx-auto text-[#FF6B35] mb-2"/>
-          <p className="font-[Outfit] font-black text-lg">Achievement unlocked!</p>
+          <p className="font-[Outfit] font-black text-lg">{tx("lessonPlayer.achievement_unlocked")}</p>
           {result.new_achievements.map((a) => (
             <p key={a.code} className="text-sm font-semibold text-zinc-700">🏆 {a.title}</p>
           ))}
@@ -646,18 +656,18 @@ function ResultScreen({ result, concept, onAgain }) {
 
       {!isPro && sub && wall && (
         <div className="mb-5 rounded-3xl p-5 text-white text-left bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899]" data-testid="result-wall">
-          <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/95">Free lessons done</p>
+          <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/95">{tx("lessonPlayer.free_lessons_done")}</p>
           <p className="font-[Outfit] font-black text-2xl leading-tight mt-0.5">You finished the free lessons in {wall.course.name}!</p>
           <p className="text-[13.5px] text-white/95 mt-1.5">Next up: "{wall.concept.title}". One Pro plan opens every lesson and tool for ₹49 a month.</p>
-          <button onClick={() => nav("/pro?from=wall")} data-testid="result-wall-cta" className="mt-3 w-full rounded-2xl bg-white text-[#FF6B35] font-[Outfit] font-extrabold py-3 active:scale-[0.98]">Keep going with Pro</button>
+          <button onClick={() => nav("/pro?from=wall")} data-testid="result-wall-cta" className="mt-3 w-full rounded-2xl bg-white text-[#FF6B35] font-[Outfit] font-extrabold py-3 active:scale-[0.98]">{tx("lessonPlayer.keep_going_with_pro")}</button>
         </div>
       )}
       {!isPro && sub && !wall && (
         <button onClick={() => nav("/pro?from=lessons")} data-testid="result-upsell"
           className="w-full mb-5 flex items-center gap-3 text-left rounded-2xl p-4 text-white bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899]">
           <Crown className="w-7 h-7 shrink-0" />
-          <span className="flex-1"><span className="block font-[Outfit] font-extrabold text-[15px]">Keep your streak going</span>
-            <span className="block text-[12.5px] text-white/90">Free lessons end soon. One plan unlocks every lesson and tool: ₹49 a month.</span></span>
+          <span className="flex-1"><span className="block font-[Outfit] font-extrabold text-[15px]">{tx("lessonPlayer.keep_your_streak_going")}</span>
+            <span className="block text-[12.5px] text-white/90">{tx("lessonPlayer.free_lessons_end_soon_one_plan")}</span></span>
         </button>
       )}
 

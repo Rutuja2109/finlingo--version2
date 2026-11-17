@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { LogOut, Trash2, Shield, Award, Crown } from "lucide-react";
 import { PRIVACY_URL, TERMS_URL } from "@/lib/api";
 import LanguagePicker from "@/components/LanguagePicker";
+import { useTranslation } from "react-i18next";
 
 export default function Account() {
+  const { t } = useTranslation();
   const { user, logout, deleteAccount, sub, isPro } = useAuth();
   const [confirming, setConfirming] = useState(false);
   const [password, setPassword] = useState("");
@@ -23,7 +25,7 @@ export default function Account() {
 
   return (
     <div className="max-w-xl mx-auto pb-24">
-      <h1 className="font-[Outfit] font-black text-3xl tracking-tight mb-6">Account</h1>
+      <h1 className="font-[Outfit] font-black text-3xl tracking-tight mb-6">{t("account.account")}</h1>
 
       <Link to="/achievements" data-testid="account-awards" className="flex items-center gap-3 bg-white border border-zinc-200 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
         <Award className="w-5 h-5 text-[#FF6B35]" /> Your awards
@@ -39,11 +41,11 @@ export default function Account() {
 
       <Link to="/pro" data-testid="account-plan" className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
         <Crown className="w-5 h-5 text-amber-600" />
-        <span className="flex-1">{isPro ? "FinLearn Pro" : "Free plan"}<span className="block text-xs font-semibold text-zinc-600 font-[Manrope]">{isPro ? (sub?.admin ? "Admin access" : sub?.until ? `Active until ${new Date(sub.until).toLocaleDateString()}` : "Active") : "One plan, every feature: ₹49 a month"}</span></span>
+        <span className="flex-1">{isPro ? t("account.finlearn_pro") : t("account.free_plan")}<span className="block text-xs font-semibold text-zinc-600 font-[Manrope]">{isPro ? (sub?.admin ? t("account.admin_access") : sub?.until ? `Active until ${new Date(sub.until).toLocaleDateString()}` : t("account.active")) : t("account.one_plan_every_feature_49_a")}</span></span>
       </Link>
 
       <div className="bg-white border border-zinc-200 rounded-3xl p-6 mb-4">
-        <p className="uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 mb-1">Signed in as</p>
+        <p className="uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 mb-1">{t("account.signed_in_as")}</p>
         <p className="font-[Outfit] font-bold text-xl">{user?.name}</p>
         <p className="text-sm text-zinc-500">{user?.email}</p>
         <button
@@ -56,7 +58,7 @@ export default function Account() {
       </div>
 
       <div className="bg-white border border-zinc-200 rounded-3xl p-6 mb-4">
-        <p className="uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 mb-2">About</p>
+        <p className="uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 mb-2">{t("account.about")}</p>
         <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" data-testid="account-privacy"
           className="inline-flex items-center gap-2 font-[Outfit] font-bold text-[#FF6B35] hover:underline">
           <Shield className="w-4 h-4" /> Privacy policy
@@ -66,18 +68,14 @@ export default function Account() {
           className="inline-flex items-center gap-2 font-[Outfit] font-bold text-[#FF6B35] hover:underline mt-2">
           <Shield className="w-4 h-4" /> Terms and subscription terms
         </a>
-        <p className="text-xs text-zinc-500 mt-3">
-          FinLearn is for education only and is not financial advice.
-        </p>
+        <p className="text-xs text-zinc-500 mt-3">{t("account.finlearn_is_for_education_only_and")}</p>
       </div>
 
       {user?.role !== "admin" && (
         <div className="bg-white border border-red-200 rounded-3xl p-6">
-          <p className="uppercase tracking-[0.2em] text-xs font-bold text-red-600 mb-1">Danger zone</p>
-          <h2 className="font-[Outfit] font-bold text-xl mb-1">Delete account</h2>
-          <p className="text-sm text-zinc-500 mb-4">
-            Permanently deletes your account, progress, XP and streaks. This cannot be undone. It does not cancel a Pro subscription: cancel that in Google Play first.
-          </p>
+          <p className="uppercase tracking-[0.2em] text-xs font-bold text-red-600 mb-1">{t("account.danger_zone")}</p>
+          <h2 className="font-[Outfit] font-bold text-xl mb-1">{t("account.delete_account")}</h2>
+          <p className="text-sm text-zinc-500 mb-4">{t("account.permanently_deletes_your_account_progres")}</p>
           {!confirming ? (
             <button
               onClick={() => setConfirming(true)}
@@ -88,14 +86,12 @@ export default function Account() {
             </button>
           ) : (
             <form onSubmit={onDelete}>
-              <label className="block text-xs uppercase tracking-[0.2em] font-semibold text-zinc-500 mb-1.5">
-                Confirm your password
-              </label>
+              <label className="block text-xs uppercase tracking-[0.2em] font-semibold text-zinc-500 mb-1.5">{t("account.confirm_your_password")}</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Leave blank if you signed in with Google"
+                placeholder={t("account.leave_blank_if_you_signed_in")}
                 className="w-full px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-200 mb-3"
                 data-testid="account-delete-password"
               />
@@ -108,15 +104,13 @@ export default function Account() {
                   data-testid="account-delete-confirm"
                   className="px-5 py-3 rounded-xl bg-red-600 text-white font-[Outfit] font-bold disabled:opacity-60"
                 >
-                  {busy ? "Deleting…" : "Yes, delete everything"}
+                  {busy ? t("account.deleting") : t("account.yes_delete_everything")}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setConfirming(false); setPassword(""); setErr(""); }}
                   className="px-5 py-3 rounded-xl bg-zinc-100 font-[Outfit] font-bold"
-                >
-                  Cancel
-                </button>
+                >{t("account.cancel")}</button>
               </div>
             </form>
           )}

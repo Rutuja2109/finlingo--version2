@@ -4,9 +4,11 @@ import { Lightbulb, Target, Repeat, Flag, ArrowRight, Crown } from "lucide-react
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
+import { useTranslation } from "react-i18next";
 
 // Three bright tiles under the hero: what is waiting for the learner today (idea, quests, revision).
 export default function TodayStrip() {
+  const { t } = useTranslation();
   const { isPro } = useAuth();
   const [d, setD] = useState({});
   useEffect(() => {
@@ -37,14 +39,14 @@ export default function TodayStrip() {
 
   return (
     <section className="mb-6" data-testid="today-strip">
-      <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-600 mb-2.5 px-1">Today for you</p>
+      <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-600 mb-2.5 px-1">{t("todayStrip.today_for_you")}</p>
       <div className="grid grid-cols-3 gap-2.5">
         <Tile to="/explainer" testid="tile-explainer" grad="from-[#F59E0B] to-[#F97316]" Icon={Lightbulb}
-          title="Idea of the day" sub={d.ex?.done ? "Done today" : "60 seconds · +XP"} badge={d.ex && !d.ex.done ? "NEW" : null} />
+          title={t("todayStrip.idea_of_the_day")} sub={d.ex?.done ? "Done today" : "60 seconds · +XP"} badge={d.ex && !d.ex.done ? "NEW" : null} />
         <Tile to="/dashboard" onClick={goQuests} testid="tile-quests" grad="from-[#6366F1] to-[#8B5CF6]" Icon={Target}
-          title="Daily quests" sub={d.q ? `${d.q.claimed_count} of 3 done` : "3 small goals"} badge={claimable > 0 ? "CLAIM!" : null} />
+          title={t("todayStrip.daily_quests")} sub={d.q ? `${d.q.claimed_count} of 3 done` : "3 small goals"} badge={claimable > 0 ? "CLAIM!" : null} />
         <Tile to="/revise" testid="tile-revision" grad="from-[#2563EB] to-[#06B6D4]" Icon={Repeat}
-          title="Revision" sub={d.due > 0 ? `${d.due} due now` : "All caught up"} badge={d.due > 0 ? `${d.due}` : null} />
+          title={t("todayStrip.revision")} sub={d.due > 0 ? `${d.due} due now` : "All caught up"} badge={d.due > 0 ? `${d.due}` : null} />
       </div>
       {d.m?.mission && <MissionCard data={d.m} pro={isPro} />}
     </section>
@@ -53,6 +55,7 @@ export default function TodayStrip() {
 
 // This week's real-life mission: the one habit-building action, shown big so learners see it every day.
 function MissionCard({ data, pro }) {
+  const { t } = useTranslation();
   const { mission: m, done_count: done, total } = data;
   return (
     <Link to="/missions" data-testid="home-mission"
@@ -72,7 +75,7 @@ function MissionCard({ data, pro }) {
           <span className="text-[12px] font-bold text-white/95">+{m.xp} XP · +{m.coins} coins</span>
         </div>
         <div className="mt-3">
-          <div className="flex justify-between text-[11px] font-bold text-white/90 mb-1"><span>Real-life progress</span><span>{done} of {total} done</span></div>
+          <div className="flex justify-between text-[11px] font-bold text-white/90 mb-1"><span>{t("todayStrip.real_life_progress")}</span><span>{done} of {total} done</span></div>
           <div className="h-1.5 rounded-full bg-white/30 overflow-hidden"><div className="h-full bg-white rounded-full" style={{ width: `${Math.max(4, Math.round((done / total) * 100))}%` }} /></div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { BarChart3, Coins, Bitcoin, Rocket, RefreshCw, Flame, ArrowUp, ArrowDown
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
+import { useTranslation } from "react-i18next";
 
 const ICONS = { BarChart3, Coins, Bitcoin, Rocket };
 const TFS = ["1MIN", "5MIN", "15MIN", "30MIN", "1H", "1D", "1W"];
@@ -12,6 +13,7 @@ const pdec = (p) => (p < 1000 ? 2 : 0);
 const num = (v) => (v >= 1000 ? Math.round(v).toLocaleString("en-IN") : v.toFixed(1));
 
 function Chart({ series, avg }) {
+  const { t: tx } = useTranslation();
   const W = 350, H = 210, pl = 6, pr = 62, pt = 14, pb = 12;
   const d = series.map((s) => s.p);
   if (d.length < 2) return <div className="h-[210px]" />;
@@ -27,7 +29,7 @@ function Chart({ series, avg }) {
   const col = d[d.length - 1] >= d[0] ? "#10B981" : "#EF4444";
   const last = d[d.length - 1], ly = y(last);
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="Price chart">
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={tx("practice.price_chart")}>
       {[0, 1, 2, 3, 4].map((i) => {
         const v = mn + ((mx - mn) * i) / 4, yy = y(v);
         return (
@@ -42,7 +44,7 @@ function Chart({ series, avg }) {
       {avg && avg > mn && avg < mx && (
         <g>
           <line x1={pl} x2={W - pr + 4} y1={y(avg)} y2={y(avg)} stroke="#18181b" strokeDasharray="4 4" />
-          <text x={pl + 4} y={y(avg) - 4} fontSize="10" fill="#18181b" fontWeight="800">your buy price</text>
+          <text x={pl + 4} y={y(avg) - 4} fontSize="10" fill="#18181b" fontWeight="800">{tx("practice.your_buy_price")}</text>
         </g>
       )}
       <rect x={W - pr + 2} y={ly - 10} width={pr - 2} height="20" rx="6" fill={col} />
@@ -62,6 +64,7 @@ function Coach({ mood, title, children, tone = "" }) {
 }
 
 export default function Practice() {
+  const { t: tx } = useTranslation();
   const { refreshStats } = useAuth();
   const [S, setS] = useState(null);
   const [sel, setSel] = useState("nifty");
@@ -200,7 +203,7 @@ export default function Practice() {
     if (step?.hl && !step.hl.includes("pt-go")) document.querySelector(step.hl)?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [tour?.i]); // eslint-disable-line
 
-  if (!S) return <div className="py-20 text-center text-zinc-500">{err || "Opening your practice account…"}</div>;
+  if (!S) return <div className="py-20 text-center text-zinc-500">{err || tx("practice.opening_your_practice_account")}</div>;
   const series = S.selected.asset === sel ? S.selected.series : [];
   const first = series[0]?.p, lastP = series[series.length - 1]?.p;
   const chg = first ? ((lastP - first) / first) * 100 : 0;
@@ -215,7 +218,7 @@ export default function Practice() {
           <button onClick={resetAll} className="flex items-center gap-1 rounded-full bg-white/25 px-3 py-1.5 text-[13px] font-bold font-[Outfit]" data-testid="pt-reset"><RefreshCw className="w-3.5 h-3.5" />Reset</button>
           <div className="text-center">
             <div id="pt-bal" className="inline-block px-3 mb-1.5 font-[Outfit] font-black text-2xl tracking-tight" data-testid="pt-cash">{inr(S.cash)}</div>
-            <div className="text-[11.5px] font-semibold opacity-90">Practice money, not real money</div>
+            <div className="text-[11.5px] font-semibold opacity-90">{tx("practice.practice_money_not_real_money")}</div>
           </div>
           <span className="w-[68px]" />
         </div>
@@ -245,7 +248,7 @@ export default function Practice() {
               className={`rounded-xl px-4 py-2 font-[Outfit] font-extrabold text-sm text-white ${canNext ? "bg-[#FF6B35]" : "bg-[#fdba9b]"}`}>
               {canNext ? step.b || "Next" : step.hint || "Do the step above"}
             </button>
-            <button onClick={() => tourEnd(false)} className="ml-auto text-[12.5px] font-bold text-zinc-500" data-testid="pt-tour-skip">Skip tour</button>
+            <button onClick={() => tourEnd(false)} className="ml-auto text-[12.5px] font-bold text-zinc-500" data-testid="pt-tour-skip">{tx("practice.skip_tour")}</button>
           </div>
         </div>
       )}
@@ -295,11 +298,11 @@ export default function Practice() {
           </div>
           {msg
             ? <Coach mood={msg.k === "bad" ? "angry" : msg.k === "warn" ? "nervous" : "cheer"} title={msg.h} tone={msg.k}>{msg.t}</Coach>
-            : <Coach mood="happy" title="Lumi says">{asset.why}</Coach>}
+            : <Coach mood="happy" title={tx("practice.lumi_says")}>{asset.why}</Coach>}
           {!crashing && (
             <button onClick={startCrash} data-testid="pt-crash" className="mx-auto mt-3 flex items-center gap-1.5 border-2 border-red-500 text-red-700 bg-white rounded-2xl px-3 py-2 font-[Outfit] font-extrabold text-[13px]"><Flame className="w-4 h-4" />Replay a market crash</button>
           )}
-          {!tour && <button onClick={() => { setTour({ i: 0, quiz: null }); setF({}); }} className="block mx-auto mt-2 text-[12.5px] font-extrabold text-[#FF6B35]" data-testid="pt-replay-tour">Replay Lumi’s tour</button>}
+          {!tour && <button onClick={() => { setTour({ i: 0, quiz: null }); setF({}); }} className="block mx-auto mt-2 text-[12.5px] font-extrabold text-[#FF6B35]" data-testid="pt-replay-tour">{tx("practice.replay_lumi_s_tour")}</button>}
         </div>
       )}
 
@@ -307,13 +310,13 @@ export default function Practice() {
 
       {view === "log" && (
         <div className="mt-3 bg-white border border-zinc-200 rounded-[20px] p-3.5">
-          <p className="text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500 mb-1.5">Trade history</p>
+          <p className="text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500 mb-1.5">{tx("practice.trade_history")}</p>
           {S.trades.length ? S.trades.map((l, i) => (
             <div key={i} className="flex items-center justify-between gap-2 py-2 border-t first:border-t-0 border-zinc-100 text-sm">
-              <div><b>{l.side === "buy" ? "Bought" : "Sold"} {l.name}</b><div className="text-[12.5px] text-zinc-500">{inr(l.amount)} at {inr(l.price, pdec(l.price))}</div></div>
+              <div><b>{l.side === "buy" ? tx("practice.bought") : tx("practice.sold")} {l.name}</b><div className="text-[12.5px] text-zinc-500">{inr(l.amount)} at {inr(l.price, pdec(l.price))}</div></div>
               {l.side === "sell" && <span className={`font-[Outfit] font-extrabold text-[13px] px-2.5 py-1 rounded-full ${l.pnl >= 0 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>{l.pnl >= 0 ? "+" : ""}{inr(l.pnl)}</span>}
             </div>
-          )) : <p className="text-[12.5px] text-zinc-500">No trades yet.</p>}
+          )) : <p className="text-[12.5px] text-zinc-500">{tx("practice.no_trades_yet")}</p>}
         </div>
       )}
 
@@ -335,14 +338,14 @@ export default function Practice() {
                     {opts.map((o) => <button key={o} onClick={() => setSheet({ ...sheet, amt: o })} className={`border-2 rounded-[14px] px-3 py-2 font-[Outfit] font-extrabold text-sm ${o === sheet.amt ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-zinc-200"}`}>{buy ? inr(o) : `${o}%`}</button>)}
                   </div>
                   <div className="bg-white border border-zinc-200 rounded-2xl px-3 py-1 mb-2.5">
-                    <div className="flex justify-between py-2 text-sm"><span>{buy ? "You spend" : "You receive"}</span><b>{inr(amount)}</b></div>
-                    <div className="flex justify-between py-2 text-sm border-t border-zinc-100"><span>Units</span><b>{(amount / asset.price).toFixed(4)}</b></div>
+                    <div className="flex justify-between py-2 text-sm"><span>{buy ? tx("practice.you_spend") : tx("practice.you_receive")}</span><b>{inr(amount)}</b></div>
+                    <div className="flex justify-between py-2 text-sm border-t border-zinc-100"><span>{tx("practice.units")}</span><b>{(amount / asset.price).toFixed(4)}</b></div>
                   </div>
                   {tooMuch && <p className="text-red-700 text-[13px] mb-2">You only have {inr(S.cash)} of practice money.</p>}
                   {tooSmall && !tooMuch && <p className="text-red-700 text-[13px] mb-2">The smallest purchase is {inr(S.min_buy)}.</p>}
                   <button id="pt-go" data-testid="pt-go" onClick={doTrade} disabled={busy || tooMuch || tooSmall}
                     className={`w-full rounded-2xl py-3.5 font-[Outfit] font-black text-base text-white ${buy ? "bg-emerald-500" : "bg-red-500"} disabled:opacity-50`}>Confirm {buy ? "buy" : "sell"}</button>
-                  <button onClick={() => setSheet(null)} className="w-full rounded-2xl py-3 mt-2 bg-zinc-100 font-[Outfit] font-extrabold">Cancel</button>
+                  <button onClick={() => setSheet(null)} className="w-full rounded-2xl py-3 mt-2 bg-zinc-100 font-[Outfit] font-extrabold">{tx("practice.cancel")}</button>
                 </>
               );
             })()}
@@ -356,6 +359,7 @@ export default function Practice() {
 }
 
 function Portfolio({ S, total }) {
+  const { t: tx } = useTranslation();
   const pnl = total - S.start_cash;
   const segs = [["Cash", S.cash, "#d4d4d8"], ...S.positions.map((p) => { const a = S.assets.find((x) => x.id === p.asset); return [a.short, p.value, a.color]; })];
   const top = [...S.positions].sort((a, b) => b.value - a.value)[0];
@@ -364,14 +368,14 @@ function Portfolio({ S, total }) {
   return (
     <div className="mt-3 space-y-2.5">
       <div className="bg-white border border-zinc-200 rounded-[20px] p-3.5">
-        <p className="text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500">Total value</p>
+        <p className="text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500">{tx("practice.total_value")}</p>
         <div className="font-[Outfit] font-black text-[22px]" data-testid="pt-total">{inr(total)}</div>
         <span className={`inline-block mt-1 font-[Outfit] font-extrabold text-[13px] px-2.5 py-1 rounded-full ${pnl >= 0 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>{pnl >= 0 ? "+" : ""}{inr(pnl)} ({((pnl / S.start_cash) * 100).toFixed(2)}%)</span>
         <div className="flex h-3.5 rounded-full overflow-hidden bg-zinc-100 my-2">{segs.map((s, i) => <div key={i} style={{ width: `${(s[1] / total) * 100}%`, background: s[2] }} />)}</div>
         <div className="text-[12.5px] text-zinc-500">{segs.map((s) => `${s[0]} ${Math.round((s[1] / total) * 100)}%`).join(" · ")}</div>
       </div>
       <div className="bg-white border border-zinc-200 rounded-[20px] p-3.5">
-        <p className="text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500 mb-1.5">Your holdings</p>
+        <p className="text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500 mb-1.5">{tx("practice.your_holdings")}</p>
         {S.positions.length ? S.positions.map((p) => {
           const a = S.assets.find((x) => x.id === p.asset);
           return (
@@ -380,13 +384,13 @@ function Portfolio({ S, total }) {
               <div className="text-right"><b>{inr(p.value)}</b><div className={`text-xs font-extrabold ${p.pnl >= 0 ? "text-emerald-700" : "text-red-700"}`}>{p.pnl >= 0 ? "+" : ""}{inr(p.pnl)}</div></div>
             </div>
           );
-        }) : <p className="text-[12.5px] text-zinc-500">Nothing yet. Buy something on the Trade tab.</p>}
+        }) : <p className="text-[12.5px] text-zinc-500">{tx("practice.nothing_yet_buy_something_on_the")}</p>}
       </div>
       {top && (share > 0.4
-        ? <Coach mood="angry" tone="bad" title="Too much in one basket">{Math.round(share * 100)}% of your money is in {topName}. If it falls 30%, you lose about {Math.round(share * 30)}% of everything.</Coach>
+        ? <Coach mood="angry" tone="bad" title={tx("practice.too_much_in_one_basket")}>{Math.round(share * 100)}% of your money is in {topName}. If it falls 30%, you lose about {Math.round(share * 30)}% of everything.</Coach>
         : S.positions.length >= 3
-          ? <Coach mood="cheer" tone="good" title="Nicely spread out">You hold {S.positions.length} different assets. One bad day will not sink you.</Coach>
-          : <Coach mood="nervous" tone="warn" title="Try spreading out">Holding a mix of assets, like an index fund and gold, softens the bad days.</Coach>)}
+          ? <Coach mood="cheer" tone="good" title={tx("practice.nicely_spread_out")}>You hold {S.positions.length} different assets. One bad day will not sink you.</Coach>
+          : <Coach mood="nervous" tone="warn" title={tx("practice.try_spreading_out")}>{tx("practice.holding_a_mix_of_assets_like")}</Coach>)}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { Lock, ArrowRight, Check, Star, ChevronDown, ChevronUp } from "lucide-react";
 import { trackCourseEnrolled } from "@/lib/firebase";
 import Lumi from "@/components/Lumi";
+import { useTranslation } from "react-i18next";
 
 const ICONS_SVG = {
   Wallet: "M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4",
@@ -19,6 +20,7 @@ const ICONS_SVG = {
 const COMING_SOON = [];
 
 export default function Courses() {
+  const { t } = useTranslation();
   const nav = useNavigate();
   const [courses, setCourses] = useState([]);
   const [enrolled, setEnrolled] = useState([]);
@@ -53,9 +55,9 @@ export default function Courses() {
   return (
     <div className="pb-28">
       <div className="mb-8">
-        <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">Learning Path</p>
-        <h1 className="font-[Outfit] font-black text-3xl tracking-tight">Your Journey</h1>
-        <p className="text-zinc-500 text-sm mt-1">Start with Money Basics, then move on to stocks and crypto. One concept at a time.</p>
+        <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">{t("courses.learning_path")}</p>
+        <h1 className="font-[Outfit] font-black text-3xl tracking-tight">{t("courses.your_journey")}</h1>
+        <p className="text-zinc-500 text-sm mt-1">{t("courses.start_with_money_basics_then_move")}</p>
       </div>
 
       {/* Winding path */}
@@ -82,6 +84,7 @@ export default function Courses() {
 }
 
 function CourseNode({ node, idx, isEnrolled, busy, onEnroll, onContinue }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(isEnrolled);
   const side = idx % 2 === 0 ? "left" : "right";
   const isLocked = node.status === "locked";
@@ -137,12 +140,12 @@ function CourseNode({ node, idx, isEnrolled, busy, onEnroll, onContinue }) {
           onClick={() => !isLocked && setExpanded((x) => !x)}
           className="w-full text-left"
         >
-          <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-zinc-500">{node.certification || "Coming Soon"}</p>
+          <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-zinc-500">{node.certification || t("courses.coming_soon")}</p>
           <p className="font-[Outfit] font-black text-[17px] tracking-tight text-zinc-900 leading-tight">{node.name}</p>
           <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{courseSubtitle(node)}</p>
-          {isLocked && <p className="text-[11px] text-zinc-500 mt-1 font-semibold">Coming soon</p>}
-          {isActive && <p className="text-[10px] text-[#10B981] mt-1 font-bold">IN PROGRESS →</p>}
-          {node.status === "available" && <p className="text-[10px] text-zinc-500 mt-1 font-semibold">Tap to start</p>}
+          {isLocked && <p className="text-[11px] text-zinc-500 mt-1 font-semibold">{t("courses.coming_soon_2")}</p>}
+          {isActive && <p className="text-[10px] text-[#10B981] mt-1 font-bold">{t("courses.in_progress")}</p>}
+          {node.status === "available" && <p className="text-[10px] text-zinc-500 mt-1 font-semibold">{t("courses.tap_to_start")}</p>}
         </button>
 
         {/* Expanded action card */}

@@ -4,10 +4,12 @@ import { CheckCircle2, ChevronDown, ChevronUp, Flag, ArrowRight } from "lucide-r
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import Lumi from "@/components/Lumi";
+import { useTranslation } from "react-i18next";
 
 const THEME_COLOR = { spend: "#EC4899", save: "#10B981", protect: "#7C3AED", invest: "#2563EB", tax: "#F59E0B" };
 
 export default function Missions() {
+  const { t: tx } = useTranslation();
   const { refreshStats } = useAuth();
   const [data, setData] = useState(null);
   const [open, setOpen] = useState(null);
@@ -34,12 +36,13 @@ export default function Missions() {
     setBusy(false);
   };
 
-  if (!data) return <div className="py-20 text-center text-zinc-500">{err || "Loading missions…"}</div>;
+  if (!data) return <div className="py-20 text-center text-zinc-500">{err || tx("missions.loading_missions")}</div>;
   const featured = data.missions.find((m) => m.featured);
   const allDone = data.done_count === data.total;
   const themes = Object.keys(data.themes);
 
   const Card = ({ m }) => {
+  const { t: tx } = useTranslation();
     const isOpen = open === m.id, color = THEME_COLOR[m.theme];
     return (
       <div className={`bg-white border rounded-2xl mb-2.5 ${m.done ? "border-emerald-200" : "border-zinc-200"}`} data-testid={`mission-${m.id}`}>
@@ -49,7 +52,7 @@ export default function Missions() {
           </span>
           <span className="flex-1 min-w-0">
             <span className={`block font-[Outfit] font-extrabold text-[15px] ${m.done ? "text-zinc-400 line-through" : ""}`}>{m.title}</span>
-            <span className="block text-[12px] text-zinc-500">{m.done ? "Done" : `+${m.xp} XP · +${m.coins} coins`}{m.kind === "auto" && !m.done ? " · checks itself" : ""}</span>
+            <span className="block text-[12px] text-zinc-500">{m.done ? tx("missions.done") : `+${m.xp} XP · +${m.coins} coins`}{m.kind === "auto" && !m.done ? tx("missions.checks_itself") : ""}</span>
           </span>
           {isOpen ? <ChevronUp className="w-5 h-5 text-zinc-400" /> : <ChevronDown className="w-5 h-5 text-zinc-400" />}
         </button>
@@ -66,7 +69,7 @@ export default function Missions() {
                 )}
                 <button onClick={() => complete(m)} disabled={busy} data-testid={`done-${m.id}`}
                   className="w-full rounded-2xl py-3 bg-[#FF6B35] text-white font-[Outfit] font-black text-[15px] disabled:opacity-60">{m.kind === "auto" ? "Check my progress" : "I did it"}</button>
-                {m.kind === "self" && <p className="text-[11.5px] text-zinc-400 mt-1.5 text-center">On the honour system. Only tick it if you really did it.</p>}
+                {m.kind === "self" && <p className="text-[11.5px] text-zinc-400 mt-1.5 text-center">{tx("missions.on_the_honour_system_only_tick")}</p>}
               </>
             )}
           </div>
@@ -77,22 +80,22 @@ export default function Missions() {
 
   return (
     <div className="max-w-md mx-auto pb-24" data-testid="missions-page">
-      <h1 className="font-[Outfit] font-black text-2xl tracking-tight">Real-life missions</h1>
-      <p className="text-[13px] text-zinc-500 mt-1 mb-3">Small actions in your own money life. Do them outside the app, then tick them off here.</p>
+      <h1 className="font-[Outfit] font-black text-2xl tracking-tight">{tx("missions.real_life_missions")}</h1>
+      <p className="text-[13px] text-zinc-500 mt-1 mb-3">{tx("missions.small_actions_in_your_own_money")}</p>
       <div className="bg-white border border-zinc-200 rounded-2xl p-3.5 mb-3">
-        <div className="flex justify-between text-[13px] font-bold mb-1.5"><span>Your progress</span><span data-testid="missions-count">{data.done_count} of {data.total} done</span></div>
+        <div className="flex justify-between text-[13px] font-bold mb-1.5"><span>{tx("missions.your_progress")}</span><span data-testid="missions-count">{data.done_count} of {data.total} done</span></div>
         <div className="h-2.5 rounded-full bg-zinc-100 overflow-hidden"><div className="h-full bg-emerald-500 transition-all" style={{ width: `${Math.round((data.done_count / data.total) * 100)}%` }} /></div>
       </div>
 
       {featured && (
         <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899] mb-4 relative overflow-hidden" data-testid="mission-featured">
           <div className="absolute -right-1 -top-1 opacity-40 pointer-events-none"><Lumi size={84} mood="cheer" /></div>
-          <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/90 relative">Mission of the week</p>
+          <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/90 relative">{tx("missions.mission_of_the_week")}</p>
           <h2 className="font-[Outfit] font-black text-xl mt-1 max-w-[72%] relative">{featured.title}</h2>
-          <button onClick={() => setOpen(featured.id)} className="mt-3 bg-white text-[#FF6B35] font-[Outfit] font-extrabold text-sm rounded-xl px-4 py-2 relative">See the steps</button>
+          <button onClick={() => setOpen(featured.id)} className="mt-3 bg-white text-[#FF6B35] font-[Outfit] font-extrabold text-sm rounded-xl px-4 py-2 relative">{tx("missions.see_the_steps")}</button>
         </div>
       )}
-      {allDone && <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-3.5 text-[13px] mb-4 flex gap-3"><Lumi size={44} mood="cheer" /><div><b className="font-[Outfit]">All missions done!</b><br />You have done more with your money than most people ever do. New ones will arrive over time.</div></div>}
+      {allDone && <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-3.5 text-[13px] mb-4 flex gap-3"><Lumi size={44} mood="cheer" /><div><b className="font-[Outfit]">{tx("missions.all_missions_done")}</b><br />You have done more with your money than most people ever do. New ones will arrive over time.</div></div>}
 
       {themes.map((t) => (
         <section key={t} className="mb-4">
@@ -100,7 +103,7 @@ export default function Missions() {
           {data.missions.filter((m) => m.theme === t).map((m) => <Card key={m.id} m={m} />)}
         </section>
       ))}
-      <p className="text-[11.5px] text-zinc-400 text-center">FinLearn never asks you to buy a product and never sees your bank or UPI data. Missions are education, not advice.</p>
+      <p className="text-[11.5px] text-zinc-400 text-center">{tx("missions.finlearn_never_asks_you_to_buy")}</p>
 
       {msg && <div className="fixed bottom-24 inset-x-4 z-50 mx-auto max-w-sm bg-zinc-900 text-white text-center rounded-2xl py-3 font-bold text-sm" role="status" data-testid="mission-toast">{msg}</div>}
     </div>

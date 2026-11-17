@@ -3,9 +3,11 @@ import { api, formatApiError } from "@/lib/api";
 import { GOAL_CHOICES } from "@/lib/streak";
 import Lumi from "@/components/Lumi";
 import { Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Bottom sheet that lets the learner pick a daily time goal (shown once after sign-up, and from the daily goal card).
 export default function GoalPicker({ current, onSaved, onClose }) {
+  const { t } = useTranslation();
   const [picked, setPicked] = useState(current || 5);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -22,13 +24,13 @@ export default function GoalPicker({ current, onSaved, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-end md:items-center justify-center" role="dialog" aria-modal="true" aria-label="Choose your daily goal">
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-end md:items-center justify-center" role="dialog" aria-modal="true" aria-label={t("goalPicker.choose_your_daily_goal")}>
       <div className="w-full max-w-md bg-white rounded-t-3xl md:rounded-3xl p-6 pb-8 fade-up">
         <div className="flex items-center gap-3 mb-4">
           <Lumi size={56} mood="cheer" />
           <div>
-            <h2 className="font-[Outfit] font-black text-2xl tracking-tight leading-tight">How much time can you give each day?</h2>
-            <p className="text-sm text-zinc-500">You can change this any time.</p>
+            <h2 className="font-[Outfit] font-black text-2xl tracking-tight leading-tight">{t("goalPicker.how_much_time_can_you_give")}</h2>
+            <p className="text-sm text-zinc-500">{t("goalPicker.you_can_change_this_any_time")}</p>
           </div>
         </div>
         <div className="space-y-3">
@@ -48,11 +50,11 @@ export default function GoalPicker({ current, onSaved, onClose }) {
         {err && <p className="text-sm text-red-600 mt-3">{err}</p>}
         <div className="flex gap-3 mt-5">
           {onClose && (
-            <button onClick={onClose} className="px-5 py-3 rounded-2xl bg-zinc-100 font-[Outfit] font-bold">Later</button>
+            <button onClick={onClose} className="px-5 py-3 rounded-2xl bg-zinc-100 font-[Outfit] font-bold">{t("goalPicker.later")}</button>
           )}
           <button onClick={save} disabled={busy} data-testid="goal-save"
             className="flex-1 py-3 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold disabled:opacity-60">
-            {busy ? "Saving…" : "Set my goal"}
+            {busy ? t("goalPicker.saving") : t("goalPicker.set_my_goal")}
           </button>
         </div>
       </div>

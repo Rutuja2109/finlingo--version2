@@ -4,18 +4,20 @@ import Lumi from "@/components/Lumi";
 import Logo from "@/components/Logo";
 import { PRIVACY_URL } from "@/lib/api";
 import { ArrowRight, Sparkles, Target, Trophy, Brain, Layers } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Landing() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-zinc-900 font-[Manrope] overflow-x-hidden">
       <header className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <Logo size={40} />
-          <span className="font-[Outfit] font-black text-xl tracking-tight">FinLearn</span>
+          <span className="font-[Outfit] font-black text-xl tracking-tight">{t("landing.finlearn")}</span>
         </div>
         <div className="flex items-center gap-3">
-          <Link to="/login" data-testid="landing-login" className="px-4 py-2 text-sm font-semibold text-zinc-700 hover:text-zinc-900">Log in</Link>
-          <Link to="/signup" data-testid="landing-signup" className="px-4 py-2 rounded-full bg-zinc-900 text-white text-sm font-semibold hover:bg-zinc-800 transition">Get started</Link>
+          <Link to="/login" data-testid="landing-login" className="px-4 py-2 text-sm font-semibold text-zinc-700 hover:text-zinc-900">{t("landing.log_in")}</Link>
+          <Link to="/signup" data-testid="landing-signup" className="px-4 py-2 rounded-full bg-zinc-900 text-white text-sm font-semibold hover:bg-zinc-800 transition">{t("landing.get_started")}</Link>
         </div>
       </header>
 
@@ -28,22 +30,16 @@ export default function Landing() {
             Learn money,<br/>
             <span className="bg-gradient-to-r from-[#FF6B35] via-[#EC4899] to-[#FF6B35] bg-clip-text text-transparent">finally</span> fun.
           </h1>
-          <p className="text-lg text-zinc-600 max-w-xl mb-8 leading-relaxed">
-            Budgeting, the stock market and Bitcoin, taught through real-life
-            choices. Make the call, see what happens, learn why. No jargon,
-            no lectures.
-          </p>
+          <p className="text-lg text-zinc-600 max-w-xl mb-8 leading-relaxed">{t("landing.budgeting_the_stock_market_and_bitcoin")}</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link to="/signup" data-testid="hero-cta-start"
               className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold text-lg transition active:scale-[0.98]">
               Start learning free <ArrowRight className="w-5 h-5" />
             </Link>
             <Link to="/login" data-testid="hero-cta-login"
-              className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-300 font-[Outfit] font-bold text-lg transition">
-              I have an account
-            </Link>
+              className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-300 font-[Outfit] font-bold text-lg transition">{t("landing.i_have_an_account")}</Link>
           </div>
-          <p className="text-xs text-zinc-500 mt-4">Free to start · Educational content, not financial advice</p>
+          <p className="text-xs text-zinc-500 mt-4">{t("landing.free_to_start_educational_content_not")}</p>
         </div>
 
         <div className="relative">
@@ -70,8 +66,8 @@ export default function Landing() {
       </section>
 
       <footer className="max-w-6xl mx-auto px-6 py-10 border-t border-zinc-200 text-sm text-zinc-500 flex justify-between">
-        <span>© 2026 FinLearn · Master what matters.</span>
-        <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-800 underline">Privacy policy</a>
+        <span>{t("landing.2026_finlearn_master_what_matters")}</span>
+        <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-800 underline">{t("landing.privacy_policy")}</a>
       </footer>
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Check, X, Sparkles, MessageCircle, Hand, ThumbsUp } from "lucide-react";
 import Lumi from "@/components/Lumi";
 import { sipFuture, inflate, doublingYears, inr, recoveryNeeded, costDrag } from "@/lib/growth";
+import { useTranslation } from "react-i18next";
 
 // Interactive lesson types: chat story, myth-or-fact swipe, "what if" slider, budget splitter.
 // Each takes the lesson `l`; scored ones also take onAnswer(isCorrect), the rest call onShown() when finished.
@@ -59,6 +60,7 @@ export function ChatLesson({ l, onShown }) {
 
 // ---------------------------------------------------------------- myth or fact
 export function SwipeLesson({ l, picked, answered, onAnswer }) {
+  const { t: tx } = useTranslation();
   const c = l.content || {};
   const cards = c.cards || [];
   const [i, setI] = useState(0);
@@ -81,7 +83,7 @@ export function SwipeLesson({ l, picked, answered, onAnswer }) {
   return (
     <div className="fade-up" data-testid="swipe-lesson">
       <Label color="#F59E0B"><Hand className="w-3.5 h-3.5 inline -mt-0.5 mr-1" />{lab(c, "heading", "Myth or fact?")}</Label>
-      <h2 className="font-[Outfit] font-black text-xl tracking-tight mb-4">{c.instruction || "Is each statement a myth or a fact?"}</h2>
+      <h2 className="font-[Outfit] font-black text-xl tracking-tight mb-4">{c.instruction || tx("lessonTypes.is_each_statement_a_myth_or")}</h2>
       <div className="flex gap-1.5 mb-3" aria-label="progress">
         {cards.map((_, k) => <span key={k} className={`h-1.5 flex-1 rounded-full ${k < i || (k === i && pick) ? "bg-[#FF6B35]" : "bg-zinc-200"}`} />)}
       </div>
@@ -171,6 +173,7 @@ export function SliderLesson({ l }) {
 
 // ---------------------------------------------------------------- budget splitter
 export function BudgetLesson({ l, onShown }) {
+  const { t: tx } = useTranslation();
   const c = l.content || {};
   const I = (n) => inr(n, c.labels);
   const income = c.income || 25000;
@@ -187,7 +190,7 @@ export function BudgetLesson({ l, onShown }) {
   return (
     <div className="fade-up" data-testid="budget-lesson">
       <Label color="#2563EB">{lab(c, "heading", "Build your budget")}</Label>
-      <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-1">{c.title || "Split your salary"}</h2>
+      <h2 className="font-[Outfit] font-black text-2xl tracking-tight mb-1">{c.title || tx("lessonTypes.split_your_salary")}</h2>
       <p className="text-[14px] text-zinc-600 mb-4">{c.intro || `Your salary is ${I(income)}. Drag to decide where it goes.`}</p>
       <div className="h-5 rounded-full overflow-hidden flex mb-3" aria-label="split">
         {bars.map(([n, p, col]) => <div key={n} style={{ width: `${p}%`, background: col }} className="h-full transition-all" />)}
@@ -195,12 +198,12 @@ export function BudgetLesson({ l, onShown }) {
       <div className="space-y-4 mb-3">
         <div>
           <div className="flex justify-between text-[13px] font-bold mb-1"><span className="text-blue-600">{lab(c, "needs", "Needs: rent, food, travel")}</span><span className="tabular-nums">{needs}% · {I(amt(needs))}</span></div>
-          <input type="range" min={20} max={80} step={1} value={needs} aria-label="Needs percent" className="w-full h-3 accent-blue-600" style={{ touchAction: "pan-y" }}
+          <input type="range" min={20} max={80} step={1} value={needs} aria-label={tx("lessonTypes.needs_percent")} className="w-full h-3 accent-blue-600" style={{ touchAction: "pan-y" }}
             onChange={(e) => { const v = Number(e.target.value); setNeeds(v); if (v + wants > 100) setWants(100 - v); setChecked(false); }} />
         </div>
         <div>
           <div className="flex justify-between text-[13px] font-bold mb-1"><span className="text-pink-600">{lab(c, "wants", "Wants: fun, eating out")}</span><span className="tabular-nums">{wants}% · {I(amt(wants))}</span></div>
-          <input type="range" min={0} max={60} step={1} value={wants} aria-label="Wants percent" className="w-full h-3 accent-pink-600" style={{ touchAction: "pan-y" }}
+          <input type="range" min={0} max={60} step={1} value={wants} aria-label={tx("lessonTypes.wants_percent")} className="w-full h-3 accent-pink-600" style={{ touchAction: "pan-y" }}
             onChange={(e) => { const v = Number(e.target.value); setWants(Math.min(v, 100 - needs)); setChecked(false); }} />
         </div>
         <div className="flex justify-between text-[13px] font-bold"><span className="text-emerald-600">{lab(c, "savings", "Savings: what is left")}</span><span className="tabular-nums">{savings}% · {I(amt(savings))}</span></div>
@@ -210,7 +213,7 @@ export function BudgetLesson({ l, onShown }) {
       ) : (
         <div className="fade-up rounded-2xl bg-zinc-50 border border-zinc-200 p-3.5" data-testid="budget-feedback">
           <p className={`font-[Outfit] font-extrabold ${msg[1]}`}>{msg[0]}</p>
-          <p className="text-[13px] text-zinc-600 mt-1">{c.takeaway || "A common starting point is 50% needs, 30% wants and 20% savings. Change it to fit your life."}</p>
+          <p className="text-[13px] text-zinc-600 mt-1">{c.takeaway || tx("lessonTypes.a_common_starting_point_is_50")}</p>
         </div>
       )}
     </div>

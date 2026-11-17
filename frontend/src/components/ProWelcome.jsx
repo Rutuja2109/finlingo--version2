@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { Check } from "lucide-react";
 import Lumi from "@/components/Lumi";
+import { useTranslation } from "react-i18next";
 
 // Full-screen "You're Pro!" after a successful purchase: confetti, Lumi, and what is now open. Makes the purchase feel good.
 export default function ProWelcome({ onDone }) {
+  const { t: tx } = useTranslation();
   useEffect(() => {
     const colors = ["#FF6B35", "#EC4899", "#FBBF24", "#10B981", "#2563EB"];
     const pieces = [];
@@ -23,18 +25,18 @@ export default function ProWelcome({ onDone }) {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[70] bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899] text-white grid place-items-center px-6 text-center" role="dialog" aria-label="You are Pro" data-testid="pro-welcome">
+    <div className="fixed inset-0 z-[70] bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899] text-white grid place-items-center px-6 text-center" role="dialog" aria-label={tx("proWelcome.you_are_pro")} data-testid="pro-welcome">
       <div className="max-w-sm">
         <div className="flex justify-center"><Lumi size={150} mood="celebrate" className="lumi-celebrate" /></div>
-        <h1 className="font-[Outfit] font-black text-4xl mt-2">You're Pro!</h1>
-        <p className="text-white/95 mt-1.5">Thank you. Everything in FinLearn is open now.</p>
+        <h1 className="font-[Outfit] font-black text-4xl mt-2">{tx("proWelcome.you_re_pro")}</h1>
+        <p className="text-white/95 mt-1.5">{tx("proWelcome.thank_you_everything_in_finlearn_is")}</p>
         <ul className="mt-5 text-left bg-white/20 rounded-3xl p-4 space-y-2 text-[14.5px] font-semibold">
           {["Every lesson in every course", "Practice trading, My money and missions", "Calculators and boss battles", "5 streak freezes and your Pro badge"].map((t) => (
             <li key={t} className="flex items-center gap-2.5"><span className="w-5 h-5 rounded-full bg-white text-emerald-600 grid place-items-center shrink-0"><Check className="w-3.5 h-3.5" strokeWidth={4} /></span>{t}</li>
           ))}
         </ul>
-        <button onClick={onDone} data-testid="pro-welcome-start" className="mt-6 w-full rounded-2xl bg-white text-[#FF6B35] font-[Outfit] font-extrabold text-lg py-3.5 active:scale-[0.98]">Start exploring</button>
-        <p className="text-[12px] text-white/90 mt-3">Manage or cancel any time in Google Play.</p>
+        <button onClick={onDone} data-testid="pro-welcome-start" className="mt-6 w-full rounded-2xl bg-white text-[#FF6B35] font-[Outfit] font-extrabold text-lg py-3.5 active:scale-[0.98]">{tx("proWelcome.start_exploring")}</button>
+        <p className="text-[12px] text-white/90 mt-3">{tx("proWelcome.manage_or_cancel_any_time_in")}</p>
       </div>
     </div>
   );

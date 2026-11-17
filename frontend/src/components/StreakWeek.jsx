@@ -3,6 +3,7 @@ import { Flame, Snowflake } from "lucide-react";
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { streakState } from "@/lib/streak";
+import { useTranslation } from "react-i18next";
 
 const FREEZE_COST = 30;
 const FREEZE_MAX_FREE = 2;
@@ -11,6 +12,7 @@ const WEEK_GOAL = 5;
 
 // Streak and the seven days of this week in one warm card: done days glow, today pulses, missed days stay neutral, future days are dashed.
 export default function StreakWeek() {
+  const { t } = useTranslation();
   const { user, stats, refreshStats, isPro } = useAuth();
   const FREEZE_MAX = isPro ? FREEZE_MAX_PRO : FREEZE_MAX_FREE;
   const [week, setWeek] = useState(null);
@@ -55,20 +57,20 @@ export default function StreakWeek() {
       <div className="flex items-center gap-3">
         <span className="w-14 h-14 rounded-2xl grid place-items-center bg-gradient-to-br from-[#FF6B35] to-[#FBBF24] text-white shadow-md shrink-0"><Flame className="w-8 h-8" fill="currentColor" /></span>
         <div className="flex-1 min-w-0">
-          <p className="font-[Outfit] font-black text-3xl leading-none tabular-nums" data-testid="streak-count">{streak}<span className="text-base font-extrabold text-zinc-700 ml-1.5">day streak</span></p>
+          <p className="font-[Outfit] font-black text-3xl leading-none tabular-nums" data-testid="streak-count">{streak}<span className="text-base font-extrabold text-zinc-700 ml-1.5">{t("streakWeek.day_streak")}</span></p>
           {st.atRisk
-            ? <p className="text-[12.5px] font-bold text-[#E5484D] mt-1" data-testid="streak-risk">Your streak is at risk tonight</p>
-            : <p className="text-[12.5px] text-zinc-600 mt-1">Practise every day to keep the flame.</p>}
+            ? <p className="text-[12.5px] font-bold text-[#E5484D] mt-1" data-testid="streak-risk">{t("streakWeek.your_streak_is_at_risk_tonight")}</p>
+            : <p className="text-[12.5px] text-zinc-600 mt-1">{t("streakWeek.practise_every_day_to_keep_the")}</p>}
         </div>
-        <button onClick={buyFreeze} disabled={!canBuy} data-testid="btn-buy-freeze" aria-label="Get a streak freeze"
+        <button onClick={buyFreeze} disabled={!canBuy} data-testid="btn-buy-freeze" aria-label={t("streakWeek.get_a_streak_freeze")}
           className="shrink-0 rounded-2xl bg-white border border-blue-200 px-2.5 py-1.5 text-center disabled:opacity-60 active:scale-95">
           <span className="flex items-center justify-center gap-1 text-[12px] font-extrabold text-blue-700"><Snowflake className="w-3.5 h-3.5" /><span data-testid="freeze-count">{freezes}</span>/{FREEZE_MAX}</span>
-          <span className="block text-[10.5px] font-bold text-blue-600 leading-tight">{freezes >= FREEZE_MAX ? "Max" : `Get · ${FREEZE_COST}`}</span>
+          <span className="block text-[10.5px] font-bold text-blue-600 leading-tight">{freezes >= FREEZE_MAX ? t("streakWeek.max") : `Get · ${FREEZE_COST}`}</span>
         </button>
       </div>
       {msg && <p className="text-[12px] text-zinc-600 mt-2" role="status">{msg}</p>}
 
-      <div className="grid grid-cols-7 gap-1.5 text-center mt-4" aria-label="This week">
+      <div className="grid grid-cols-7 gap-1.5 text-center mt-4" aria-label={t("streakWeek.this_week")}>
         {(week || Array.from({ length: 7 }, (_, i) => ({ date: i, label: "·" }))).map((w, i) => {
           const today = i === todayIdx;
           const future = todayIdx >= 0 && i > todayIdx;
@@ -93,7 +95,7 @@ export default function StreakWeek() {
       <div className="mt-3.5">
         <div className="flex justify-between text-[12px] font-bold text-zinc-700 mb-1"><span>Aim for {WEEK_GOAL} days this week</span><span className="tabular-nums" data-testid="week-goal">{Math.min(doneDays, WEEK_GOAL)} / {WEEK_GOAL}</span></div>
         <div className="h-2.5 rounded-full bg-white/80 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-[#FF6B35] to-[#FBBF24] transition-all duration-700" style={{ width: `${Math.min(100, (doneDays / WEEK_GOAL) * 100)}%` }} /></div>
-        <p className="text-[11.5px] text-zinc-600 mt-1.5">A day lights up when you practise or claim a quest. A freeze saves your streak if you miss a day.</p>
+        <p className="text-[11.5px] text-zinc-600 mt-1.5">{t("streakWeek.a_day_lights_up_when_you")}</p>
       </div>
     </section>
   );
