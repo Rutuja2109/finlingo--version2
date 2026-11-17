@@ -38,6 +38,8 @@ api.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`;
   // Lets the server count days (streak, daily goal) on the learner's own clock.
   config.headers["X-TZ-Offset"] = String(new Date().getTimezoneOffset());
+  // Which language the lessons should come back in (the server keeps English where a lesson is not translated yet).
+  try { config.headers["X-Lang"] = localStorage.getItem("fl_lang") || (navigator.language || "en").slice(0, 2); } catch { /* ignore */ }
   return config;
 }, (error) => { requestEnded(); return Promise.reject(error); });
 

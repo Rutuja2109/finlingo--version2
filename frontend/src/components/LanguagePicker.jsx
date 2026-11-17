@@ -18,7 +18,11 @@ export default function LanguagePicker() {
           <button
             key={l.code}
             type="button"
-            onClick={() => setLanguage(l.code)}
+            onClick={async () => {
+              if (current === l.code) return;
+              await setLanguage(l.code);
+              window.location.reload(); // lessons come from the server in the chosen language, so reload them
+            }}
             data-testid={`lang-${l.code}`}
             className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
               current === l.code ? "border-orange-500 bg-orange-50 text-orange-600" : "border-slate-200 text-slate-700"

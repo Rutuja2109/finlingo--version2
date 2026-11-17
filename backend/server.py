@@ -29,6 +29,7 @@ from practice import make_router as make_practice_router
 from money import make_router as make_money_router
 from missions import make_router as make_missions_router
 from explainers import make_router as make_explainer_router
+import localize
 import google_auth
 import pro
 import security
@@ -528,13 +529,13 @@ def _clean(doc):
 
 
 @api.get("/courses")
-async def list_courses():
+async def list_courses(request: Request):
     cursor = db.courses.find({"hidden": {"$ne": True}}, {"_id": 0}).sort("order", 1)
-    return await cursor.to_list(length=200)
+    return localize.localize(await cursor.to_list(length=200), localize.pick_lang(request))
 
 
 @api.get("/courses/{course_id}/full")
-async def course_full(course_id: str, user: dict = Depends(get_current_user)):
+async def course_full(course_id: str, request: Request, user: dict = Depends(get_current_user)):
     course = await db.courses.find_one({"id": course_id}, {"_id": 0})
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
@@ -584,11 +585,11 @@ async def course_full(course_id: str, user: dict = Depends(get_current_user)):
         c["locked"] = free is not None and c["id"] not in free
     course["chapters"] = chapters
     course["free_concepts"] = pro.FREE_CONCEPTS
-    return course
+    return localize.localize(course, localize.pick_lang(request))
 
 
 @api.get("/concepts/{concept_id}")
-async def get_concept(concept_id: str, user: dict = Depends(get_current_user)):
+async def get_concept(concept_id: str, request: Request, user: dict = Depends(get_current_user)):
     concept = await db.concepts.find_one({"id": concept_id}, {"_id": 0})
     if not concept:
         raise HTTPException(status_code=404, detail="Concept not found")
@@ -600,7 +601,7 @@ async def get_concept(concept_id: str, user: dict = Depends(get_current_user)):
         {"user_id": user["id"], "concept_id": concept_id}, {"_id": 0}
     )
     concept["progress"] = prog or {"status": "active", "mastery": 0, "attempts": 0}
-    return concept
+    return localize.localize(concept, localize.pick_lang(request))
 
 
 # ---------- PROGRESS & GAMIFICATION ----------
@@ -1092,7 +1093,7 @@ def _next_review_interval(prev_interval_days: int, quality: int) -> int:
 
 
 @api.get("/revisions/due")
-async def revisions_due(user: dict = Depends(get_current_user)):
+async def revisions_due(request: Request, user: dict = Depends(get_current_user)):
     """Return concepts that are due for review (mastered/completed + next_review_at <= now)."""
     now_iso = datetime.now(timezone.utc).isoformat()
     rows = await db.user_progress.find(
@@ -1104,7 +1105,8 @@ async def revisions_due(user: dict = Depends(get_current_user)):
     concept_ids = [r["concept_id"] for r in rows]
     concepts = await db.concepts.find({"id": {"$in": concept_ids}}, {"_id": 0}).to_list(50)
     by_id = {c["id"]: c for c in concepts}
-    return [{"progress": r, "concept": by_id.get(r["concept_id"])} for r in rows if by_id.get(r["concept_id"])]
+    out = [{"progress": r, "concept": by_id.get(r["concept_id"])} for r in rows if by_id.get(r["concept_id"])]
+    return localize.localize(out, localize.pick_lang(request))
 
 
 @api.post("/revisions/grade")
@@ -1137,7 +1139,7 @@ async def revisions_grade(payload: RevisionGradeIn, request: Request, user: dict
 
 # ---------- BOSS BATTLE ----------
 @api.get("/boss-battles/{chapter_id}")
-async def boss_battle(chapter_id: str, user: dict = Depends(require_pro)):
+async def boss_battle(chapter_id: str, request: Request, user: dict = Depends(require_pro)):
     """Return chapter info + a mixed quiz of MCQs sampled from that chapter's concepts."""
     chapter = await db.chapters.find_one({"id": chapter_id}, {"_id": 0})
     if not chapter:
@@ -1160,11 +1162,11 @@ async def boss_battle(chapter_id: str, user: dict = Depends(require_pro)):
     ).to_list(500)
     import random as _r
     questions = _r.sample(lessons, min(8, len(lessons))) if lessons else []
-    return {
+    return localize.localize({
         "chapter": chapter, "unlocked": unlocked,
         "concepts_total": len(concept_ids), "concepts_done": len(done_ids),
         "questions": [{"id": q["id"], "content": q["content"]} for q in questions],
-    }
+    }, localize.pick_lang(request))
 
 
 @api.post("/boss-battles/submit")
