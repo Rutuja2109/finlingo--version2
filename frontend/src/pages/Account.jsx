@@ -3,6 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import { LogOut, Trash2, Shield, Award, Crown } from "lucide-react";
 import { PRIVACY_URL, TERMS_URL } from "@/lib/api";
+import LanguagePicker from "@/components/LanguagePicker";
 
 export default function Account() {
   const { user, logout, deleteAccount, sub, isPro } = useAuth();
@@ -33,6 +34,8 @@ export default function Account() {
           <Shield className="w-5 h-5 text-[#FF6B35]" /> Admin tools (give Pro, AI lab)
         </Link>
       )}
+
+      <div className="mb-4"><LanguagePicker /></div>
 
       <Link to="/pro" data-testid="account-plan" className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
         <Crown className="w-5 h-5 text-amber-600" />

@@ -1,0 +1,20 @@
+{
+  "language": {
+    "title": "Language",
+    "hint": "Pick the language you learn best in. You can change it any time."
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "back": "Back",
+    "loading": "Loading…"
+  },
+  "nav": {
+    "home": "Home",
+    "courses": "Courses",
+    "practice": "Practice",
+    "money": "Money",
+    "rank": "Rank"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "language": { "title": "Idioma", "hint": "Elige el idioma en el que aprendes mejor. Puedes cambiarlo cuando quieras." },
+  "common": { "save": "Guardar", "cancel": "Cancelar", "continue": "Continuar", "back": "Atrás", "loading": "Cargando…" },
+  "nav": { "home": "Inicio", "courses": "Cursos", "practice": "Práctica", "money": "Dinero", "rank": "Ranking" }
+}
