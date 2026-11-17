@@ -5,7 +5,7 @@ import Logo from "@/components/Logo";
 import { Eye, EyeOff } from "lucide-react";
 import { api, PRIVACY_URL } from "@/lib/api";
 import { googleIdToken, wasCancelled, failureHint } from "@/lib/googleLogin";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 
 export default function AuthPage({ mode = "login" }) {
   const { t } = useTranslation();
@@ -66,7 +66,7 @@ export default function AuthPage({ mode = "login" }) {
           </Link>
           <div>
             <h1 className="font-[Outfit] font-black text-5xl leading-tight tracking-tight mb-4">
-              Learn money.<br/>One choice at a time.
+              {t("authPage.learn_money")}<br/>{t("authPage.one_choice_at_a_time")}
             </h1>
             <p className="text-white/85 max-w-md">{t("authPage.budgeting_stocks_and_bitcoin_through_rea")}</p>
           </div>
@@ -89,10 +89,9 @@ export default function AuthPage({ mode = "login" }) {
             <>
               <button type="button" onClick={google} disabled={busy} data-testid="btn-google"
                 className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-zinc-300 bg-white hover:bg-zinc-50 font-[Outfit] font-bold tracking-tight transition active:scale-[0.98] disabled:opacity-60">
-                <GoogleG /> Continue with Google
-              </button>
+                <GoogleG /> {t("authPage.continue_with_google")} </button>
               <div className="flex items-center gap-3 my-5 text-xs text-zinc-400 font-semibold uppercase tracking-widest">
-                <span className="flex-1 h-px bg-zinc-200" />or use email<span className="flex-1 h-px bg-zinc-200" />
+                <span className="flex-1 h-px bg-zinc-200" />{t("authPage.or_use_email")}<span className="flex-1 h-px bg-zinc-200" />
               </div>
             </>
           )}
@@ -166,8 +165,7 @@ export default function AuthPage({ mode = "login" }) {
 
           {!isLogin && (
             <p className="text-xs text-zinc-500 text-center mt-3">
-              By signing up you agree to our{" "}
-              <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#FF6B35]">{t("authPage.privacy_policy")}</a>.
+              <Trans i18nKey="authPage.agree_terms" components={{ policy: <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#FF6B35]" /> }} />
             </p>
           )}
 

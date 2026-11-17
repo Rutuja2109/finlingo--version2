@@ -37,38 +37,28 @@ export default function AppShell({ children }) {
 
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
             <Link to="/dashboard" className={linkCls("/dashboard")} data-testid="nav-dashboard">
-              <Home className="w-4 h-4" /> Home
-            </Link>
+              <Home className="w-4 h-4" /> {tx("appShell.home")} </Link>
             <Link to="/courses" className={linkCls("/courses")} data-testid="nav-courses">
-              <BookOpen className="w-4 h-4" /> Courses
-            </Link>
+              <BookOpen className="w-4 h-4" /> {tx("appShell.courses")} </Link>
             <Link to="/practice" className={linkCls("/practice")} data-testid="nav-practice">
-              <LineChart className="w-4 h-4" /> Practice
-            </Link>
+              <LineChart className="w-4 h-4" /> {tx("appShell.practice")} </Link>
             <Link to="/money" className={linkCls("/money")} data-testid="nav-money">
-              <Wallet className="w-4 h-4" /> My money
-            </Link>
+              <Wallet className="w-4 h-4" /> {tx("appShell.my_money")} </Link>
             <Link to="/missions" className={linkCls("/missions")} data-testid="nav-missions">
-              <Flag className="w-4 h-4" /> Missions
-            </Link>
+              <Flag className="w-4 h-4" /> {tx("appShell.missions")} </Link>
             <Link to="/revise" className={linkCls("/revise")} data-testid="nav-revise">
-              <Repeat className="w-4 h-4" /> Revise
-            </Link>
+              <Repeat className="w-4 h-4" /> {tx("appShell.revise")} </Link>
             <Link to="/leaderboard" className={linkCls("/leaderboard")} data-testid="nav-leaderboard">
-              <Trophy className="w-4 h-4" /> Leaderboard
-            </Link>
+              <Trophy className="w-4 h-4" /> {tx("appShell.leaderboard")} </Link>
             <Link to="/achievements" className={linkCls("/achievements")} data-testid="nav-achievements">
-              <Award className="w-4 h-4" /> Achievements
-            </Link>
+              <Award className="w-4 h-4" /> {tx("appShell.achievements")} </Link>
             {/* nav-admin: render placeholder until user hydrates to avoid flash */}
             {user && user.role === "admin" ? (
               <>
                 <Link to="/admin/explainers" className={linkCls("/admin/explainers")} data-testid="nav-admin-explainers">
-                  <Flag className="w-4 h-4" /> Explainers
-                </Link>
+                  <Flag className="w-4 h-4" /> {tx("appShell.explainers")} </Link>
                 <Link to="/admin" className={linkCls("/admin")} data-testid="nav-admin">
-                  <Sparkles className="w-4 h-4" /> AI Lab
-                </Link>
+                  <Sparkles className="w-4 h-4" /> {tx("appShell.ai_lab")} </Link>
               </>
             ) : null}
           </nav>

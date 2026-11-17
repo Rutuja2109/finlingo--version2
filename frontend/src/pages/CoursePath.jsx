@@ -46,8 +46,7 @@ export default function CoursePath() {
       {/* Header */}
       <button onClick={() => nav("/courses")}
         className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 mb-5">
-        <ChevronLeft className="w-4 h-4" /> All courses
-      </button>
+        <ChevronLeft className="w-4 h-4" /> {t("coursePath.all_courses")} </button>
 
       <div className="rounded-3xl p-6 mb-8 text-white relative overflow-hidden"
         style={{ background: `linear-gradient(135deg, ${course.color}dd, #1B1B1F)` }}>
@@ -65,7 +64,7 @@ export default function CoursePath() {
           className="w-full flex items-center gap-3 text-left rounded-2xl bg-amber-50 border-2 border-amber-300 p-3.5 mb-6">
           <span className="w-10 h-10 rounded-xl bg-amber-400 text-white grid place-items-center shrink-0"><Crown className="w-5 h-5" /></span>
           <span className="flex-1">
-            <span className="block font-[Outfit] font-extrabold text-[15px]">Free preview: {course.free_concepts || 2} lessons</span>
+            <span className="block font-[Outfit] font-extrabold text-[15px]">{t("coursePath.free_preview_lessons", { n: course.free_concepts || 2 })}</span>
             <span className="block text-[13px] text-zinc-600">{t("coursePath.one_pro_plan_49_a_month")}</span>
           </span>
         </button>
@@ -108,11 +107,12 @@ export default function CoursePath() {
 }
 
 function ChapterBanner({ ch, ci, color }) {
+  const { t } = useTranslation();
   return (
     <div className="relative z-10 flex justify-center my-6">
       <div className="px-5 py-3 rounded-2xl text-center shadow-lg border border-white"
         style={{ background: `linear-gradient(135deg, ${color}20, ${color}08)`, borderColor: `${color}30` }}>
-        <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-500">Chapter {ci + 1}</p>
+        <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-500">{t("coursePath.chapter_v1", { v1: ci + 1 })}</p>
         <p className="font-[Outfit] font-black text-base tracking-tight text-zinc-900">{ch.title}</p>
       </div>
     </div>
@@ -170,7 +170,7 @@ function ConceptNode({ concept, color, side, index, onClick }) {
 
         {isAvailable && (
           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#FF6B35] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full whitespace-nowrap">
-            +{concept.xp_reward} XP
+            {t("coursePath.plus_xp", { xp: concept.xp_reward })}
           </span>
         )}
       </button>
@@ -181,7 +181,7 @@ function ConceptNode({ concept, color, side, index, onClick }) {
 
       {/* Label card */}
       <div className={`flex-1 ${side === "right" ? "text-right pr-2" : "pl-2"}`}>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Concept {index}</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">{t("coursePath.concept_index", { index })}</p>
         <p className="font-[Outfit] font-bold text-[15px] tracking-tight text-zinc-900 leading-tight">{concept.title}</p>
         {proLocked && <p className="text-xs font-bold text-amber-600 mt-0.5">{t("coursePath.pro_lesson")}</p>}
         {!isLocked && !proLocked && (

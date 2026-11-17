@@ -75,7 +75,7 @@ export default function Money() {
       </div>
 
       <Link to="/calculators" data-testid="money-calculators" className="flex items-center justify-between bg-white border border-zinc-200 rounded-2xl px-3.5 py-2.5 mb-3 text-[13px] font-bold">
-        <span className="flex items-center gap-2"><Calculator className="w-4 h-4 text-[#FF6B35]" />SIP, loan EMI and emergency fund calculators</span><ChevronRight className="w-4 h-4 text-zinc-400" />
+        <span className="flex items-center gap-2"><Calculator className="w-4 h-4 text-[#FF6B35]" />{tx("money.sip_loan_emi_and_emergency_fund")}</span><ChevronRight className="w-4 h-4 text-zinc-400" />
       </Link>
       {err && <div className="mb-2 text-[12.5px] text-red-700 bg-red-50 rounded-xl px-3 py-2">{err}</div>}
       {!data && !err && <div className="py-16 text-center text-zinc-500">{tx("money.loading_your_money")}</div>}
@@ -114,7 +114,7 @@ export default function Money() {
           </div>
 
           <button onClick={() => setSheet("entry")} data-testid="money-add"
-            className="w-full mt-3 rounded-2xl py-3.5 bg-[#FF6B35] text-white font-[Outfit] font-black text-base flex items-center justify-center gap-2 active:scale-[.98]"><Plus className="w-5 h-5" />Add money in or out</button>
+            className="w-full mt-3 rounded-2xl py-3.5 bg-[#FF6B35] text-white font-[Outfit] font-black text-base flex items-center justify-center gap-2 active:scale-[.98]"><Plus className="w-5 h-5" />{tx("money.add_money_in_or_out")}</button>
 
           {/* Entries */}
           <div className="mt-4">
@@ -143,10 +143,10 @@ export default function Money() {
       <div className="mt-6" data-testid="money-goals">
         <div className="flex items-center justify-between px-1 mb-2">
           <p className="text-[11px] font-bold tracking-[.2em] uppercase text-zinc-500">{tx("money.savings_goals")}</p>
-          <button onClick={() => setSheet("goal")} data-testid="goal-new" className="text-[13px] font-extrabold text-[#FF6B35] flex items-center gap-1"><Plus className="w-4 h-4" />New goal</button>
+          <button onClick={() => setSheet("goal")} data-testid="goal-new" className="text-[13px] font-extrabold text-[#FF6B35] flex items-center gap-1"><Plus className="w-4 h-4" />{tx("money.new_goal")}</button>
         </div>
         {goals.length === 0 && (
-          <div className="bg-white border border-zinc-200 rounded-2xl p-3.5 text-[13px] text-zinc-600 flex gap-3"><Target className="w-5 h-5 text-[#FF6B35] shrink-0 mt-0.5" />Want a ₹50,000 phone in 6 months? Add it as a goal and I will tell you how much to save each month.</div>
+          <div className="bg-white border border-zinc-200 rounded-2xl p-3.5 text-[13px] text-zinc-600 flex gap-3"><Target className="w-5 h-5 text-[#FF6B35] shrink-0 mt-0.5" />{tx("money.want_a_50_000_phone_in")}</div>
         )}
         {goals.map((g) => (
           <div key={g.id} className="bg-white border border-zinc-200 rounded-2xl p-3.5 mb-2.5" data-testid="goal-card">
@@ -158,10 +158,10 @@ export default function Money() {
             <div className="flex items-center justify-between gap-2">
               <div className="text-[13px]" data-testid="goal-monthly">
                 {g.done ? <b className="text-emerald-700">{tx("money.goal_reached")}</b>
-                  : g.overdue ? <b className="text-amber-700">Deadline passed, {inr(g.left)} to go</b>
+                  : g.overdue ? <b className="text-amber-700">{tx("money.deadline_passed_v1_to_go", { v1: inr(g.left) })}</b>
                     : <>Save <b>{inr(g.monthly)}</b> a month for {g.months_left} {g.months_left === 1 ? "month" : "months"}</>}
               </div>
-              {!g.done && <button onClick={() => setSheet({ addTo: g })} className="rounded-xl bg-emerald-50 text-emerald-700 font-[Outfit] font-extrabold text-[13px] px-3 py-1.5 flex items-center gap-1 shrink-0"><PiggyBank className="w-4 h-4" />Add</button>}
+              {!g.done && <button onClick={() => setSheet({ addTo: g })} className="rounded-xl bg-emerald-50 text-emerald-700 font-[Outfit] font-extrabold text-[13px] px-3 py-1.5 flex items-center gap-1 shrink-0"><PiggyBank className="w-4 h-4" />{tx("money.add")}</button>}
             </div>
           </div>
         ))}
@@ -212,7 +212,7 @@ function EntrySheet({ onClose, onSaved }) {
                 style={cat === id ? { background: BUCKET[b].color, borderColor: BUCKET[b].color } : {}}>{label}</button>
             ))}
           </div>
-          <p className="text-[12px] text-zinc-500 -mt-1 mb-3">Colors: <b style={{ color: BUCKET.needs.color }}>needs</b>, <b style={{ color: BUCKET.wants.color }}>wants</b>, <b style={{ color: BUCKET.savings.color }}>savings</b>.</p>
+          <p className="text-[12px] text-zinc-500 -mt-1 mb-3">{tx("money.colors")} <b style={{ color: BUCKET.needs.color }}>needs</b>, <b style={{ color: BUCKET.wants.color }}>wants</b>, <b style={{ color: BUCKET.savings.color }}>savings</b>.</p>
         </>
       )}
       <label className="text-[12px] font-bold text-zinc-500">{tx("money.note_optional")}</label>
@@ -286,7 +286,7 @@ function AddSavedSheet({ goal, onClose, onSaved }) {
   };
   return (
     <Sheet title={`Add to ${goal.name}`} onClose={onClose} testid="addsaved-sheet">
-      <p className="text-[13px] text-zinc-500 mb-2">You have {inr(goal.saved)} of {inr(goal.target)}. Put the amount you just set aside.</p>
+      <p className="text-[13px] text-zinc-500 mb-2">{tx("money.you_have_v1_of_v3_put", { v1: inr(goal.saved), v3: inr(goal.target) })}</p>
       <input value={amount} onChange={(e) => setAmount(cleanNum(e.target.value))} inputMode="decimal" autoFocus data-testid="addsaved-amount"
         className="w-full border-2 border-zinc-200 rounded-2xl px-3 py-2.5 mb-3 font-[Outfit] font-black text-2xl outline-none focus:border-[#FF6B35]" />
       {err && <p className="text-red-700 text-[13px] mb-2">{err}</p>}

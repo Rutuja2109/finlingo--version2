@@ -99,13 +99,13 @@ export default function Paywall() {
 
       <div className="flex items-center justify-between mb-2">
         <button onClick={() => nav(-1)} data-testid="paywall-close" aria-label={tx("paywall.close")} className="w-9 h-9 rounded-full bg-zinc-100 grid place-items-center"><X className="w-4 h-4" /></button>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11.5px] font-extrabold px-3 py-1" data-testid="one-plan-note"><ShieldCheck className="w-3.5 h-3.5" />One plan · every feature included</span>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11.5px] font-extrabold px-3 py-1" data-testid="one-plan-note"><ShieldCheck className="w-3.5 h-3.5" />{tx("paywall.one_plan_every_feature_included")}</span>
       </div>
 
       <div className="rounded-3xl bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899] text-white p-4 relative overflow-hidden mb-3">
         <div className="absolute -right-1 -bottom-2 opacity-35 pointer-events-none"><Lumi size={84} mood="cheer" /></div>
         <p className="uppercase tracking-[0.2em] text-[10.5px] font-bold text-white/95 mb-0.5">
-          {t.active ? <Gift className="w-3.5 h-3.5 inline -mt-0.5 mr-1" /> : <Crown className="w-3.5 h-3.5 inline -mt-0.5 mr-1" />}FinLearn Pro
+          {t.active ? <Gift className="w-3.5 h-3.5 inline -mt-0.5 mr-1" /> : <Crown className="w-3.5 h-3.5 inline -mt-0.5 mr-1" />}{tx("paywall.finlearn_pro")}
         </p>
         <h1 className="font-[Outfit] font-black text-[22px] leading-tight max-w-[78%]" data-testid="paywall-headline">{headline}</h1>
         {personal && !paid && <p className="text-[12.5px] text-white/95 mt-1 max-w-[80%]" data-testid="paywall-personal">{personal}</p>}
@@ -121,7 +121,7 @@ export default function Paywall() {
         <>
           {t.active && (
             <div className="rounded-2xl bg-violet-50 border-2 border-violet-200 px-3 py-2 mb-3 text-[12.5px] text-zinc-700" data-testid="trial-note">
-              <b>{tx("paywall.your_free_trial_is_running")}</b> Everything is open until {new Date(t.ends_at).toLocaleDateString()}. Subscribe to keep it.
+              <b>{tx("paywall.your_free_trial_is_running")}</b> {tx("paywall.open_until", { date: new Date(t.ends_at).toLocaleDateString() })}
             </div>
           )}
 
@@ -129,14 +129,14 @@ export default function Paywall() {
             {chips.map(({ Icon, t: label }, i) => (
               <span key={label} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-bold ${i === 0 && why ? "bg-orange-100 text-[#C2410C]" : "bg-zinc-100 text-zinc-700"}`}><Icon className="w-3.5 h-3.5" />{label}</span>
             ))}
-            <button onClick={() => setMore((m) => !m)} data-testid="see-everything" className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12.5px] font-extrabold text-[#FF6B35]">+ more<ChevronDown className={`w-3.5 h-3.5 transition ${more ? "rotate-180" : ""}`} /></button>
+            <button onClick={() => setMore((m) => !m)} data-testid="see-everything" className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12.5px] font-extrabold text-[#FF6B35]">{tx("paywall.more")}<ChevronDown className={`w-3.5 h-3.5 transition ${more ? "rotate-180" : ""}`} /></button>
           </div>
           {more && (
             <ul className="bg-white border border-zinc-200 rounded-2xl p-3 mb-3 space-y-2" data-testid="everything-list">
               {EVERYTHING.map(({ Icon, t: label }) => (
                 <li key={label} className="flex items-center gap-2.5 text-[13.5px] font-semibold"><Icon className="w-4 h-4 text-amber-600 shrink-0" />{label}<Check className="w-4 h-4 text-emerald-500 ml-auto shrink-0" strokeWidth={3} /></li>
               ))}
-              <li className="text-[12px] text-zinc-600 pt-0.5">Free forever: {sub?.free_concepts || 2} lessons per course, daily quests and the idea of the day.</li>
+              <li className="text-[12px] text-zinc-600 pt-0.5">{tx("paywall.free_forever", { n: sub?.free_concepts || 2 })}</li>
             </ul>
           )}
 
@@ -144,7 +144,7 @@ export default function Paywall() {
             {plans.map((p) => (
               <button key={p.id} role="radio" aria-checked={plan === p.id} onClick={() => setPlan(p.id)} data-testid={`plan-${p.id}`}
                 className={`relative text-left rounded-2xl border-2 px-3.5 py-3 flex items-center gap-3 ${plan === p.id ? "border-[#FF6B35] bg-orange-50" : "border-zinc-200 bg-white"}`}>
-                {p.badge && <span className="absolute -top-2.5 right-4 rounded-full bg-[#FF6B35] text-white text-[10px] font-black px-2.5 py-0.5">{p.badge} · SAVE {p.save_pct}%</span>}
+                {p.badge && <span className="absolute -top-2.5 right-4 rounded-full bg-[#FF6B35] text-white text-[10px] font-black px-2.5 py-0.5">{tx("paywall.badge_save_save_pct", { badge: p.badge, save_pct: p.save_pct })}</span>}
                 <span className={`w-6 h-6 rounded-full border-2 grid place-items-center shrink-0 ${plan === p.id ? "border-[#FF6B35] bg-[#FF6B35] text-white" : "border-zinc-300"}`}>{plan === p.id && <Check className="w-4 h-4" strokeWidth={3} />}</span>
                 <span className="flex-1">
                   <span className="block font-[Outfit] font-extrabold text-[17px] leading-tight">{p.label}</span>
@@ -157,14 +157,14 @@ export default function Paywall() {
               </button>
             ))}
           </div>
-          {perDay && <p className="text-center text-[13px] font-bold text-zinc-700 mb-2" data-testid="per-day">That is about ₹{perDay} a day</p>}
+          {perDay && <p className="text-center text-[13px] font-bold text-zinc-700 mb-2" data-testid="per-day">{tx("paywall.that_is_about_perday_a_day", { perDay })}</p>}
 
           <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] font-bold text-zinc-600 mb-3" data-testid="trust-row">
             <span>{tx("paywall.cancel_any_time")}</span><span aria-hidden="true">·</span><span>{tx("paywall.billed_by_google_play")}</span><span aria-hidden="true">·</span><span>{tx("paywall.upi_autopay_or_card")}</span>
           </p>
 
           <div className="text-[11.5px] text-zinc-600 leading-relaxed space-y-1" data-testid="pro-terms">
-            <p>Renews automatically every {chosen?.per || "period"} at ₹{chosen?.price} until you cancel. Payment is charged to your Google Play account.</p>
+            <p>{tx("paywall.renews", { per: chosen?.per || "period", price: chosen?.price })}</p>
             <p>{tx("paywall.cancel_in_google_play_then_payments")}</p>
             <p><a href={TERMS_URL} target="_blank" rel="noopener noreferrer" className="underline font-semibold" data-testid="paywall-terms-link">{tx("paywall.terms")}</a> · <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="underline font-semibold">{tx("paywall.privacy_policy")}</a></p>
           </div>

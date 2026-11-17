@@ -215,7 +215,7 @@ export default function Practice() {
       {/* header */}
       <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899]">
         <div className="flex items-center justify-between gap-2">
-          <button onClick={resetAll} className="flex items-center gap-1 rounded-full bg-white/25 px-3 py-1.5 text-[13px] font-bold font-[Outfit]" data-testid="pt-reset"><RefreshCw className="w-3.5 h-3.5" />Reset</button>
+          <button onClick={resetAll} className="flex items-center gap-1 rounded-full bg-white/25 px-3 py-1.5 text-[13px] font-bold font-[Outfit]" data-testid="pt-reset"><RefreshCw className="w-3.5 h-3.5" />{tx("practice.reset")}</button>
           <div className="text-center">
             <div id="pt-bal" className="inline-block px-3 mb-1.5 font-[Outfit] font-black text-2xl tracking-tight" data-testid="pt-cash">{inr(S.cash)}</div>
             <div className="text-[11.5px] font-semibold opacity-90">{tx("practice.practice_money_not_real_money")}</div>
@@ -226,14 +226,14 @@ export default function Practice() {
 
       {crashing && (
         <div className="mt-2 bg-zinc-900 text-white rounded-2xl px-3 py-2 text-[13px] font-bold flex items-center gap-2" data-testid="pt-crash-banner">
-          <Flame className="w-4 h-4 text-[#FF6B35]" /> Market crash replay: day {Math.min(10, Math.ceil((S.scenario.tick + 1) / 5))} of 10. Hold your nerve.
+          <Flame className="w-4 h-4 text-[#FF6B35]" /> {tx("practice.crash_replay", { day: Math.min(10, Math.ceil((S.scenario.tick + 1) / 5)) })}
         </div>
       )}
 
       {/* Lumi's tour card */}
       {step && (
         <div className="sticky top-[68px] z-30 mt-2 bg-white border-2 border-[#FF6B35] rounded-2xl p-2.5 shadow-lg" data-testid="pt-tour">
-          <div className="text-[11px] font-extrabold tracking-[.14em] uppercase text-[#FF6B35]">Lumi’s tour · {tour.i + 1} of {TOUR.length}</div>
+          <div className="text-[11px] font-extrabold tracking-[.14em] uppercase text-[#FF6B35]">{tx("practice.lumi_s_tour_v1_of_length", { v1: tour.i + 1, length: TOUR.length })}</div>
           <div className="flex gap-2.5 items-start mt-1">
             <Lumi size={44} mood={step.m} className="shrink-0" />
             <div className="text-[13px] leading-snug"><b className="font-[Outfit]">{step.h}</b><br />{step.quiz ? step.quiz.q : step.t}</div>
@@ -292,15 +292,15 @@ export default function Practice() {
           </div>
           <div className="grid grid-cols-2 gap-2.5">
             <button id="pt-sell" data-testid="pt-sell" disabled={!pos} onClick={() => { setSheet({ mode: "sell", amt: 100 }); setF((x) => ({ ...x, sheetSell: true })); }}
-              className={`rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 ${pos ? "bg-red-500 active:scale-[.97]" : "bg-red-300"}`}><ArrowDown className="w-4 h-4" />Sell</button>
+              className={`rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 ${pos ? "bg-red-500 active:scale-[.97]" : "bg-red-300"}`}><ArrowDown className="w-4 h-4" />{tx("practice.sell")}</button>
             <button id="pt-buy" data-testid="pt-buy" onClick={() => { setSheet({ mode: "buy", amt: Math.min(10000, Math.floor(S.cash)) }); setF((x) => ({ ...x, sheetBuy: true })); }}
-              className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-emerald-500 active:scale-[.97]"><ArrowUp className="w-4 h-4" />Buy</button>
+              className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-emerald-500 active:scale-[.97]"><ArrowUp className="w-4 h-4" />{tx("practice.buy")}</button>
           </div>
           {msg
             ? <Coach mood={msg.k === "bad" ? "angry" : msg.k === "warn" ? "nervous" : "cheer"} title={msg.h} tone={msg.k}>{msg.t}</Coach>
             : <Coach mood="happy" title={tx("practice.lumi_says")}>{asset.why}</Coach>}
           {!crashing && (
-            <button onClick={startCrash} data-testid="pt-crash" className="mx-auto mt-3 flex items-center gap-1.5 border-2 border-red-500 text-red-700 bg-white rounded-2xl px-3 py-2 font-[Outfit] font-extrabold text-[13px]"><Flame className="w-4 h-4" />Replay a market crash</button>
+            <button onClick={startCrash} data-testid="pt-crash" className="mx-auto mt-3 flex items-center gap-1.5 border-2 border-red-500 text-red-700 bg-white rounded-2xl px-3 py-2 font-[Outfit] font-extrabold text-[13px]"><Flame className="w-4 h-4" />{tx("practice.replay_a_market_crash")}</button>
           )}
           {!tour && <button onClick={() => { setTour({ i: 0, quiz: null }); setF({}); }} className="block mx-auto mt-2 text-[12.5px] font-extrabold text-[#FF6B35]" data-testid="pt-replay-tour">{tx("practice.replay_lumi_s_tour")}</button>}
         </div>
@@ -333,7 +333,7 @@ export default function Practice() {
               return (
                 <>
                   <h3 className="font-[Outfit] font-black text-xl">{buy ? "Buy " : "Sell "}{asset.name}</h3>
-                  <div className="text-[12.5px] text-zinc-500">Price now {inr(asset.price, pdec(asset.price))} · {buy ? `Cash ${inr(S.cash)}` : `You hold ${inr(held)}`}</div>
+                  <div className="text-[12.5px] text-zinc-500">{tx("practice.price_now", { price: inr(asset.price, pdec(asset.price)) })} · {buy ? tx("practice.cash", { amount: inr(S.cash) }) : tx("practice.you_hold", { amount: inr(held) })}</div>
                   <div className="flex gap-2 flex-wrap my-3">
                     {opts.map((o) => <button key={o} onClick={() => setSheet({ ...sheet, amt: o })} className={`border-2 rounded-[14px] px-3 py-2 font-[Outfit] font-extrabold text-sm ${o === sheet.amt ? "border-[#FF6B35] bg-[#FF6B35]/10" : "border-zinc-200"}`}>{buy ? inr(o) : `${o}%`}</button>)}
                   </div>
@@ -341,10 +341,10 @@ export default function Practice() {
                     <div className="flex justify-between py-2 text-sm"><span>{buy ? tx("practice.you_spend") : tx("practice.you_receive")}</span><b>{inr(amount)}</b></div>
                     <div className="flex justify-between py-2 text-sm border-t border-zinc-100"><span>{tx("practice.units")}</span><b>{(amount / asset.price).toFixed(4)}</b></div>
                   </div>
-                  {tooMuch && <p className="text-red-700 text-[13px] mb-2">You only have {inr(S.cash)} of practice money.</p>}
-                  {tooSmall && !tooMuch && <p className="text-red-700 text-[13px] mb-2">The smallest purchase is {inr(S.min_buy)}.</p>}
+                  {tooMuch && <p className="text-red-700 text-[13px] mb-2">{tx("practice.you_only_have_v1_of_practice", { v1: inr(S.cash) })}</p>}
+                  {tooSmall && !tooMuch && <p className="text-red-700 text-[13px] mb-2">{tx("practice.the_smallest_purchase_is_v1", { v1: inr(S.min_buy) })}</p>}
                   <button id="pt-go" data-testid="pt-go" onClick={doTrade} disabled={busy || tooMuch || tooSmall}
-                    className={`w-full rounded-2xl py-3.5 font-[Outfit] font-black text-base text-white ${buy ? "bg-emerald-500" : "bg-red-500"} disabled:opacity-50`}>Confirm {buy ? "buy" : "sell"}</button>
+                    className={`w-full rounded-2xl py-3.5 font-[Outfit] font-black text-base text-white ${buy ? "bg-emerald-500" : "bg-red-500"} disabled:opacity-50`}>{buy ? tx("practice.confirm_buy") : tx("practice.confirm_sell")}</button>
                   <button onClick={() => setSheet(null)} className="w-full rounded-2xl py-3 mt-2 bg-zinc-100 font-[Outfit] font-extrabold">{tx("practice.cancel")}</button>
                 </>
               );
@@ -380,16 +380,16 @@ function Portfolio({ S, total }) {
           const a = S.assets.find((x) => x.id === p.asset);
           return (
             <div key={p.asset} className="flex items-center justify-between py-2 border-t first:border-t-0 border-zinc-100 text-sm">
-              <div><b>{a.name}</b><div className="text-[12.5px] text-zinc-500">{p.units.toFixed(4)} units</div></div>
+              <div><b>{a.name}</b><div className="text-[12.5px] text-zinc-500">{tx("practice.v0_units", { v0: p.units.toFixed(4) })}</div></div>
               <div className="text-right"><b>{inr(p.value)}</b><div className={`text-xs font-extrabold ${p.pnl >= 0 ? "text-emerald-700" : "text-red-700"}`}>{p.pnl >= 0 ? "+" : ""}{inr(p.pnl)}</div></div>
             </div>
           );
         }) : <p className="text-[12.5px] text-zinc-500">{tx("practice.nothing_yet_buy_something_on_the")}</p>}
       </div>
       {top && (share > 0.4
-        ? <Coach mood="angry" tone="bad" title={tx("practice.too_much_in_one_basket")}>{Math.round(share * 100)}% of your money is in {topName}. If it falls 30%, you lose about {Math.round(share * 30)}% of everything.</Coach>
+        ? <Coach mood="angry" tone="bad" title={tx("practice.too_much_in_one_basket")}>{tx("practice.v0_of_your_money_is_in", { v0: Math.round(share * 100), topName, v4: Math.round(share * 30) })}</Coach>
         : S.positions.length >= 3
-          ? <Coach mood="cheer" tone="good" title={tx("practice.nicely_spread_out")}>You hold {S.positions.length} different assets. One bad day will not sink you.</Coach>
+          ? <Coach mood="cheer" tone="good" title={tx("practice.nicely_spread_out")}>{tx("practice.you_hold_length_different_assets_one", { length: S.positions.length })}</Coach>
           : <Coach mood="nervous" tone="warn" title={tx("practice.try_spreading_out")}>{tx("practice.holding_a_mix_of_assets_like")}</Coach>)}
     </div>
   );

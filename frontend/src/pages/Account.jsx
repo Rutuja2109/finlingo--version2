@@ -28,13 +28,11 @@ export default function Account() {
       <h1 className="font-[Outfit] font-black text-3xl tracking-tight mb-6">{t("account.account")}</h1>
 
       <Link to="/achievements" data-testid="account-awards" className="flex items-center gap-3 bg-white border border-zinc-200 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
-        <Award className="w-5 h-5 text-[#FF6B35]" /> Your awards
-      </Link>
+        <Award className="w-5 h-5 text-[#FF6B35]" /> {t("account.your_awards")} </Link>
 
       {user?.role === "admin" && (
         <Link to="/admin" data-testid="account-admin" className="flex items-center gap-3 bg-zinc-900 text-white rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
-          <Shield className="w-5 h-5 text-[#FF6B35]" /> Admin tools (give Pro, AI lab)
-        </Link>
+          <Shield className="w-5 h-5 text-[#FF6B35]" /> {t("account.admin_tools_give_pro_ai_lab")} </Link>
       )}
 
       <div className="mb-4"><LanguagePicker /></div>
@@ -53,21 +51,18 @@ export default function Account() {
           data-testid="account-logout"
           className="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-zinc-900 text-white font-[Outfit] font-bold"
         >
-          <LogOut className="w-4 h-4" /> Log out
-        </button>
+          <LogOut className="w-4 h-4" /> {t("account.log_out")} </button>
       </div>
 
       <div className="bg-white border border-zinc-200 rounded-3xl p-6 mb-4">
         <p className="uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 mb-2">{t("account.about")}</p>
         <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" data-testid="account-privacy"
           className="inline-flex items-center gap-2 font-[Outfit] font-bold text-[#FF6B35] hover:underline">
-          <Shield className="w-4 h-4" /> Privacy policy
-        </a>
+          <Shield className="w-4 h-4" /> {t("account.privacy_policy")} </a>
         <br />
         <a href={TERMS_URL} target="_blank" rel="noopener noreferrer" data-testid="account-terms"
           className="inline-flex items-center gap-2 font-[Outfit] font-bold text-[#FF6B35] hover:underline mt-2">
-          <Shield className="w-4 h-4" /> Terms and subscription terms
-        </a>
+          <Shield className="w-4 h-4" /> {t("account.terms_and_subscription_terms")} </a>
         <p className="text-xs text-zinc-500 mt-3">{t("account.finlearn_is_for_education_only_and")}</p>
       </div>
 
@@ -82,8 +77,7 @@ export default function Account() {
               data-testid="account-delete-start"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-red-300 text-red-600 font-[Outfit] font-bold hover:bg-red-50"
             >
-              <Trash2 className="w-4 h-4" /> Delete my account
-            </button>
+              <Trash2 className="w-4 h-4" /> {t("account.delete_my_account")} </button>
           ) : (
             <form onSubmit={onDelete}>
               <label className="block text-xs uppercase tracking-[0.2em] font-semibold text-zinc-500 mb-1.5">{t("account.confirm_your_password")}</label>

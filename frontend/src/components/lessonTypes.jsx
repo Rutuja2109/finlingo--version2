@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Check, X, Sparkles, MessageCircle, Hand, ThumbsUp } from "lucide-react";
 import Lumi from "@/components/Lumi";
 import { sipFuture, inflate, doublingYears, inr, recoveryNeeded, costDrag } from "@/lib/growth";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 
 // Interactive lesson types: chat story, myth-or-fact swipe, "what if" slider, budget splitter.
 // Each takes the lesson `l`; scored ones also take onAnswer(isCorrect), the rest call onShown() when finished.
@@ -116,6 +116,7 @@ const Slider = ({ c, value, onChange }) => (
 );
 
 export function SliderLesson({ l }) {
+  const { t: tx } = useTranslation();
   const c = l.content || {};
   const I = (n) => inr(n, c.labels);
   const [vals, setVals] = useState(() => Object.fromEntries((c.controls || []).map((k) => [k.key, k.value])));
@@ -138,17 +139,17 @@ export function SliderLesson({ l }) {
 
       {out.kind === "drawdown" ? (
         <div className="rounded-2xl bg-rose-50 border-2 border-rose-200 p-4" data-testid="slider-result">
-          <p className="text-[12px] font-bold text-zinc-500">After a {vals.loss}% fall, your {I(vals.amount)} is</p>
+          <p className="text-[12px] font-bold text-zinc-500">{tx("lessonTypes.after_a_loss_fall_your_v3", { loss: vals.loss, v3: I(vals.amount) })}</p>
           <p className="font-[Outfit] font-black text-3xl text-rose-600 tabular-nums">{I(out.left)}</p>
-          <p className="text-[13px] text-zinc-700 mt-1">To get back to {I(vals.amount)} it must then <b>rise {Math.round(out.need * 10) / 10}%</b>, which is more than the fall itself.</p>
+          <p className="text-[13px] text-zinc-700 mt-1"><Trans i18nKey="lessonTypes.get_back" values={{ amount: I(vals.amount), rise: tx("lessonTypes.rise_v1", { v1: Math.round(out.need * 10) / 10 }) }} components={{ b: <b /> }} /></p>
         </div>
       ) : out.kind === "cost" ? (
         <div className="rounded-2xl bg-amber-50 border-2 border-amber-200 p-4" data-testid="slider-result">
           <div className="grid grid-cols-2 gap-3 text-center">
-            <div className="rounded-xl bg-white p-2.5"><p className="text-[11px] font-bold text-zinc-500">Low cost ({c.lowCost ?? 0.2}% a year)</p><p className="font-[Outfit] font-black text-xl text-emerald-700 tabular-nums">{I(out.low)}</p></div>
-            <div className="rounded-xl bg-white p-2.5"><p className="text-[11px] font-bold text-zinc-500">High cost ({vals.cost}% a year)</p><p className="font-[Outfit] font-black text-xl text-rose-600 tabular-nums">{I(out.high)}</p></div>
+            <div className="rounded-xl bg-white p-2.5"><p className="text-[11px] font-bold text-zinc-500">{tx("lessonTypes.low_cost", { cost: c.lowCost ?? 0.2 })}</p><p className="font-[Outfit] font-black text-xl text-emerald-700 tabular-nums">{I(out.low)}</p></div>
+            <div className="rounded-xl bg-white p-2.5"><p className="text-[11px] font-bold text-zinc-500">{tx("lessonTypes.high_cost_cost_a_year", { cost: vals.cost })}</p><p className="font-[Outfit] font-black text-xl text-rose-600 tabular-nums">{I(out.high)}</p></div>
           </div>
-          <p className="text-[13px] text-zinc-700 mt-2">The higher fee quietly costs you <b>{I(out.lost)}</b> on the same {I(out.invested)} invested.</p>
+          <p className="text-[13px] text-zinc-700 mt-2"><Trans i18nKey="lessonTypes.higher_fee" values={{ lost: I(out.lost), invested: I(out.invested) }} components={{ b: <b /> }} /></p>
         </div>
       ) : out.kind === "growth" ? (
         <div className="rounded-2xl bg-emerald-50 border-2 border-emerald-200 p-4" data-testid="slider-result">

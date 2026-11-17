@@ -130,11 +130,10 @@ export default function Dashboard() {
               <ArrowRight className="w-5 h-5 text-zinc-500 shrink-0" />
             </button>
           ) : (
-            <Link to="/courses" data-testid="hero-browse" className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-extrabold px-4 py-3 shadow-lg">
-              Browse courses <ArrowRight className="w-4 h-4" />
+            <Link to="/courses" data-testid="hero-browse" className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-extrabold px-4 py-3 shadow-lg">{t("dashboard.browse_courses")} <ArrowRight className="w-4 h-4" />
             </Link>
           )}
-          <p className="text-[12px] text-white/95 mt-3 font-semibold">Level {stats?.level || 1} · {xpToNext} XP to the next level</p>
+          <p className="text-[12px] text-white/95 mt-3 font-semibold">{t("dashboard.level_xp_to_next", { level: stats?.level || 1, xp: xpToNext })}</p>
         </div>
       </section>
 
@@ -148,15 +147,15 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-2.5">
           <div>
             <p className="uppercase tracking-[0.18em] text-[10.5px] font-bold text-zinc-600">{t("dashboard.daily_goal")}</p>
-            <h3 className="font-[Outfit] font-black text-xl tracking-tight">Earn {dailyGoal} XP today</h3>
-            <button onClick={() => setShowGoal(true)} data-testid="change-goal" className="text-xs font-bold text-[#FF6B35] mt-0.5">{goalMinutes} min a day · Change</button>
+            <h3 className="font-[Outfit] font-black text-xl tracking-tight">{t("dashboard.earn_dailygoal_xp_today", { dailyGoal })}</h3>
+            <button onClick={() => setShowGoal(true)} data-testid="change-goal" className="text-xs font-bold text-[#FF6B35] mt-0.5">{t("dashboard.goalminutes_min_a_day_change", { goalMinutes })}</button>
           </div>
           <Target className="w-6 h-6 text-[#FF6B35]"/>
         </div>
         <div className="h-3 rounded-full bg-zinc-100 overflow-hidden">
           <div className="h-full bg-gradient-to-r from-[#FF6B35] to-[#EC4899] transition-all duration-700" style={{ width: `${dailyPct}%` }} data-testid="daily-progress-bar"/>
         </div>
-        <p className="text-sm text-zinc-600 mt-2">{Math.min(todayXp, dailyGoal)} / {dailyGoal} XP today</p>
+        <p className="text-sm text-zinc-600 mt-2">{t("dashboard.v0_dailygoal_xp_today", { v0: Math.min(todayXp, dailyGoal), dailyGoal })}</p>
       </section>
 
       <DailyQuests />
@@ -166,7 +165,7 @@ export default function Dashboard() {
         <div className="flex items-end justify-between mb-4">
           <h2 className="font-[Outfit] font-black text-2xl tracking-tight">{t("dashboard.your_courses")}</h2>
           <Link to="/courses" data-testid="link-all-courses" className="text-sm font-semibold text-[#FF6B35] hover:underline">
-            All {courses.length || ""} courses →
+            {t("dashboard.all_courses", { n: courses.length || "" })}
           </Link>
         </div>
 

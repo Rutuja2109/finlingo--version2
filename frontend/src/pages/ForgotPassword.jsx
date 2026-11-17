@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, formatApiError } from "@/lib/api";
 import Lumi from "@/components/Lumi";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 
 // When the server can send email, this is a normal "send me a reset link" form. When it cannot, it says what to do instead.
 // (The server never returns a reset link to the person asking: the link only goes to the email's owner.)
@@ -33,8 +33,7 @@ export default function ForgotPassword() {
           sent ? (
             <div className="mt-5" data-testid="forgot-sent">
               <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-900">
-                <b className="font-[Outfit]">{t("forgotPassword.check_your_email")}</b> If that address has a FinLearn account, we have sent a message with the next step. It may take a minute, and it can land in spam. The link works for one hour.
-              </div>
+                <b className="font-[Outfit]">{t("forgotPassword.check_your_email")}</b> {t("forgotPassword.if_that_address_has_a_finlearn")} </div>
               <p className="text-zinc-600 text-sm mt-3">{t("forgotPassword.opened_the_link_on_this_phone")}</p>
             </div>
           ) : (
@@ -45,7 +44,7 @@ export default function ForgotPassword() {
                 className="w-full rounded-xl border border-zinc-300 px-4 py-3 text-base" placeholder={t("forgotPassword.you_example_com")} />
               {err && <p className="text-sm text-red-600 mt-2" role="alert" data-testid="forgot-error">{err}</p>}
               <button type="submit" disabled={busy} data-testid="forgot-submit" className="mt-4 w-full py-3 rounded-xl bg-[#FF6B35] text-white font-[Outfit] font-bold disabled:opacity-60">{busy ? t("forgotPassword.sending") : t("forgotPassword.send_reset_link")}</button>
-              {cfg?.google_client_id && <p className="text-xs text-zinc-500 mt-3 text-center">Signed up with Google? Go back and tap <b>{t("forgotPassword.continue_with_google")}</b>. You do not need a password.</p>}
+              {cfg?.google_client_id && <p className="text-xs text-zinc-500 mt-3 text-center"><Trans i18nKey="forgotPassword.google_hint_long" components={{ b: <b /> }} /></p>}
             </form>
           )
         ) : (
@@ -54,7 +53,7 @@ export default function ForgotPassword() {
             {cfg?.google_client_id && (
               <div className="rounded-2xl border border-zinc-200 p-4 mb-3 text-sm" data-testid="forgot-google">
                 <b className="font-[Outfit]">{t("forgotPassword.did_you_sign_up_with_google")}</b>
-                <p className="text-zinc-600 mt-1">Go back and tap <b>{t("forgotPassword.continue_with_google")}</b>. You do not need a password.</p>
+                <p className="text-zinc-600 mt-1"><Trans i18nKey="forgotPassword.google_hint" components={{ b: <b /> }} /></p>
               </div>
             )}
             <div className="rounded-2xl border border-zinc-200 p-4 mb-3 text-sm">

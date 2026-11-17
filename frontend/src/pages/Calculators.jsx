@@ -107,13 +107,13 @@ function Sip() {
           </div>
           <div className="bg-white border border-zinc-200 rounded-2xl p-3 mt-3">
             <GrowthChart rows={res.rows} />
-            <div className="flex gap-4 text-[11.5px] text-zinc-500 justify-center mt-1"><span><b style={{ color: "#93C5FD" }}>■</b> Your money</span><span><b style={{ color: "#10B981" }}>■</b> Growth</span></div>
+            <div className="flex gap-4 text-[11.5px] text-zinc-500 justify-center mt-1"><span><b style={{ color: "#93C5FD" }}>■</b> {t("calculators.your_money")}</span><span><b style={{ color: "#10B981" }}>■</b> {t("calculators.growth")}</span></div>
           </div>
-          {y > 3 && <Tip mood="cheer" title={t("calculators.start_early")}>Waiting 3 years to start the same SIP would leave you with about {inrShort(late)}, which is {inrShort(res.total - late)} less. Time does most of the work.</Tip>}
+          {y > 3 && <Tip mood="cheer" title={t("calculators.start_early")}>{t("calculators.waiting_3_years_to_start_the", { v1: inrShort(late), v3: inrShort(res.total - late) })}</Tip>}
         </>
       ) : (
         <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#10B981] to-[#2563EB] text-center">
-          <div className="text-[12px] opacity-90">To reach {inrShort(parseFloat(target) || 0)} in {y} years, invest about</div>
+          <div className="text-[12px] opacity-90">{t("calculators.to_reach_v1_in_y_years", { v1: inrShort(parseFloat(target) || 0), y })}</div>
           <div className="font-[Outfit] font-black text-3xl" data-testid="sip-need">{inr(need)} <span className="text-base font-bold">{t("calculators.a_month")}</span></div>
         </div>
       )}
@@ -149,11 +149,11 @@ function Emi() {
       </div>
       <div className="bg-white border border-zinc-200 rounded-2xl p-3 mt-3">
         <div className="flex h-3.5 rounded-full overflow-hidden bg-zinc-100 mb-2"><div style={{ width: `${100 - pctInterest}%`, background: "#2563EB" }} /><div style={{ width: `${pctInterest}%`, background: "#EF4444" }} /></div>
-        <div className="flex justify-between text-[12.5px] text-zinc-500"><span><b style={{ color: "#2563EB" }}>■</b> Loan {inrShort(p)}</span><span><b style={{ color: "#EF4444" }}>■</b> Interest {pctInterest}%</span></div>
-        <p className="text-[12px] text-zinc-500 mt-2">What you still owe after: {bal.filter((_, i) => i % Math.ceil(bal.length / 4) === 0 || i === bal.length - 1).map((b) => `year ${Math.round(b.month / 12 * 10) / 10}: ${inrShort(b.balance)}`).join(" · ")}</p>
+        <div className="flex justify-between text-[12.5px] text-zinc-500"><span><b style={{ color: "#2563EB" }}>■</b> {t("calculators.loan_amount", { amount: inrShort(p) })}</span><span><b style={{ color: "#EF4444" }}>■</b> {t("calculators.interest_pct", { pct: pctInterest })}</span></div>
+        <p className="text-[12px] text-zinc-500 mt-2">{t("calculators.what_you_still_owe_after_v1", { v1: bal.filter((_, i) => i % Math.ceil(bal.length / 4) === 0 || i === bal.length - 1).map((b) => `year ${Math.round(b.month / 12 * 10) / 10}: ${inrShort(b.balance)}`).join(" · ") })}</p>
       </div>
       {Number.isFinite(fast) && saved > 0 && fast < months && (
-        <Tip mood="cheer" title={t("calculators.pay_a_little_extra")}>Paying {inr(plus)} instead of {inr(e.emi)} (about 10% more) clears the loan {months - fast} {months - fast === 1 ? "month" : "months"} sooner and saves about {inrShort(saved)} in interest.</Tip>
+        <Tip mood="cheer" title={t("calculators.pay_a_little_extra")}>{t("calculators.paying_more_sooner", { count: months - fast, plus: inr(plus), emi: inr(e.emi), saved: inrShort(saved) })}</Tip>
       )}
       <Tip mood="nervous" title={t("calculators.before_you_borrow")}>{t("calculators.a_good_rule_all_your_emis")}</Tip>
     </div>
@@ -174,7 +174,7 @@ function Emergency() {
   return (
     <div data-testid="calc-emergency">
       <Field label="Needs every month (rent, food, bills, EMIs)" value={needs} set={setNeeds} min={2000} max={200000} step={1000} unit="₹" testid="em-needs" />
-      {fromMoney && <button onClick={() => setNeeds(String(fromMoney))} className="-mt-2 mb-3 text-[12.5px] font-extrabold text-[#FF6B35]" data-testid="em-use-money">Use my needs this month from My money ({inr(fromMoney)})</button>}
+      {fromMoney && <button onClick={() => setNeeds(String(fromMoney))} className="-mt-2 mb-3 text-[12.5px] font-extrabold text-[#FF6B35]" data-testid="em-use-money">{t("calculators.use_my_needs_this_month_from", { v1: inr(fromMoney) })}</button>}
       <Field label="Months you want covered" value={cover} set={setCover} min={3} max={12} step={1} unit="months" testid="em-cover" />
       <Field label="Already saved for this" value={saved} set={setSaved} min={0} max={1000000} step={5000} unit="₹" testid="em-saved" />
       <Field label="Build it within" value={build} set={setBuild} min={1} max={60} step={1} unit="months" testid="em-build" />
@@ -196,7 +196,7 @@ export default function Calculators() {
   const [tab, setTab] = useState("sip");
   return (
     <div className="max-w-md mx-auto pb-24" data-testid="calculators-page">
-      <Link to="/money" className="inline-flex items-center gap-1 text-[13px] font-bold text-zinc-500 mb-2"><ChevronLeft className="w-4 h-4" />My money</Link>
+      <Link to="/money" className="inline-flex items-center gap-1 text-[13px] font-bold text-zinc-500 mb-2"><ChevronLeft className="w-4 h-4" />{t("calculators.my_money")}</Link>
       <h1 className="font-[Outfit] font-black text-2xl tracking-tight mb-3">{t("calculators.calculators")}</h1>
       <div className="grid grid-cols-3 gap-1 bg-zinc-100 rounded-2xl p-1 mb-4">
         {[["sip", "SIP"], ["emi", "Loan EMI"], ["emergency", "Emergency fund"]].map(([k, l]) => (

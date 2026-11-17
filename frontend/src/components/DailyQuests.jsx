@@ -61,7 +61,7 @@ export default function DailyQuests() {
               {allDone ? t("dailyQuests.all_done_see_you_tomorrow") : n === 3 ? t("dailyQuests.claim_your_rewards") : `${n} of 3 done today`}
             </h2>
           </div>
-          <span className="text-[12px] font-bold text-zinc-600 shrink-0">Resets in {hm(d.resets_in_seconds)}</span>
+          <span className="text-[12px] font-bold text-zinc-600 shrink-0">{t("dailyQuests.resets_in_v1", { v1: hm(d.resets_in_seconds) })}</span>
         </div>
         <div className="h-2 mx-4 mb-2 rounded-full bg-zinc-100 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-[#6366F1] to-[#EC4899] transition-all duration-500" style={{ width: `${Math.round((n / 3) * 100)}%` }} /></div>
 
@@ -82,7 +82,7 @@ export default function DailyQuests() {
                   ? <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" aria-label={t("dailyQuests.claimed")} />
                   : q.done
                     ? <button onClick={() => act(() => api.post("/quests/claim", { id: q.id }), (r) => `+${r.coins} coins`)} disabled={busy} data-testid={`claim-${q.id}`}
-                      className="rounded-xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-[13px] px-3.5 py-2 shrink-0 active:scale-95">Claim +{q.reward}</button>
+                      className="rounded-xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-[13px] px-3.5 py-2 shrink-0 active:scale-95">{t("dailyQuests.claim_reward", { reward: q.reward })}</button>
                     : <span className="flex items-center gap-1 rounded-full bg-zinc-100 px-2.5 py-1 text-[12px] font-extrabold font-[Outfit] shrink-0"><Coins className="w-3.5 h-3.5 text-amber-500" />+{q.reward}</span>}
               </div>
             );

@@ -106,6 +106,38 @@ function processFile(file) {
         if (!looksHuman(text)) return;
         if (!need(p, k)) return;
         edits.push({ start: k.start, end: k.end, text: `{${tcall(text)}}` });
+      } else if (real.every((k) => k.type === "JSXText" || k.type === "JSXElement" || k.type === "JSXSelfClosingElement") && texts.filter((k) => looksHuman(k.value)).length === 1) {
+        // icon + label: only elements around one piece of text, so the sentence is whole
+        const k = texts.find((x) => looksHuman(x.value));
+        const text = k.value.replace(/\s+/g, " ").trim();
+        if (!need(p, k)) return;
+        // JSX drops whitespace that touches a line break, and keeps a plain space on the same line
+        const lead = /^[^\S\n]+/.test(k.value) ? " " : "";
+        const trail = /[^\S\n]+$/.test(k.value) ? " " : "";
+        edits.push({ start: k.start, end: k.end, text: `${lead}{${tcall(text)}}${trail}` });
+      } else if (
+        real.every((k) => k.type === "JSXText" || (k.type === "JSXExpressionContainer" && k.expression.type !== "JSXEmptyExpression" && !/^JSX/.test(k.expression.type) && !/^(Conditional|Logical|Arrow|Function)/.test(k.expression.type))) &&
+        letters(texts.map((k) => k.value).join(" ")) >= 3
+      ) {
+        // a sentence with values in it -> one template with {{placeholders}}, so other languages can reorder it
+        if (!need(p, real[0])) return;
+        const used = new Set();
+        const vals = [];
+        let tpl = "";
+        real.forEach((k, i) => {
+          if (k.type === "JSXText") { tpl += k.value.replace(/\s+/g, " "); return; }
+          const ex = k.expression;
+          let name = ex.type === "Identifier" ? ex.name : ex.type === "MemberExpression" && !ex.computed && ex.property.type === "Identifier" ? ex.property.name : `v${i}`;
+          let n = name, c = 2;
+          while (used.has(n)) n = `${name}${c++}`;
+          used.add(n);
+          const code = src.slice(ex.start, ex.end);
+          vals.push(n === code ? n : `${n}: ${code}`);
+          tpl += `{{${n}}}`;
+        });
+        tpl = tpl.replace(/\s+/g, " ").trim();
+        const first = real[0], last = real[real.length - 1];
+        edits.push({ start: first.start, end: last.end, text: `{${FN}(${JSON.stringify(keyFor(ns, tpl))}, { ${vals.join(", ")} })}` });
       } else if (texts.some((k) => looksHuman(k.value))) {
         manual.push(`${rel}:${p.node.loc.start.line}: text mixed with values -> "${texts.map((k) => k.value.trim()).filter(Boolean).join(" | ").slice(0, 80)}"`);
       }

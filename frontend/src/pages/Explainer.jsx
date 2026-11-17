@@ -75,7 +75,7 @@ export default function Explainer() {
           <div className="flex gap-3 items-start mt-2" data-testid="explainer-result">
             <Lumi size={48} mood={res.correct ? "cheer" : "nervous"} className="shrink-0" />
             <div className="text-[13.5px] leading-relaxed"><b className="font-[Outfit]">{res.correct ? t("explainer.right") : t("explainer.not_quite")}</b> {res.explanation}
-              {res.xp ? <div className="text-[12.5px] font-bold text-emerald-700 mt-1">+{res.xp} XP earned today</div> : null}</div>
+              {res.xp ? <div className="text-[12.5px] font-bold text-emerald-700 mt-1">{t("explainer.xp_xp_earned_today", { xp: res.xp })}</div> : null}</div>
           </div>
         )}
         {err && <p className="text-red-700 text-[13px] mt-2">{err}</p>}
@@ -83,7 +83,7 @@ export default function Explainer() {
 
       {news && e.source_url && (
         <a href={e.source_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[13px] font-bold text-zinc-500 mt-3 justify-center" data-testid="explainer-source">
-          Source: {e.source_name} <ExternalLink className="w-3.5 h-3.5" />
+          {t("explainer.source_name", { name: e.source_name })} <ExternalLink className="w-3.5 h-3.5" />
         </a>
       )}
       <p className="text-[11.5px] text-zinc-400 text-center mt-3">{t("explainer.education_only_not_investment_tax_or")}</p>

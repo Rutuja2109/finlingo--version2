@@ -48,7 +48,7 @@ export default function TrialCard() {
           </div>
         </div>
         <Link to="/pro?from=trial" data-testid="trial-keep" className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold py-3 active:scale-[0.98]">
-          {t.ended ? tx("trialCard.get_pro_back") : tx("trialCard.keep_everything")} · ₹49/month <ArrowRight className="w-4 h-4" />
+          {t.ended ? tx("trialCard.get_pro_back") : tx("trialCard.keep_everything")} · {tx("trialCard.price_per_month")} <ArrowRight className="w-4 h-4" />
         </Link>
         <p className="text-[11.5px] text-zinc-600 text-center mt-1.5">{tx("trialCard.one_plan_covers_every_feature_cancel")}</p>
       </section>
@@ -63,7 +63,7 @@ export default function TrialCard() {
         <span className="w-11 h-11 rounded-2xl grid place-items-center bg-gradient-to-br from-[#8B5CF6] to-[#EC4899] text-white shrink-0"><Gift className="w-5 h-5" /></span>
         <div className="flex-1 min-w-0">
           <p className="font-[Outfit] font-black text-[17px] leading-tight">{tx("trialCard.try_these_in_your_free_week")}</p>
-          <p className="text-[12.5px] text-zinc-600">{t.days_left} days of Pro left · {tried} of {STEPS.length} tried</p>
+          <p className="text-[12.5px] text-zinc-600">{tx("trialCard.days_left_days_of_pro_left", { days_left: t.days_left, tried, length: STEPS.length })}</p>
         </div>
       </div>
       <div className="space-y-1.5">

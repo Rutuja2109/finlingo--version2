@@ -33,7 +33,7 @@ export default function Leaderboard() {
               <p className="font-[Outfit] font-bold tracking-tight truncate">
                 {publicName(r.name)} {r.pro && <Crown className="inline w-3.5 h-3.5 -mt-0.5 ml-0.5 text-amber-500" aria-label={t("leaderboard.pro_member")} data-testid="pro-badge" />}{r.is_me && <span className="ml-1.5 text-[11px] uppercase tracking-wider font-bold text-[#FF6B35]">{t("leaderboard.you")}</span>}
               </p>
-              <p className="text-xs text-zinc-500">Level {r.level}</p>
+              <p className="text-xs text-zinc-500">{t("leaderboard.level_level", { level: r.level })}</p>
             </div>
             <div className="shrink-0 flex flex-col items-end gap-0.5">
               <div className="flex items-center gap-1 text-sm font-bold text-[#F59E0B] tabular-nums">

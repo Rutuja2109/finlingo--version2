@@ -26,7 +26,9 @@
     "show_all_3_quests": "Show all 3 quests",
     "daily_chest": "Daily chest",
     "open": "Open",
-    "locked": "Locked"
+    "locked": "Locked",
+    "resets_in_v1": "Resets in {{v1}}",
+    "claim_reward": "Claim +{{reward}}"
   },
   "goalPicker": {
     "choose_your_daily_goal": "Choose your daily goal",
@@ -34,7 +36,9 @@
     "you_can_change_this_any_time": "You can change this any time.",
     "later": "Later",
     "saving": "Saving…",
-    "set_my_goal": "Set my goal"
+    "set_my_goal": "Set my goal",
+    "note_goal_xp_xp": "{{note}} Goal: {{xp}} XP.",
+    "min_a_day": "{{minutes}} min a day"
   },
   "logo": {
     "finlearn": "FinLearn"
@@ -43,7 +47,10 @@
     "streak_milestone": "Streak milestone",
     "pro_members_can_hold_5_streak": "Pro members can hold 5 streak freezes",
     "see_pro": "See Pro",
-    "maybe_later": "Maybe later"
+    "maybe_later": "Maybe later",
+    "n_day_streak": "{{n}}-day streak!",
+    "plus_every_lesson_and_tool_49": "Plus every lesson and tool, ₹49 a month in total",
+    "protect_it": "Lumi is so proud. Protect it: <b>Pro members can hold 5 streak freezes</b>, so one busy day never breaks it."
   },
   "slowBanner": {
     "waking_things_up": "Waking things up…",
@@ -56,14 +63,20 @@
     "get_a_streak_freeze": "Get a streak freeze",
     "max": "Max",
     "this_week": "This week",
-    "a_day_lights_up_when_you": "A day lights up when you practise or claim a quest. A freeze saves your streak if you miss a day."
+    "a_day_lights_up_when_you": "A day lights up when you practise or claim a quest. A freeze saves your streak if you miss a day.",
+    "aim_for_week_goal_days_this": "Aim for {{WEEK_GOAL}} days this week"
   },
   "todayStrip": {
     "today_for_you": "Today for you",
     "idea_of_the_day": "Idea of the day",
     "daily_quests": "Daily quests",
     "revision": "Revision",
-    "real_life_progress": "Real-life progress"
+    "real_life_progress": "Real-life progress",
+    "pro": "PRO",
+    "start_mission": "Start mission",
+    "xp_xp_coins_coins": "+{{xp}} XP · +{{coins}} coins",
+    "done_of_total_done": "{{done}} of {{total}} done",
+    "mission_of_the_week": "Mission of the week"
   },
   "account": {
     "account": "Account",
@@ -82,12 +95,19 @@
     "leave_blank_if_you_signed_in": "Leave blank if you signed in with Google",
     "deleting": "Deleting…",
     "yes_delete_everything": "Yes, delete everything",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "your_awards": "Your awards",
+    "admin_tools_give_pro_ai_lab": "Admin tools (give Pro, AI lab)",
+    "log_out": "Log out",
+    "privacy_policy": "Privacy policy",
+    "terms_and_subscription_terms": "Terms and subscription terms",
+    "delete_my_account": "Delete my account"
   },
   "achievements": {
     "your_trophies": "Your trophies",
     "achievements": "Achievements",
-    "unlocked": "Unlocked"
+    "unlocked": "Unlocked",
+    "size_of_length_unlocked": "{{size}} of {{length}} unlocked."
   },
   "authPage": {
     "finlearn": "FinLearn",
@@ -107,7 +127,12 @@
     "new_here": "New here? ",
     "have_an_account": "Have an account? ",
     "create_account": "Create account",
-    "privacy_policy": "privacy policy"
+    "privacy_policy": "privacy policy",
+    "continue_with_google": "Continue with Google",
+    "or_use_email": "or use email",
+    "learn_money": "Learn money.",
+    "one_choice_at_a_time": "One choice at a time.",
+    "agree_terms": "By signing up you agree to our <policy>privacy policy</policy>."
   },
   "bossBattle": {
     "loading": "Loading…",
@@ -119,7 +144,10 @@
     "coins": "Coins",
     "boss_battle": "Boss Battle",
     "finish_battle": "Finish battle",
-    "next": "Next"
+    "next": "Next",
+    "master_all_concepts_total_concepts_of": "Master all {{concepts_total}} concepts of this chapter to challenge the boss. You're at {{concepts_done}}/{{concepts_total2}}.",
+    "score": "Score:",
+    "return": "Return"
   },
   "calculators": {
     "growth_of_your_sip_by_year": "Growth of your SIP by year",
@@ -136,7 +164,18 @@
     "you_are_fully_covered_well_done": "You are fully covered. Well done!",
     "an_emergency_fund_pays_for_surprises": "An emergency fund pays for surprises like a job loss, a medical bill or a broken phone, so you do not need to borrow. Keep it somewhere safe and easy to reach, such as a savings account, not in shares.",
     "what_it_is_for": "What it is for",
-    "calculators": "Calculators"
+    "calculators": "Calculators",
+    "your_money": "Your money",
+    "growth": "Growth",
+    "waiting_3_years_to_start_the": "Waiting 3 years to start the same SIP would leave you with about {{v1}}, which is {{v3}} less. Time does most of the work.",
+    "to_reach_v1_in_y_years": "To reach {{v1}} in {{y}} years, invest about",
+    "what_you_still_owe_after_v1": "What you still owe after: {{v1}}",
+    "use_my_needs_this_month_from": "Use my needs this month from My money ({{v1}})",
+    "my_money": "My money",
+    "loan_amount": "Loan {{amount}}",
+    "interest_pct": "Interest {{pct}}%",
+    "paying_more_sooner_one": "Paying {{plus}} instead of {{emi}} (about 10% more) clears the loan {{count}} month sooner and saves about {{saved}} in interest.",
+    "paying_more_sooner_other": "Paying {{plus}} instead of {{emi}} (about 10% more) clears the loan {{count}} months sooner and saves about {{saved}} in interest."
   },
   "coursePath": {
     "loading_your_path": "Loading your path…",
@@ -146,7 +185,12 @@
     "boss_battle": "Boss Battle",
     "challenge_the_boss": "Challenge the Boss",
     "complete_all_concepts_first": "Complete all concepts first",
-    "20_mixed_questions_200_xp": "20 mixed questions · +200 XP"
+    "20_mixed_questions_200_xp": "20 mixed questions · +200 XP",
+    "all_courses": "All courses",
+    "chapter_v1": "Chapter {{v1}}",
+    "concept_index": "Concept {{index}}",
+    "free_preview_lessons": "Free preview: {{n}} lessons",
+    "plus_xp": "+{{xp}} XP"
   },
   "courses": {
     "learning_path": "Learning Path",
@@ -155,7 +199,8 @@
     "coming_soon": "Coming Soon",
     "coming_soon_2": "Coming soon",
     "in_progress": "IN PROGRESS →",
-    "tap_to_start": "Tap to start"
+    "tap_to_start": "Tap to start",
+    "continue_learning": "Continue Learning"
   },
   "dashboard": {
     "next_lesson_pro": "Next lesson · Pro",
@@ -163,7 +208,13 @@
     "continue": "Continue",
     "daily_goal": "Daily goal",
     "your_courses": "Your courses",
-    "begin": "Begin"
+    "begin": "Begin",
+    "browse_courses": "Browse courses",
+    "earn_dailygoal_xp_today": "Earn {{dailyGoal}} XP today",
+    "goalminutes_min_a_day_change": "{{goalMinutes}} min a day · Change",
+    "v0_dailygoal_xp_today": "{{v0}} / {{dailyGoal}} XP today",
+    "level_xp_to_next": "Level {{level}} · {{xp}} XP to the next level",
+    "all_courses": "All {{n}} courses →"
   },
   "explainer": {
     "loading_today_s_explainer": "Loading today's explainer…",
@@ -175,7 +226,9 @@
     "quick_check": "Quick check",
     "right": "Right!",
     "not_quite": "Not quite.",
-    "education_only_not_investment_tax_or": "Education only, not investment, tax or legal advice. Come back tomorrow for a new one."
+    "education_only_not_investment_tax_or": "Education only, not investment, tax or legal advice. Come back tomorrow for a new one.",
+    "xp_xp_earned_today": "+{{xp}} XP earned today",
+    "source_name": "Source: {{name}}"
   },
   "explainerAdmin": {
     "news_explainer_admin": "News explainer (admin)",
@@ -213,7 +266,10 @@
     "just_starting_out": "Just starting out?",
     "you_can_also_create_a_new": "You can also create a new account. It takes 30 seconds.",
     "back_to_login": "Back to login",
-    "create_account": "Create account"
+    "create_account": "Create account",
+    "if_that_address_has_a_finlearn": "If that address has a FinLearn account, we have sent a message with the next step. It may take a minute, and it can land in spam. The link works for one hour.",
+    "google_hint_long": "Signed up with Google? Go back and tap <b>Continue with Google</b>. You do not need a password.",
+    "google_hint": "Go back and tap <b>Continue with Google</b>. You do not need a password."
   },
   "landing": {
     "finlearn": "FinLearn",
@@ -223,7 +279,10 @@
     "i_have_an_account": "I have an account",
     "free_to_start_educational_content_not": "Free to start · Educational content, not financial advice",
     "2026_finlearn_master_what_matters": "© 2026 FinLearn · Master what matters.",
-    "privacy_policy": "Privacy policy"
+    "privacy_policy": "Privacy policy",
+    "learn_by_choosing": "Learn by choosing",
+    "learn_money": "Learn money,",
+    "start_learning_free": "Start learning free"
   },
   "leaderboard": {
     "real_time": "Real-time",
@@ -231,7 +290,8 @@
     "top_finlearn_learners_by_xp_no": "Top FinLearn learners by XP — no fake data, ever.",
     "be_the_first_on_the_board": "Be the first on the board — complete a lesson to appear here.",
     "pro_member": "Pro member",
-    "you": "You"
+    "you": "You",
+    "level_level": "Level {{level}}"
   },
   "resetPassword": {
     "set_a_new_password": "Set a new password",
@@ -249,26 +309,47 @@
     "recall_prompt": "Recall prompt",
     "reveal_answer": "Reveal answer",
     "how_well_did_you_recall": "How well did you recall?",
-    "daily_revision": "Daily Revision"
+    "daily_revision": "Daily Revision",
+    "done": "Done",
+    "reinforce": "Reinforce",
+    "reviewed_one": "{{count}} concept reviewed · +{{xp}} XP",
+    "reviewed_other": "{{count}} concepts reviewed · +{{xp}} XP"
   },
   "appShell": {
     "finlearn": "FinLearn",
     "account_and_settings": "Account and settings",
-    "account": "Account"
+    "account": "Account",
+    "home": "Home",
+    "courses": "Courses",
+    "practice": "Practice",
+    "my_money": "My money",
+    "missions": "Missions",
+    "revise": "Revise",
+    "leaderboard": "Leaderboard",
+    "achievements": "Achievements",
+    "explainers": "Explainers",
+    "ai_lab": "AI Lab"
   },
   "lessonTypes": {
     "is_each_statement_a_myth_or": "Is each statement a myth or a fact?",
     "split_your_salary": "Split your salary",
     "needs_percent": "Needs percent",
     "wants_percent": "Wants percent",
-    "a_common_starting_point_is_50": "A common starting point is 50% needs, 30% wants and 20% savings. Change it to fit your life."
+    "a_common_starting_point_is_50": "A common starting point is 50% needs, 30% wants and 20% savings. Change it to fit your life.",
+    "after_a_loss_fall_your_v3": "After a {{loss}}% fall, your {{v3}} is",
+    "rise_v1": "rise {{v1}}%",
+    "high_cost_cost_a_year": "High cost ({{cost}}% a year)",
+    "get_back": "To get back to {{amount}} it must then <b>{{rise}}</b>, which is more than the fall itself.",
+    "low_cost": "Low cost ({{cost}}% a year)",
+    "higher_fee": "The higher fee quietly costs you <b>{{lost}}</b> on the same {{invested}} invested."
   },
   "proFeatures": {
     "everything_in_finlearn": "Everything in FinLearn",
     "all_for_49_month": "All for ₹49/month →",
     "pro": "PRO",
     "free": "FREE",
-    "one_pro_plan_unlocks_all_the": "One Pro plan unlocks all the PRO features above."
+    "one_pro_plan_unlocks_all_the": "One Pro plan unlocks all the PRO features above.",
+    "49_a_month_in_total_not": "₹49 a month in total, not per feature."
   },
   "proWelcome": {
     "you_are_pro": "You are Pro",
@@ -283,7 +364,9 @@
     "get_pro_back": "Get Pro back",
     "keep_everything": "Keep everything",
     "one_plan_covers_every_feature_cancel": "One plan covers every feature. Cancel any time.",
-    "try_these_in_your_free_week": "Try these in your free week"
+    "try_these_in_your_free_week": "Try these in your free week",
+    "days_left_days_of_pro_left": "{{days_left}} days of Pro left · {{tried}} of {{length}} tried",
+    "price_per_month": "₹49/month"
   },
   "featurePreview": {
     "practice_money_not_real_money": "Practice money, not real money",
@@ -326,7 +409,14 @@
     "sample": "SAMPLE",
     "included_in_the_one_finlearn_pro": "Included in the one FinLearn Pro plan. ₹49 a month unlocks everything together (every lesson, practice trading, My money, missions, calculators and boss battles). No extra charge for any feature.",
     "unlock_everything_49_month": "Unlock everything · ₹49/month",
-    "maybe_later": "Maybe later"
+    "maybe_later": "Maybe later",
+    "sell": "Sell",
+    "buy": "Buy",
+    "replay_a_market_crash": "Replay a market crash",
+    "add_money_in_or_out": "Add money in or out",
+    "pro": "PRO",
+    "you_hold": "You hold <b>₹10,240</b> of NIFTY · profit/loss <g>+₹240</g>",
+    "save_a_month": "Save <b>₹3,000</b> a month for 6 months"
   },
   "lessonPlayer": {
     "loading": "Loading…",
@@ -361,7 +451,12 @@
     "free_lessons_done": "Free lessons done",
     "keep_going_with_pro": "Keep going with Pro",
     "keep_your_streak_going": "Keep your streak going",
-    "free_lessons_end_soon_one_plan": "Free lessons end soon. One plan unlocks every lesson and tool: ₹49 a month."
+    "free_lessons_end_soon_one_plan": "Free lessons end soon. One plan unlocks every lesson and tool: ₹49 a month.",
+    "one_more_shot_you_ll_nail": "One more shot — you'll nail it this time",
+    "you_finished_the_free_lessons_in": "You finished the free lessons in {{name}}!",
+    "next_up_title_one_pro_plan": "Next up: \"{{title}}\". One Pro plan opens every lesson and tool for ₹49 a month.",
+    "practice_again": "Practice again",
+    "continue_path": "Continue path"
   },
   "missions": {
     "loading_missions": "Loading missions…",
@@ -374,7 +469,11 @@
     "mission_of_the_week": "Mission of the week",
     "see_the_steps": "See the steps",
     "all_missions_done": "All missions done!",
-    "finlearn_never_asks_you_to_buy": "FinLearn never asks you to buy a product and never sees your bank or UPI data. Missions are education, not advice."
+    "finlearn_never_asks_you_to_buy": "FinLearn never asks you to buy a product and never sees your bank or UPI data. Missions are education, not advice.",
+    "go_there": "Go there",
+    "your_note_note": "Your note: {{note}}",
+    "done_count_of_total_done": "{{done_count}} of {{total}} done",
+    "you_have_done_more_with_your": "You have done more with your money than most people ever do. New ones will arrive over time."
   },
   "money": {
     "previous_month": "Previous month",
@@ -408,7 +507,15 @@
     "already_saved_optional": "Already saved (optional, ₹)",
     "fill_in_the_cost_and_months": "Fill in the cost and months to see how much to save.",
     "create_goal": "Create goal",
-    "add_to_goal": "Add to goal"
+    "add_to_goal": "Add to goal",
+    "sip_loan_emi_and_emergency_fund": "SIP, loan EMI and emergency fund calculators",
+    "add_money_in_or_out": "Add money in or out",
+    "new_goal": "New goal",
+    "want_a_50_000_phone_in": "Want a ₹50,000 phone in 6 months? Add it as a goal and I will tell you how much to save each month.",
+    "deadline_passed_v1_to_go": "Deadline passed, {{v1}} to go",
+    "add": "Add",
+    "colors": "Colors:",
+    "you_have_v1_of_v3_put": "You have {{v1}} of {{v3}}. Put the amount you just set aside."
   },
   "paywall": {
     "close": "Close",
@@ -429,7 +536,15 @@
     "to_subscribe_open_finlearn_in_the": "To subscribe, open FinLearn in the Android app.",
     "purchases_are_not_switched_on_yet": "Purchases are not switched on yet. Please check back soon.",
     "keep_using_my_trial": "Keep using my trial",
-    "not_now": "Not now"
+    "not_now": "Not now",
+    "one_plan_every_feature_included": "One plan · every feature included",
+    "more": "+ more",
+    "badge_save_save_pct": "{{badge}} · SAVE {{save_pct}}%",
+    "that_is_about_perday_a_day": "That is about ₹{{perDay}} a day",
+    "finlearn_pro": "FinLearn Pro",
+    "open_until": "Everything is open until {{date}}. Subscribe to keep it.",
+    "free_forever": "Free forever: {{n}} lessons per course, daily quests and the idea of the day.",
+    "renews": "Renews automatically every {{per}} at ₹{{price}} until you cancel. Payment is charged to your Google Play account."
   },
   "practice": {
     "price_chart": "Price chart",
@@ -453,6 +568,22 @@
     "too_much_in_one_basket": "Too much in one basket",
     "nicely_spread_out": "Nicely spread out",
     "holding_a_mix_of_assets_like": "Holding a mix of assets, like an index fund and gold, softens the bad days.",
-    "try_spreading_out": "Try spreading out"
+    "try_spreading_out": "Try spreading out",
+    "reset": "Reset",
+    "lumi_s_tour_v1_of_length": "Lumi’s tour · {{v1}} of {{length}}",
+    "sell": "Sell",
+    "buy": "Buy",
+    "replay_a_market_crash": "Replay a market crash",
+    "you_only_have_v1_of_practice": "You only have {{v1}} of practice money.",
+    "the_smallest_purchase_is_v1": "The smallest purchase is {{v1}}.",
+    "v0_units": "{{v0}} units",
+    "v0_of_your_money_is_in": "{{v0}}% of your money is in {{topName}}. If it falls 30%, you lose about {{v4}}% of everything.",
+    "you_hold_length_different_assets_one": "You hold {{length}} different assets. One bad day will not sink you.",
+    "crash_replay": "Market crash replay: day {{day}} of 10. Hold your nerve.",
+    "price_now": "Price now {{price}}",
+    "cash": "Cash {{amount}}",
+    "you_hold": "You hold {{amount}}",
+    "confirm_buy": "Confirm buy",
+    "confirm_sell": "Confirm sell"
   }
 }

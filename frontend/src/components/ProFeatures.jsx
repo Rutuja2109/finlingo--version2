@@ -44,8 +44,7 @@ export default function ProFeatures() {
       </div>
       {!isPro && (
         <p className="mt-1 text-[12.5px] text-zinc-700 bg-amber-50 border border-amber-200 rounded-2xl px-3.5 py-2.5" data-testid="one-price-note">
-          <b>{tx("proFeatures.one_pro_plan_unlocks_all_the")}</b> ₹49 a month in total, not per feature.
-        </p>
+          <b>{tx("proFeatures.one_pro_plan_unlocks_all_the")}</b> {tx("proFeatures.49_a_month_in_total_not")} </p>
       )}
     </section>
   );

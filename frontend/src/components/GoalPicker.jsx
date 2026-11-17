@@ -41,8 +41,8 @@ export default function GoalPicker({ current, onSaved, onClose }) {
               }`}>
               <span className="w-11 h-11 rounded-xl bg-zinc-100 grid place-items-center shrink-0"><Clock className="w-5 h-5 text-[#FF6B35]" /></span>
               <span className="flex-1">
-                <span className="block font-[Outfit] font-extrabold">{g.minutes} min a day <span className="text-zinc-500 font-semibold text-sm">· {g.label}</span></span>
-                <span className="block text-xs text-zinc-500">{g.note} Goal: {g.xp} XP.</span>
+                <span className="block font-[Outfit] font-extrabold">{t("goalPicker.min_a_day", { minutes: g.minutes })} <span className="text-zinc-500 font-semibold text-sm">· {g.label}</span></span>
+                <span className="block text-xs text-zinc-500">{t("goalPicker.note_goal_xp_xp", { note: g.note, xp: g.xp })}</span>
               </span>
             </button>
           ))}

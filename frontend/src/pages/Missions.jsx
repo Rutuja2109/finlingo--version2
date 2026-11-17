@@ -60,8 +60,8 @@ export default function Missions() {
           <div className="px-3.5 pb-3.5 -mt-1">
             <p className="text-[13px] text-zinc-600 mb-2">{m.why}</p>
             <ol className="text-[13px] text-zinc-700 list-decimal pl-5 space-y-1 mb-3">{m.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
-            {m.link && !m.done && <Link to={m.link} className="inline-flex items-center gap-1 text-[13px] font-extrabold text-[#FF6B35] mb-3">Go there <ArrowRight className="w-4 h-4" /></Link>}
-            {m.done ? (m.note && <p className="text-[13px] bg-zinc-50 rounded-xl px-3 py-2">Your note: {m.note}</p>) : (
+            {m.link && !m.done && <Link to={m.link} className="inline-flex items-center gap-1 text-[13px] font-extrabold text-[#FF6B35] mb-3">{tx("missions.go_there")} <ArrowRight className="w-4 h-4" /></Link>}
+            {m.done ? (m.note && <p className="text-[13px] bg-zinc-50 rounded-xl px-3 py-2">{tx("missions.your_note_note", { note: m.note })}</p>) : (
               <>
                 {m.kind === "self" && (
                   <textarea value={notes[m.id] || ""} onChange={(e) => setNotes({ ...notes, [m.id]: e.target.value })} maxLength={140} rows={2} data-testid={`note-${m.id}`}
@@ -83,7 +83,7 @@ export default function Missions() {
       <h1 className="font-[Outfit] font-black text-2xl tracking-tight">{tx("missions.real_life_missions")}</h1>
       <p className="text-[13px] text-zinc-500 mt-1 mb-3">{tx("missions.small_actions_in_your_own_money")}</p>
       <div className="bg-white border border-zinc-200 rounded-2xl p-3.5 mb-3">
-        <div className="flex justify-between text-[13px] font-bold mb-1.5"><span>{tx("missions.your_progress")}</span><span data-testid="missions-count">{data.done_count} of {data.total} done</span></div>
+        <div className="flex justify-between text-[13px] font-bold mb-1.5"><span>{tx("missions.your_progress")}</span><span data-testid="missions-count">{tx("missions.done_count_of_total_done", { done_count: data.done_count, total: data.total })}</span></div>
         <div className="h-2.5 rounded-full bg-zinc-100 overflow-hidden"><div className="h-full bg-emerald-500 transition-all" style={{ width: `${Math.round((data.done_count / data.total) * 100)}%` }} /></div>
       </div>
 
@@ -95,7 +95,7 @@ export default function Missions() {
           <button onClick={() => setOpen(featured.id)} className="mt-3 bg-white text-[#FF6B35] font-[Outfit] font-extrabold text-sm rounded-xl px-4 py-2 relative">{tx("missions.see_the_steps")}</button>
         </div>
       )}
-      {allDone && <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-3.5 text-[13px] mb-4 flex gap-3"><Lumi size={44} mood="cheer" /><div><b className="font-[Outfit]">{tx("missions.all_missions_done")}</b><br />You have done more with your money than most people ever do. New ones will arrive over time.</div></div>}
+      {allDone && <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-3.5 text-[13px] mb-4 flex gap-3"><Lumi size={44} mood="cheer" /><div><b className="font-[Outfit]">{tx("missions.all_missions_done")}</b><br />{tx("missions.you_have_done_more_with_your")}</div></div>}
 
       {themes.map((t) => (
         <section key={t} className="mb-4">

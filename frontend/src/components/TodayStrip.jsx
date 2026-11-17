@@ -63,19 +63,18 @@ function MissionCard({ data, pro }) {
       <div className="absolute -right-3 -bottom-4 opacity-90 pointer-events-none"><Lumi size={92} mood="cheer" /></div>
       <div className="relative max-w-[74%]">
         <div className="flex items-center gap-1.5 text-[11px] font-black tracking-[0.18em] uppercase text-white/95">
-          <Flag className="w-3.5 h-3.5" /> Mission of the week
-          {!pro && <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-zinc-900/80 px-1.5 py-0.5 text-[9px] tracking-normal"><Crown className="w-2.5 h-2.5" />PRO</span>}
+          <Flag className="w-3.5 h-3.5" /> {t("todayStrip.mission_of_the_week")}
+          {!pro && <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-zinc-900/80 px-1.5 py-0.5 text-[9px] tracking-normal"><Crown className="w-2.5 h-2.5" />{t("todayStrip.pro")}</span>}
         </div>
         <h3 className="font-[Outfit] font-black text-[19px] leading-tight mt-1.5" data-testid="home-mission-title">{m.title}</h3>
         <p className="text-[12.5px] text-white/90 leading-snug mt-1">{m.why}</p>
         <div className="flex items-center gap-2 mt-3">
-          <span className="inline-flex items-center gap-1.5 rounded-xl bg-white text-[#E11D48] font-[Outfit] font-extrabold text-[13px] px-3 py-2">
-            Start mission <ArrowRight className="w-4 h-4" />
+          <span className="inline-flex items-center gap-1.5 rounded-xl bg-white text-[#E11D48] font-[Outfit] font-extrabold text-[13px] px-3 py-2">{t("todayStrip.start_mission")} <ArrowRight className="w-4 h-4" />
           </span>
-          <span className="text-[12px] font-bold text-white/95">+{m.xp} XP · +{m.coins} coins</span>
+          <span className="text-[12px] font-bold text-white/95">{t("todayStrip.xp_xp_coins_coins", { xp: m.xp, coins: m.coins })}</span>
         </div>
         <div className="mt-3">
-          <div className="flex justify-between text-[11px] font-bold text-white/90 mb-1"><span>{t("todayStrip.real_life_progress")}</span><span>{done} of {total} done</span></div>
+          <div className="flex justify-between text-[11px] font-bold text-white/90 mb-1"><span>{t("todayStrip.real_life_progress")}</span><span>{t("todayStrip.done_of_total_done", { done, total })}</span></div>
           <div className="h-1.5 rounded-full bg-white/30 overflow-hidden"><div className="h-full bg-white rounded-full" style={{ width: `${Math.max(4, Math.round((done / total) * 100))}%` }} /></div>
         </div>
       </div>

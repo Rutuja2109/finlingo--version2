@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { X, Crown, Check, LineChart, Wallet, Flag, Calculator, Skull, Heart, Target, History as HistoryIcon, BarChart3, Coins, Bitcoin, Rocket, ArrowUp, ArrowDown, Flame, Plus, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
 import Lumi from "@/components/Lumi";
 import { useAuth } from "@/context/AuthContext";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 
 // What a free learner sees when they tap a Pro feature: a sample of the real screen and what it gives them,
 // then a clear way to unlock it. (Sample numbers only, never the learner's own data.)
@@ -55,13 +55,13 @@ function PracticeMock() {
       <div className="flex justify-between my-2">
         {["1MIN", "5MIN", "15MIN", "1H", "1D", "1W"].map((k) => <span key={k} className={`font-[Outfit] font-extrabold text-xs px-2 py-1.5 rounded-[10px] ${k === "1D" ? "bg-zinc-900 text-white" : "text-zinc-400"}`}>{k}</span>)}
       </div>
-      <p className="text-[12.5px] text-zinc-500 mx-1 mb-2">You hold <b>₹10,240</b> of NIFTY · profit/loss <b className="text-emerald-700">+₹240</b></p>
+      <p className="text-[12.5px] text-zinc-500 mx-1 mb-2"><Trans i18nKey="featurePreview.you_hold" components={{ b: <b />, g: <b className="text-emerald-700" /> }} /></p>
       <div className="grid grid-cols-2 gap-2.5">
-        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-red-500"><ArrowDown className="w-4 h-4" />Sell</span>
-        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-emerald-500"><ArrowUp className="w-4 h-4" />Buy</span>
+        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-red-500"><ArrowDown className="w-4 h-4" />{tx("featurePreview.sell")}</span>
+        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-emerald-500"><ArrowUp className="w-4 h-4" />{tx("featurePreview.buy")}</span>
       </div>
       <Coach title={tx("featurePreview.lumi_says")}>{tx("featurePreview.an_index_fund_holds_50_big")}</Coach>
-      <span className="mx-auto mt-3 flex w-fit items-center gap-1.5 border-2 border-red-500 text-red-700 bg-white rounded-2xl px-3 py-2 font-[Outfit] font-extrabold text-[13px]"><Flame className="w-4 h-4" />Replay a market crash</span>
+      <span className="mx-auto mt-3 flex w-fit items-center gap-1.5 border-2 border-red-500 text-red-700 bg-white rounded-2xl px-3 py-2 font-[Outfit] font-extrabold text-[13px]"><Flame className="w-4 h-4" />{tx("featurePreview.replay_a_market_crash")}</span>
     </div>
   );
 }
@@ -96,7 +96,7 @@ function MoneyMock() {
         ))}
       </div>
       <Coach title={tx("featurePreview.nicely_balanced")} tone="good">{tx("featurePreview.your_split_is_close_to_50")}</Coach>
-      <span className="w-full mt-3 rounded-2xl py-3.5 bg-[#FF6B35] text-white font-[Outfit] font-black text-base flex items-center justify-center gap-2"><Plus className="w-5 h-5" />Add money in or out</span>
+      <span className="w-full mt-3 rounded-2xl py-3.5 bg-[#FF6B35] text-white font-[Outfit] font-black text-base flex items-center justify-center gap-2"><Plus className="w-5 h-5" />{tx("featurePreview.add_money_in_or_out")}</span>
       <div className="mt-4"><Lbl>{tx("featurePreview.this_month")}</Lbl>
         {rows.map(([d, list]) => (
           <div key={d} className="mb-2"><div className="text-[12px] font-bold text-zinc-400 px-1 mb-1">{d}</div>
@@ -115,7 +115,7 @@ function MoneyMock() {
         <div className="bg-white border border-zinc-200 rounded-2xl p-3.5">
           <b className="font-[Outfit] text-base">{tx("featurePreview.new_phone")}</b><div className="text-[12.5px] text-zinc-500">{tx("featurePreview.12_000_of_30_000")}</div>
           <div className="h-2.5 rounded-full bg-zinc-100 overflow-hidden my-2"><div className="h-full bg-emerald-500" style={{ width: "40%" }} /></div>
-          <div className="text-[13px]">Save <b>₹3,000</b> a month for 6 months</div>
+          <div className="text-[13px]"><Trans i18nKey="featurePreview.save_a_month" components={{ b: <b /> }} /></div>
         </div>
       </div>
     </div>
@@ -231,7 +231,7 @@ export default function FeaturePreview() {
       <div className="flex items-center gap-3 mb-1">
         <span className="w-12 h-12 rounded-2xl grid place-items-center text-white" style={{ background: f.color }}><Icon className="w-6 h-6" /></span>
         <div>
-          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 text-white text-[10px] font-black px-2 py-0.5"><Crown className="w-3 h-3" />PRO</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 text-white text-[10px] font-black px-2 py-0.5"><Crown className="w-3 h-3" />{tx("featurePreview.pro")}</span>
           <h1 className="font-[Outfit] font-black text-2xl leading-tight">{f.title}</h1>
         </div>
       </div>

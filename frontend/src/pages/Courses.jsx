@@ -156,8 +156,7 @@ function CourseNode({ node, idx, isEnrolled, busy, onEnroll, onContinue }) {
             {isEnrolled ? (
               <button onClick={onContinue}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-bold transition active:scale-95"
-                style={{ background: node.color }}>
-                Continue Learning <ArrowRight className="w-4 h-4" />
+                style={{ background: node.color }}>{t("courses.continue_learning")} <ArrowRight className="w-4 h-4" />
               </button>
             ) : (
               <button onClick={onEnroll} disabled={busy}

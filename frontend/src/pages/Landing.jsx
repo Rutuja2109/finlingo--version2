@@ -24,17 +24,14 @@ export default function Landing() {
       <section className="max-w-6xl mx-auto px-6 pt-12 pb-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF6B35]/10 text-[#FF6B35] text-xs font-bold uppercase tracking-[0.2em] mb-6">
-            <Sparkles className="w-3.5 h-3.5"/> Learn by choosing
-          </div>
-          <h1 className="font-[Outfit] font-black text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mb-6">
-            Learn money,<br/>
+            <Sparkles className="w-3.5 h-3.5"/> {t("landing.learn_by_choosing")} </div>
+          <h1 className="font-[Outfit] font-black text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight mb-6">{t("landing.learn_money")}<br/>
             <span className="bg-gradient-to-r from-[#FF6B35] via-[#EC4899] to-[#FF6B35] bg-clip-text text-transparent">finally</span> fun.
           </h1>
           <p className="text-lg text-zinc-600 max-w-xl mb-8 leading-relaxed">{t("landing.budgeting_the_stock_market_and_bitcoin")}</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link to="/signup" data-testid="hero-cta-start"
-              className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold text-lg transition active:scale-[0.98]">
-              Start learning free <ArrowRight className="w-5 h-5" />
+              className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold text-lg transition active:scale-[0.98]">{t("landing.start_learning_free")} <ArrowRight className="w-5 h-5" />
             </Link>
             <Link to="/login" data-testid="hero-cta-login"
               className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-300 font-[Outfit] font-bold text-lg transition">{t("landing.i_have_an_account")}</Link>

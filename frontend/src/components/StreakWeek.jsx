@@ -93,7 +93,7 @@ export default function StreakWeek() {
       </div>
 
       <div className="mt-3.5">
-        <div className="flex justify-between text-[12px] font-bold text-zinc-700 mb-1"><span>Aim for {WEEK_GOAL} days this week</span><span className="tabular-nums" data-testid="week-goal">{Math.min(doneDays, WEEK_GOAL)} / {WEEK_GOAL}</span></div>
+        <div className="flex justify-between text-[12px] font-bold text-zinc-700 mb-1"><span>{t("streakWeek.aim_for_week_goal_days_this", { WEEK_GOAL })}</span><span className="tabular-nums" data-testid="week-goal">{Math.min(doneDays, WEEK_GOAL)} / {WEEK_GOAL}</span></div>
         <div className="h-2.5 rounded-full bg-white/80 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-[#FF6B35] to-[#FBBF24] transition-all duration-700" style={{ width: `${Math.min(100, (doneDays / WEEK_GOAL) * 100)}%` }} /></div>
         <p className="text-[11.5px] text-zinc-600 mt-1.5">{t("streakWeek.a_day_lights_up_when_you")}</p>
       </div>

@@ -159,8 +159,7 @@ export default function LessonPlayer() {
       {/* Re-queue indicator: shown when user is on a repeat question */}
       {answered === null && wrongFirstTry.has(currentIdx) && (
         <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FBBF24]/15 text-[#92400E] text-xs font-bold uppercase tracking-wider" data-testid="repeat-banner">
-          <Repeat className="w-3.5 h-3.5"/> One more shot — you'll nail it this time
-        </div>
+          <Repeat className="w-3.5 h-3.5"/> {tx("lessonPlayer.one_more_shot_you_ll_nail")} </div>
       )}
 
       <div data-testid="lesson-card" className="bg-white border border-zinc-200 rounded-3xl p-6 md:p-8 min-h-[320px] mb-4">
@@ -657,8 +656,8 @@ function ResultScreen({ result, concept, onAgain }) {
       {!isPro && sub && wall && (
         <div className="mb-5 rounded-3xl p-5 text-white text-left bg-gradient-to-br from-[#FF6B35] via-[#F59E0B] to-[#EC4899]" data-testid="result-wall">
           <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/95">{tx("lessonPlayer.free_lessons_done")}</p>
-          <p className="font-[Outfit] font-black text-2xl leading-tight mt-0.5">You finished the free lessons in {wall.course.name}!</p>
-          <p className="text-[13.5px] text-white/95 mt-1.5">Next up: "{wall.concept.title}". One Pro plan opens every lesson and tool for ₹49 a month.</p>
+          <p className="font-[Outfit] font-black text-2xl leading-tight mt-0.5">{tx("lessonPlayer.you_finished_the_free_lessons_in", { name: wall.course.name })}</p>
+          <p className="text-[13.5px] text-white/95 mt-1.5">{tx("lessonPlayer.next_up_title_one_pro_plan", { title: wall.concept.title })}</p>
           <button onClick={() => nav("/pro?from=wall")} data-testid="result-wall-cta" className="mt-3 w-full rounded-2xl bg-white text-[#FF6B35] font-[Outfit] font-extrabold py-3 active:scale-[0.98]">{tx("lessonPlayer.keep_going_with_pro")}</button>
         </div>
       )}
@@ -674,12 +673,10 @@ function ResultScreen({ result, concept, onAgain }) {
       <div className="flex gap-3 justify-center">
         <button onClick={onAgain} data-testid="btn-redo"
           className="flex-1 px-3 py-3 rounded-2xl bg-white border border-zinc-200 hover:border-zinc-400 font-bold inline-flex items-center justify-center gap-2 whitespace-nowrap">
-          <RotateCcw className="w-4 h-4"/> Practice again
-        </button>
+          <RotateCcw className="w-4 h-4"/> {tx("lessonPlayer.practice_again")} </button>
         <button onClick={() => nav(-1)} data-testid="btn-continue-path"
           className="flex-1 px-3 py-3 rounded-2xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold inline-flex items-center justify-center gap-2 whitespace-nowrap">
-          <Sparkles className="w-4 h-4"/> Continue path
-        </button>
+          <Sparkles className="w-4 h-4"/> {tx("lessonPlayer.continue_path")} </button>
       </div>
     </div>
   );

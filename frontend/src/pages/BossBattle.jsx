@@ -45,7 +45,7 @@ export default function BossBattle() {
         <div className="text-center max-w-md">
           <Lock className="w-12 h-12 mx-auto text-[#EC4899] mb-3"/>
           <h1 className="font-[Outfit] font-black text-3xl tracking-tight mb-2 text-white">{t("bossBattle.boss_locked")}</h1>
-          <p className="text-zinc-500">Master all {data.concepts_total} concepts of this chapter to challenge the boss. You're at {data.concepts_done}/{data.concepts_total}.</p>
+          <p className="text-zinc-500">{t("bossBattle.master_all_concepts_total_concepts_of", { concepts_total: data.concepts_total, concepts_done: data.concepts_done, concepts_total2: data.concepts_total })}</p>
           <button onClick={() => nav(-1)} className="mt-5 px-5 py-3 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-bold">{t("bossBattle.back")}</button>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function BossBattle() {
         <div className="relative text-center max-w-md">
           {result.passed ? <Crown className="w-16 h-16 mx-auto text-[#FBBF24] mb-3"/> : <Skull className="w-16 h-16 mx-auto text-[#EF4444] mb-3"/>}
           <h1 className="font-[Outfit] font-black text-5xl tracking-tight mb-2">{result.passed ? t("bossBattle.victory") : t("bossBattle.defeated")}</h1>
-          <p className="text-zinc-300 mb-7">Score: <span className="text-[#FBBF24] font-bold text-2xl">{result.score}%</span></p>
+          <p className="text-zinc-300 mb-7">{t("bossBattle.score")} <span className="text-[#FBBF24] font-bold text-2xl">{result.score}%</span></p>
           <div className="grid grid-cols-2 gap-3 mb-6">
             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-4">
               <p className="text-[10px] uppercase tracking-wider text-white/60">{t("bossBattle.xp_earned")}</p>
@@ -103,8 +103,7 @@ export default function BossBattle() {
           )}
           <button onClick={() => nav(-1)} data-testid="boss-exit"
             className="px-7 py-3 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-bold inline-flex items-center gap-2">
-            <Sparkles className="w-4 h-4"/> Return
-          </button>
+            <Sparkles className="w-4 h-4"/> {t("bossBattle.return")} </button>
         </div>
       </div>
     );

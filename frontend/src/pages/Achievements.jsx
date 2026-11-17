@@ -22,7 +22,7 @@ export default function Achievements() {
       <div className="mb-7">
         <p className="uppercase tracking-[0.25em] text-xs font-bold text-zinc-500">{t("achievements.your_trophies")}</p>
         <h1 className="font-[Outfit] font-black text-3xl md:text-4xl tracking-tight">{t("achievements.achievements")}</h1>
-        <p className="text-zinc-500 mt-1">{earned.size} of {ALL.length} unlocked.</p>
+        <p className="text-zinc-500 mt-1">{t("achievements.size_of_length_unlocked", { size: earned.size, length: ALL.length })}</p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
