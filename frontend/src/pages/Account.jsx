@@ -35,7 +35,8 @@ export default function Account() {
           <Shield className="w-5 h-5 text-[#FF6B35]" /> {t("account.admin_tools_give_pro_ai_lab")} </Link>
       )}
 
-      <div className="mb-4"><LanguagePicker /></div>
+      {/* Off until native speakers have checked the translations. Turn on with REACT_APP_SHOW_LANGUAGE_PICKER=1 when building. */}
+      {process.env.REACT_APP_SHOW_LANGUAGE_PICKER === "1" && <div className="mb-4"><LanguagePicker /></div>}
 
       <Link to="/pro" data-testid="account-plan" className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-3xl px-6 py-4 mb-4 font-[Outfit] font-bold">
         <Crown className="w-5 h-5 text-amber-600" />
