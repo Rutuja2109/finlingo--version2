@@ -30,7 +30,8 @@ async function loadLanguage(code) {
   }
 }
 
-const initial = pickSupported(stored() || (typeof navigator !== "undefined" ? navigator.language : "en"));
+// English unless the learner chose another language in Account. Translations are switched on by choice only, until native speakers have checked them.
+const initial = pickSupported(stored() || "en");
 
 i18n.use(initReactI18next).init({
   resources: { en: { translation: en } },
