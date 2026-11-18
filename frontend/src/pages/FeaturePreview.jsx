@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { X, Crown, Check, LineChart, Wallet, Flag, Calculator, Skull, Heart, Target, History as HistoryIcon, BarChart3, Coins, Bitcoin, Rocket, ArrowUp, ArrowDown, Flame, Plus, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
 import Lumi from "@/components/Lumi";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation, Trans } from "react-i18next";
 
 // What a free learner sees when they tap a Pro feature: a sample of the real screen and what it gives them,
 // then a clear way to unlock it. (Sample numbers only, never the learner's own data.)
@@ -23,12 +24,13 @@ const Coach = ({ title, tone = "", children }) => {
 
 // Same layout as the real Practice screen, filled with sample numbers.
 function PracticeMock() {
+  const { t: tx } = useTranslation();
   const assets = [["NIFTY", "#2563EB", BarChart3, true], ["GOLD", "#F59E0B", Coins], ["BTC", "#FF9500", Bitcoin], ["RKT", "#EC4899", Rocket]];
   return (
     <div>
       <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899] text-center">
         <div className="font-[Outfit] font-black text-2xl tracking-tight">₹90,000</div>
-        <div className="text-[11.5px] font-semibold opacity-90">Practice money, not real money</div>
+        <div className="text-[11.5px] font-semibold opacity-90">{tx("featurePreview.practice_money_not_real_money")}</div>
       </div>
       <div className="grid grid-cols-3 gap-1 bg-zinc-200/70 rounded-2xl p-1 mt-3">
         {[["Trade", LineChart, true], ["Portfolio", Wallet], ["History", HistoryIcon]].map(([l, I, on]) => (
@@ -44,7 +46,7 @@ function PracticeMock() {
         ))}
       </div>
       <div className="flex items-end justify-between mb-1">
-        <div><div className="text-[12.5px] font-bold text-zinc-500">Nifty 50 Index Fund</div><div className="font-[Outfit] font-black text-[26px] tracking-tight leading-tight">₹252.40</div></div>
+        <div><div className="text-[12.5px] font-bold text-zinc-500">{tx("featurePreview.nifty_50_index_fund")}</div><div className="font-[Outfit] font-black text-[26px] tracking-tight leading-tight">₹252.40</div></div>
         <span className="font-[Outfit] font-extrabold text-[13px] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">+2.41%</span>
       </div>
       <div className="bg-white border border-zinc-200 rounded-[20px] px-2 pt-2 pb-1">
@@ -53,19 +55,20 @@ function PracticeMock() {
       <div className="flex justify-between my-2">
         {["1MIN", "5MIN", "15MIN", "1H", "1D", "1W"].map((k) => <span key={k} className={`font-[Outfit] font-extrabold text-xs px-2 py-1.5 rounded-[10px] ${k === "1D" ? "bg-zinc-900 text-white" : "text-zinc-400"}`}>{k}</span>)}
       </div>
-      <p className="text-[12.5px] text-zinc-500 mx-1 mb-2">You hold <b>₹10,240</b> of NIFTY · profit/loss <b className="text-emerald-700">+₹240</b></p>
+      <p className="text-[12.5px] text-zinc-500 mx-1 mb-2"><Trans i18nKey="featurePreview.you_hold" components={{ b: <b />, g: <b className="text-emerald-700" /> }} /></p>
       <div className="grid grid-cols-2 gap-2.5">
-        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-red-500"><ArrowDown className="w-4 h-4" />Sell</span>
-        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-emerald-500"><ArrowUp className="w-4 h-4" />Buy</span>
+        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-red-500"><ArrowDown className="w-4 h-4" />{tx("featurePreview.sell")}</span>
+        <span className="rounded-2xl py-3 text-white font-[Outfit] font-black text-base flex items-center justify-center gap-1.5 bg-emerald-500"><ArrowUp className="w-4 h-4" />{tx("featurePreview.buy")}</span>
       </div>
-      <Coach title="Lumi says">An index fund holds 50 big companies at once, so one bad company cannot sink you.</Coach>
-      <span className="mx-auto mt-3 flex w-fit items-center gap-1.5 border-2 border-red-500 text-red-700 bg-white rounded-2xl px-3 py-2 font-[Outfit] font-extrabold text-[13px]"><Flame className="w-4 h-4" />Replay a market crash</span>
+      <Coach title={tx("featurePreview.lumi_says")}>{tx("featurePreview.an_index_fund_holds_50_big")}</Coach>
+      <span className="mx-auto mt-3 flex w-fit items-center gap-1.5 border-2 border-red-500 text-red-700 bg-white rounded-2xl px-3 py-2 font-[Outfit] font-extrabold text-[13px]"><Flame className="w-4 h-4" />{tx("featurePreview.replay_a_market_crash")}</span>
     </div>
   );
 }
 
 // Same layout as the real My money screen, with sample numbers.
 function MoneyMock() {
+  const { t: tx } = useTranslation();
   const B = { needs: ["Needs", "#2563EB", 50, 8200, 48], wants: ["Wants", "#EC4899", 30, 5100, 30], savings: ["Savings", "#10B981", 20, 3700, 22] };
   const rows = [["Wed 5 Nov", [["Groceries and food", "Weekly vegetables", 640, "#2563EB"], ["Eating out", "Lunch with friends", 420, "#EC4899"]]],
     ["Tue 4 Nov", [["Income", "Pocket money", 5000, null], ["SIP and investing", "", 500, "#10B981"]]]];
@@ -73,17 +76,17 @@ function MoneyMock() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <span className="w-9 h-9 grid place-items-center rounded-full bg-white"><ChevronLeft className="w-5 h-5" /></span>
-        <span className="font-[Outfit] font-black text-lg">November 2026</span>
+        <span className="font-[Outfit] font-black text-lg">{tx("featurePreview.november_2026")}</span>
         <span className="w-9 h-9 grid place-items-center rounded-full bg-white"><ChevronRight className="w-5 h-5" /></span>
       </div>
       <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#2563EB] via-[#6366F1] to-[#EC4899]">
         <div className="grid grid-cols-3 text-center gap-2">
           {[["Income", "₹17,000"], ["Spent", "₹13,300"], ["Left", "₹3,700"]].map(([l, v]) => <div key={l}><div className="text-[11px] font-semibold opacity-90">{l}</div><div className="font-[Outfit] font-black text-lg">{v}</div></div>)}
         </div>
-        <p className="text-center text-[11.5px] opacity-90 mt-2">Savings you set aside are not counted as spent.</p>
+        <p className="text-center text-[11.5px] opacity-90 mt-2">{tx("featurePreview.savings_you_set_aside_are_not")}</p>
       </div>
       <div className="mt-3 bg-white border border-zinc-200 rounded-[20px] p-3.5">
-        <Lbl>Your 50 / 30 / 20 split</Lbl>
+        <Lbl>{tx("featurePreview.your_50_30_20_split")}</Lbl>
         <div className="flex h-3.5 rounded-full overflow-hidden bg-zinc-100 mb-3">{Object.values(B).map(([, c, , , p]) => <div key={c} style={{ width: `${p}%`, background: c }} />)}</div>
         {Object.values(B).map(([l, c, t, v, p]) => (
           <div key={l} className="flex items-center justify-between py-1.5 text-sm">
@@ -92,9 +95,9 @@ function MoneyMock() {
           </div>
         ))}
       </div>
-      <Coach title="Nicely balanced" tone="good">Your split is close to 50 / 30 / 20. Keep saving before you spend.</Coach>
-      <span className="w-full mt-3 rounded-2xl py-3.5 bg-[#FF6B35] text-white font-[Outfit] font-black text-base flex items-center justify-center gap-2"><Plus className="w-5 h-5" />Add money in or out</span>
-      <div className="mt-4"><Lbl>This month</Lbl>
+      <Coach title={tx("featurePreview.nicely_balanced")} tone="good">{tx("featurePreview.your_split_is_close_to_50")}</Coach>
+      <span className="w-full mt-3 rounded-2xl py-3.5 bg-[#FF6B35] text-white font-[Outfit] font-black text-base flex items-center justify-center gap-2"><Plus className="w-5 h-5" />{tx("featurePreview.add_money_in_or_out")}</span>
+      <div className="mt-4"><Lbl>{tx("featurePreview.this_month")}</Lbl>
         {rows.map(([d, list]) => (
           <div key={d} className="mb-2"><div className="text-[12px] font-bold text-zinc-400 px-1 mb-1">{d}</div>
             <div className="bg-white border border-zinc-200 rounded-2xl px-3">
@@ -108,11 +111,11 @@ function MoneyMock() {
             </div></div>
         ))}
       </div>
-      <div className="mt-4"><Lbl>Savings goals</Lbl>
+      <div className="mt-4"><Lbl>{tx("featurePreview.savings_goals")}</Lbl>
         <div className="bg-white border border-zinc-200 rounded-2xl p-3.5">
-          <b className="font-[Outfit] text-base">New phone</b><div className="text-[12.5px] text-zinc-500">₹12,000 of ₹30,000</div>
+          <b className="font-[Outfit] text-base">{tx("featurePreview.new_phone")}</b><div className="text-[12.5px] text-zinc-500">{tx("featurePreview.12_000_of_30_000")}</div>
           <div className="h-2.5 rounded-full bg-zinc-100 overflow-hidden my-2"><div className="h-full bg-emerald-500" style={{ width: "40%" }} /></div>
-          <div className="text-[13px]">Save <b>₹3,000</b> a month for 6 months</div>
+          <div className="text-[13px]"><Trans i18nKey="featurePreview.save_a_month" components={{ b: <b /> }} /></div>
         </div>
       </div>
     </div>
@@ -121,6 +124,7 @@ function MoneyMock() {
 
 // Same cards as the real Real-life missions screen, with real mission examples.
 function MissionsMock() {
+  const { t: tx } = useTranslation();
   const Row = ({ t, xp, color, done, open, children, auto }) => (
     <div className={`bg-white border rounded-2xl mb-2.5 ${done ? "border-emerald-200" : "border-zinc-200"}`}>
       <div className="flex items-center gap-3 px-3.5 py-3">
@@ -135,63 +139,65 @@ function MissionsMock() {
   return (
     <div>
       <div className="bg-white border border-zinc-200 rounded-2xl p-3.5 mb-3">
-        <div className="flex justify-between text-[13px] font-bold mb-1.5"><span>Your progress</span><span>3 of 18 done</span></div>
+        <div className="flex justify-between text-[13px] font-bold mb-1.5"><span>{tx("featurePreview.your_progress")}</span><span>{tx("featurePreview.3_of_18_done")}</span></div>
         <div className="h-2.5 rounded-full bg-zinc-100 overflow-hidden"><div className="h-full bg-emerald-500" style={{ width: "17%" }} /></div>
       </div>
       <div className="rounded-3xl text-white p-4 bg-gradient-to-br from-[#FF6B35] via-[#FF8A4C] to-[#EC4899] mb-4 relative overflow-hidden">
         <div className="absolute -right-1 -top-1 opacity-40 pointer-events-none"><Lumi size={84} mood="cheer" /></div>
-        <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/90 relative">Mission of the week</p>
-        <h2 className="font-[Outfit] font-black text-xl mt-1 max-w-[72%] relative">Find one subscription you can cancel</h2>
+        <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-white/90 relative">{tx("featurePreview.mission_of_the_week")}</p>
+        <h2 className="font-[Outfit] font-black text-xl mt-1 max-w-[72%] relative">{tx("featurePreview.find_one_subscription_you_can_cancel")}</h2>
       </div>
-      <Lbl>Know your spending</Lbl>
+      <Lbl>{tx("featurePreview.know_your_spending")}</Lbl>
       <Row t="Check your UPI history" xp={20} color="#EC4899" open>
-        <p className="text-[13px] text-zinc-600 mb-2">Small UPI payments hide where your money really goes.</p>
-        <ol className="text-[13px] text-zinc-700 list-decimal pl-5 space-y-1 mb-3"><li>Open your UPI app and look at the last 7 days of payments.</li><li>Find your three biggest spends.</li><li>Ask yourself: need or want?</li></ol>
-        <div className="w-full border-2 border-zinc-200 rounded-xl px-3 py-2 text-[13px] text-zinc-400 mb-2">What surprised you? (optional)</div>
-        <div className="w-full rounded-2xl py-3 bg-[#FF6B35] text-white font-[Outfit] font-black text-[15px] text-center">I did it</div>
+        <p className="text-[13px] text-zinc-600 mb-2">{tx("featurePreview.small_upi_payments_hide_where_your")}</p>
+        <ol className="text-[13px] text-zinc-700 list-decimal pl-5 space-y-1 mb-3"><li>{tx("featurePreview.open_your_upi_app_and_look")}</li><li>{tx("featurePreview.find_your_three_biggest_spends")}</li><li>{tx("featurePreview.ask_yourself_need_or_want")}</li></ol>
+        <div className="w-full border-2 border-zinc-200 rounded-xl px-3 py-2 text-[13px] text-zinc-400 mb-2">{tx("featurePreview.what_surprised_you_optional")}</div>
+        <div className="w-full rounded-2xl py-3 bg-[#FF6B35] text-white font-[Outfit] font-black text-[15px] text-center">{tx("featurePreview.i_did_it")}</div>
       </Row>
       <Row t="Log 5 spends in My money this week" xp={30} color="#EC4899" auto />
       <Row t="Find one subscription you can cancel" xp={20} color="#EC4899" />
-      <Lbl>Build savings</Lbl>
+      <Lbl>{tx("featurePreview.build_savings")}</Lbl>
       <Row t="Set up an automatic transfer to savings" xp={30} color="#10B981" />
       <Row t="Put your first ₹1,000 in an emergency fund" xp={30} color="#10B981" done />
-      <Lbl>Protect yourself</Lbl>
+      <Lbl>{tx("featurePreview.protect_yourself")}</Lbl>
       <Row t="Turn on two-step verification" xp={25} color="#7C3AED" />
     </div>
   );
 }
 
 function CalcMock() {
+  const { t: tx } = useTranslation();
   return (
     <div className="space-y-2.5">
       <Card>
-        <p className="font-[Outfit] font-extrabold text-[15px] mb-2">SIP calculator</p>
+        <p className="font-[Outfit] font-extrabold text-[15px] mb-2">{tx("featurePreview.sip_calculator")}</p>
         {[["Monthly amount", "₹5,000", 25], ["Years", "10", 50], ["Expected return", "12%", 60]].map(([l, v, p]) => (
           <div key={l} className="mb-2.5"><div className="flex justify-between text-[12px] font-bold text-zinc-500"><span>{l}</span><span className="text-zinc-900">{v}</span></div>
             <div className="h-1.5 rounded-full bg-zinc-100 mt-1.5 relative"><div className="h-full rounded-full bg-[#10B981]" style={{ width: `${p}%` }} /><span className="absolute -top-1.5 w-4.5 h-4.5 w-[18px] h-[18px] rounded-full bg-white border-2 border-[#10B981]" style={{ left: `calc(${p}% - 9px)` }} /></div></div>
         ))}
       </Card>
-      <Card className="bg-emerald-50 border-emerald-200"><p className="text-[12px] text-zinc-500 font-bold">You invest ₹6,00,000 and it can grow to</p><p className="font-[Outfit] font-black text-3xl text-emerald-700">₹11.6 lakh</p></Card>
-      <Card className="text-[13px] text-zinc-600">Also: EMI calculator and emergency-fund calculator.</Card>
+      <Card className="bg-emerald-50 border-emerald-200"><p className="text-[12px] text-zinc-500 font-bold">{tx("featurePreview.you_invest_6_00_000_and")}</p><p className="font-[Outfit] font-black text-3xl text-emerald-700">{tx("featurePreview.11_6_lakh")}</p></Card>
+      <Card className="text-[13px] text-zinc-600">{tx("featurePreview.also_emi_calculator_and_emergency_fund")}</Card>
     </div>
   );
 }
 
 function BossMock() {
+  const { t: tx } = useTranslation();
   return (
     <div className="space-y-2.5">
       <Card className="bg-gradient-to-br from-zinc-950 to-[#1a0a2e] text-white border-0 flex items-center gap-3">
         <span className="w-12 h-12 rounded-2xl bg-[#EC4899]/25 text-[#EC4899] grid place-items-center"><Skull className="w-7 h-7" /></span>
-        <span className="flex-1"><span className="block text-[10px] tracking-[0.3em] font-bold text-[#EC4899]">BOSS BATTLE</span><span className="block font-[Outfit] font-black">Chapter 1 final test</span></span>
+        <span className="flex-1"><span className="block text-[10px] tracking-[0.3em] font-bold text-[#EC4899]">{tx("featurePreview.boss_battle")}</span><span className="block font-[Outfit] font-black">{tx("featurePreview.chapter_1_final_test")}</span></span>
         <span className="flex gap-0.5 text-rose-400"><Heart className="w-4 h-4" fill="currentColor" /><Heart className="w-4 h-4" fill="currentColor" /><Heart className="w-4 h-4" /></span>
       </Card>
       <Card>
-        <p className="font-bold text-[14px] mb-2">Your salary rose 30%. What protects your savings most?</p>
+        <p className="font-bold text-[14px] mb-2">{tx("featurePreview.your_salary_rose_30_what_protects")}</p>
         {["Spend the extra on upgrades", "Save half of every raise first", "Wait and see"].map((o, i) => (
           <div key={o} className={`rounded-xl border-2 px-3 py-2 text-[13px] font-semibold mb-1.5 ${i === 1 ? "border-emerald-400 bg-emerald-50" : "border-zinc-200"}`}>{o}</div>
         ))}
       </Card>
-      <Card className="text-[13px] text-zinc-600">20 mixed questions after each chapter. Beat the boss for +200 XP.</Card>
+      <Card className="text-[13px] text-zinc-600">{tx("featurePreview.20_mixed_questions_after_each_chapter")}</Card>
     </div>
   );
 }
@@ -210,6 +216,7 @@ const FEATURES = {
 };
 
 export default function FeaturePreview() {
+  const { t: tx } = useTranslation();
   const { feature } = useParams();
   const nav = useNavigate();
   const { isPro, sub } = useAuth();
@@ -219,21 +226,21 @@ export default function FeaturePreview() {
   const { Icon, Mock } = f;
   return (
     <div className="max-w-lg mx-auto pb-52" data-testid={`preview-${feature}`}>
-      <button onClick={() => nav(-1)} aria-label="Close" data-testid="preview-close" className="mb-3 w-9 h-9 rounded-full bg-zinc-100 grid place-items-center"><X className="w-4 h-4" /></button>
+      <button onClick={() => nav(-1)} aria-label={tx("featurePreview.close")} data-testid="preview-close" className="mb-3 w-9 h-9 rounded-full bg-zinc-100 grid place-items-center"><X className="w-4 h-4" /></button>
 
       <div className="flex items-center gap-3 mb-1">
         <span className="w-12 h-12 rounded-2xl grid place-items-center text-white" style={{ background: f.color }}><Icon className="w-6 h-6" /></span>
         <div>
-          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 text-white text-[10px] font-black px-2 py-0.5"><Crown className="w-3 h-3" />PRO</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 text-white text-[10px] font-black px-2 py-0.5"><Crown className="w-3 h-3" />{tx("featurePreview.pro")}</span>
           <h1 className="font-[Outfit] font-black text-2xl leading-tight">{f.title}</h1>
         </div>
       </div>
       <p className="text-[15px] text-zinc-600 mb-4">{f.tag}</p>
 
-      <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-500 mb-2">A look inside</p>
-      <div className="rounded-3xl bg-zinc-100 p-3 mb-4 relative" aria-label="Sample of the screen">
+      <p className="uppercase tracking-[0.2em] text-[11px] font-bold text-zinc-500 mb-2">{tx("featurePreview.a_look_inside")}</p>
+      <div className="rounded-3xl bg-zinc-100 p-3 mb-4 relative" aria-label={tx("featurePreview.sample_of_the_screen")}>
         <Mock />
-        <span className="absolute top-2 right-3 text-[10px] font-bold text-zinc-400 bg-white/80 rounded px-1">SAMPLE</span>
+        <span className="absolute top-2 right-3 text-[10px] font-bold text-zinc-400 bg-white/80 rounded px-1">{tx("featurePreview.sample")}</span>
       </div>
 
       <ul className="space-y-2.5 mb-4">
@@ -241,14 +248,12 @@ export default function FeaturePreview() {
           <li key={p} className="flex items-start gap-2.5 text-[14.5px] font-semibold"><span className="w-5 h-5 rounded-full bg-emerald-500 text-white grid place-items-center shrink-0 mt-0.5"><Check className="w-3 h-3" strokeWidth={4} /></span>{p}</li>
         ))}
       </ul>
-      <p className="text-[12.5px] text-zinc-500">Included in the one FinLearn Pro plan. ₹49 a month unlocks everything together (every lesson, practice trading, My money, missions, calculators and boss battles). No extra charge for any feature.</p>
+      <p className="text-[12.5px] text-zinc-500">{tx("featurePreview.included_in_the_one_finlearn_pro")}</p>
 
       <div className="fixed bottom-[64px] lg:bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur border-t border-zinc-200 px-5 pt-3 pb-3">
         <div className="max-w-lg mx-auto">
-          <Link to={`/pro?from=${feature}`} data-testid="preview-unlock" className="block text-center w-full rounded-2xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-lg py-3.5 active:scale-[0.98]">
-            Unlock everything · ₹49/month
-          </Link>
-          <button onClick={() => nav(-1)} className="block mx-auto mt-1.5 text-[13px] font-semibold text-zinc-500">Maybe later</button>
+          <Link to={`/pro?from=${feature}`} data-testid="preview-unlock" className="block text-center w-full rounded-2xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-lg py-3.5 active:scale-[0.98]">{tx("featurePreview.unlock_everything_49_month")}</Link>
+          <button onClick={() => nav(-1)} className="block mx-auto mt-1.5 text-[13px] font-semibold text-zinc-500">{tx("featurePreview.maybe_later")}</button>
         </div>
       </div>
     </div>

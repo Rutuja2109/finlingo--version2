@@ -6,8 +6,10 @@ import { Lock, Check, Sparkles, ChevronLeft, Skull, Star, BookOpen, Zap, Crown }
 import { useAuth } from "@/context/AuthContext";
 import { trackChapterStarted } from "@/lib/firebase";
 import Lumi from "@/components/Lumi";
+import { useTranslation } from "react-i18next";
 
 export default function CoursePath() {
+  const { t } = useTranslation();
   const { courseId } = useParams();
   const nav = useNavigate();
   const [course, setCourse] = useState(null);
@@ -20,7 +22,7 @@ export default function CoursePath() {
   if (!course) return (
     <div className="flex flex-col items-center justify-center py-20 gap-3">
       <Lumi size={80} mood="happy" className="lumi-float" />
-      <p className="text-zinc-500 font-semibold">Loading your path…</p>
+      <p className="text-zinc-500 font-semibold">{t("coursePath.loading_your_path")}</p>
     </div>
   );
 
@@ -44,8 +46,7 @@ export default function CoursePath() {
       {/* Header */}
       <button onClick={() => nav("/courses")}
         className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 mb-5">
-        <ChevronLeft className="w-4 h-4" /> All courses
-      </button>
+        <ChevronLeft className="w-4 h-4" /> {t("coursePath.all_courses")} </button>
 
       <div className="rounded-3xl p-6 mb-8 text-white relative overflow-hidden"
         style={{ background: `linear-gradient(135deg, ${course.color}dd, #1B1B1F)` }}>
@@ -63,8 +64,8 @@ export default function CoursePath() {
           className="w-full flex items-center gap-3 text-left rounded-2xl bg-amber-50 border-2 border-amber-300 p-3.5 mb-6">
           <span className="w-10 h-10 rounded-xl bg-amber-400 text-white grid place-items-center shrink-0"><Crown className="w-5 h-5" /></span>
           <span className="flex-1">
-            <span className="block font-[Outfit] font-extrabold text-[15px]">Free preview: {course.free_concepts || 2} lessons</span>
-            <span className="block text-[13px] text-zinc-600">One Pro plan (₹49 a month) opens every lesson and every feature.</span>
+            <span className="block font-[Outfit] font-extrabold text-[15px]">{t("coursePath.free_preview_lessons", { n: course.free_concepts || 2 })}</span>
+            <span className="block text-[13px] text-zinc-600">{t("coursePath.one_pro_plan_49_a_month")}</span>
           </span>
         </button>
       )}
@@ -106,11 +107,12 @@ export default function CoursePath() {
 }
 
 function ChapterBanner({ ch, ci, color }) {
+  const { t } = useTranslation();
   return (
     <div className="relative z-10 flex justify-center my-6">
       <div className="px-5 py-3 rounded-2xl text-center shadow-lg border border-white"
         style={{ background: `linear-gradient(135deg, ${color}20, ${color}08)`, borderColor: `${color}30` }}>
-        <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-500">Chapter {ci + 1}</p>
+        <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-500">{t("coursePath.chapter_v1", { v1: ci + 1 })}</p>
         <p className="font-[Outfit] font-black text-base tracking-tight text-zinc-900">{ch.title}</p>
       </div>
     </div>
@@ -118,6 +120,7 @@ function ChapterBanner({ ch, ci, color }) {
 }
 
 function ConceptNode({ concept, color, side, index, onClick }) {
+  const { t } = useTranslation();
   const status = concept.progress?.status || "locked";
   const isLocked = status === "locked";
   const isDone = status === "completed" || status === "mastered";
@@ -156,7 +159,7 @@ function ConceptNode({ concept, color, side, index, onClick }) {
         {isAvailable && <Lumi size={48} mood="happy" />}
 
         {proLocked && (
-          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">PRO</span>
+          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">{t("coursePath.pro")}</span>
         )}
 
         {isMastered && (
@@ -167,7 +170,7 @@ function ConceptNode({ concept, color, side, index, onClick }) {
 
         {isAvailable && (
           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#FF6B35] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full whitespace-nowrap">
-            +{concept.xp_reward} XP
+            {t("coursePath.plus_xp", { xp: concept.xp_reward })}
           </span>
         )}
       </button>
@@ -178,9 +181,9 @@ function ConceptNode({ concept, color, side, index, onClick }) {
 
       {/* Label card */}
       <div className={`flex-1 ${side === "right" ? "text-right pr-2" : "pl-2"}`}>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Concept {index}</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">{t("coursePath.concept_index", { index })}</p>
         <p className="font-[Outfit] font-bold text-[15px] tracking-tight text-zinc-900 leading-tight">{concept.title}</p>
-        {proLocked && <p className="text-xs font-bold text-amber-600 mt-0.5">Pro lesson</p>}
+        {proLocked && <p className="text-xs font-bold text-amber-600 mt-0.5">{t("coursePath.pro_lesson")}</p>}
         {!isLocked && !proLocked && (
           <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{concept.learning_objective}</p>
         )}
@@ -190,6 +193,7 @@ function ConceptNode({ concept, color, side, index, onClick }) {
 }
 
 function BossNode({ ch, bossReady, done, total, onPress }) {
+  const { t } = useTranslation();
   return (
     <div className="relative z-10 flex justify-center my-6">
       <button
@@ -206,15 +210,13 @@ function BossNode({ ch, bossReady, done, total, onPress }) {
           {bossReady ? <Skull className="w-7 h-7" /> : <Lock className="w-6 h-6" />}
         </div>
         <div className="text-left">
-          <p className={`text-[9px] uppercase tracking-[0.35em] font-bold ${bossReady ? "text-[#EC4899]" : "text-zinc-500"}`}>
-            Boss Battle
-          </p>
+          <p className={`text-[9px] uppercase tracking-[0.35em] font-bold ${bossReady ? "text-[#EC4899]" : "text-zinc-500"}`}>{t("coursePath.boss_battle")}</p>
           <p className="font-[Outfit] font-black text-base leading-tight">
-            {bossReady ? "Challenge the Boss" : "Complete all concepts first"}
+            {bossReady ? t("coursePath.challenge_the_boss") : t("coursePath.complete_all_concepts_first")}
           </p>
           <p className={`text-xs mt-0.5 ${bossReady ? "text-white/60" : "text-zinc-500"}`}>
             {bossReady
-              ? "20 mixed questions · +200 XP"
+              ? t("coursePath.20_mixed_questions_200_xp")
               : `${done} / ${total} concepts done`}
           </p>
         </div>

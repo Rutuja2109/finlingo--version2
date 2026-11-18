@@ -5,8 +5,10 @@ import Logo from "@/components/Logo";
 import { Eye, EyeOff } from "lucide-react";
 import { api, PRIVACY_URL } from "@/lib/api";
 import { googleIdToken, wasCancelled, failureHint } from "@/lib/googleLogin";
+import { useTranslation, Trans } from "react-i18next";
 
 export default function AuthPage({ mode = "login" }) {
+  const { t } = useTranslation();
   const { login, register, loginWithGoogle } = useAuth();
   const nav = useNavigate();
   const isLogin = mode === "login";
@@ -60,18 +62,15 @@ export default function AuthPage({ mode = "login" }) {
         <div className="relative z-10 flex flex-col justify-between h-full">
           <Link to="/" className="flex items-center gap-3" data-testid="auth-brand">
             <Logo size={44} />
-            <span className="font-[Outfit] font-black text-2xl tracking-tight">FinLearn</span>
+            <span className="font-[Outfit] font-black text-2xl tracking-tight">{t("authPage.finlearn")}</span>
           </Link>
           <div>
             <h1 className="font-[Outfit] font-black text-5xl leading-tight tracking-tight mb-4">
-              Learn money.<br/>One choice at a time.
+              {t("authPage.learn_money")}<br/>{t("authPage.one_choice_at_a_time")}
             </h1>
-            <p className="text-white/85 max-w-md">
-              Budgeting, stocks and Bitcoin through real-life situations.
-              Make the call, see what happens, learn why.
-            </p>
+            <p className="text-white/85 max-w-md">{t("authPage.budgeting_stocks_and_bitcoin_through_rea")}</p>
           </div>
-          <div className="text-xs uppercase tracking-[0.3em] text-white/70">Master what matters</div>
+          <div className="text-xs uppercase tracking-[0.3em] text-white/70">{t("authPage.master_what_matters")}</div>
         </div>
       </div>
 
@@ -80,20 +79,19 @@ export default function AuthPage({ mode = "login" }) {
         <form onSubmit={submit} className="w-full max-w-md bg-white border border-zinc-200 rounded-3xl p-8 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.15)]">
           <div className="flex md:hidden justify-center mb-4"><Logo size={56} /></div>
           <h2 className="font-[Outfit] font-black text-3xl tracking-tight">
-            {isLogin ? "Welcome back" : "Create your account"}
+            {isLogin ? t("authPage.welcome_back") : t("authPage.create_your_account")}
           </h2>
           <p className="text-zinc-500 text-sm mt-1 mb-6">
-            {isLogin ? "Continue your mastery journey." : "Start learning in 30 seconds."}
+            {isLogin ? t("authPage.continue_your_mastery_journey") : t("authPage.start_learning_in_30_seconds")}
           </p>
 
           {googleId && (
             <>
               <button type="button" onClick={google} disabled={busy} data-testid="btn-google"
                 className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-zinc-300 bg-white hover:bg-zinc-50 font-[Outfit] font-bold tracking-tight transition active:scale-[0.98] disabled:opacity-60">
-                <GoogleG /> Continue with Google
-              </button>
+                <GoogleG /> {t("authPage.continue_with_google")} </button>
               <div className="flex items-center gap-3 my-5 text-xs text-zinc-400 font-semibold uppercase tracking-widest">
-                <span className="flex-1 h-px bg-zinc-200" />or use email<span className="flex-1 h-px bg-zinc-200" />
+                <span className="flex-1 h-px bg-zinc-200" />{t("authPage.or_use_email")}<span className="flex-1 h-px bg-zinc-200" />
               </div>
             </>
           )}
@@ -104,7 +102,7 @@ export default function AuthPage({ mode = "login" }) {
                 required minLength={1}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Ada Lovelace"
+                placeholder={t("authPage.ada_lovelace")}
                 className="w-full px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
               />
             </Field>
@@ -115,7 +113,7 @@ export default function AuthPage({ mode = "login" }) {
               type="email" required
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="you@work.com"
+              placeholder={t("authPage.you_work_com")}
               className="w-full px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
             />
           </Field>
@@ -126,7 +124,7 @@ export default function AuthPage({ mode = "login" }) {
                 type={showPw ? "text" : "password"} required minLength={8}
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                placeholder="At least 8 characters"
+                placeholder={t("authPage.at_least_8_characters")}
                 autoComplete={isLogin ? "current-password" : "new-password"}
                 className="w-full pl-4 pr-12 py-3 rounded-xl border border-zinc-200 outline-none focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FF6B35]/20"
               />
@@ -149,28 +147,25 @@ export default function AuthPage({ mode = "login" }) {
             data-testid="btn-submit-auth"
             className="w-full py-3 rounded-xl bg-[#FF6B35] hover:bg-[#FF5618] text-white font-[Outfit] font-bold tracking-tight transition active:scale-[0.98] disabled:opacity-60"
           >
-            {busy ? "Please wait…" : isLogin ? "Log in" : "Sign up"}
+            {busy ? t("authPage.please_wait") : isLogin ? t("authPage.log_in") : t("authPage.sign_up")}
           </button>
 
           {isLogin && (
             <div className="mt-2 text-right">
-              <Link to="/forgot-password" data-testid="link-forgot" className="text-xs text-zinc-500 hover:text-[#FF6B35] font-semibold">
-                Forgot password?
-              </Link>
+              <Link to="/forgot-password" data-testid="link-forgot" className="text-xs text-zinc-500 hover:text-[#FF6B35] font-semibold">{t("authPage.forgot_password")}</Link>
             </div>
           )}
 
           <p className="text-sm text-zinc-500 text-center mt-5">
-            {isLogin ? "New here? " : "Have an account? "}
+            {isLogin ? t("authPage.new_here") : t("authPage.have_an_account")}{" "}
             <Link to={isLogin ? "/signup" : "/login"} data-testid="auth-switch" className="text-[#FF6B35] font-semibold">
-              {isLogin ? "Create account" : "Log in"}
+              {isLogin ? t("authPage.create_account") : t("authPage.log_in")}
             </Link>
           </p>
 
           {!isLogin && (
             <p className="text-xs text-zinc-500 text-center mt-3">
-              By signing up you agree to our{" "}
-              <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#FF6B35]">privacy policy</a>.
+              <Trans i18nKey="authPage.agree_terms" components={{ policy: <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#FF6B35]" /> }} />
             </p>
           )}
 

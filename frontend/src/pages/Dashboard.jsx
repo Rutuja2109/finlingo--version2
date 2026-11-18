@@ -14,6 +14,7 @@ import TrialCard from "@/components/TrialCard";
 import MilestoneModal from "@/components/MilestoneModal";
 import ProFeatures from "@/components/ProFeatures";
 import { streakState } from "@/lib/streak";
+import { useTranslation } from "react-i18next";
 
 const ICONS_SVG = {
   Wallet: "M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4",
@@ -25,6 +26,7 @@ const ICONS_SVG = {
 };
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { user, stats, refreshStats } = useAuth();
   const nav = useNavigate();
   const [courses, setCourses] = useState([]);
@@ -118,7 +120,7 @@ export default function Dashboard() {
               </span>
               <span className="flex-1 min-w-0">
                 <span className="block text-[11px] font-bold tracking-widest uppercase text-zinc-600 truncate" data-testid="hero-continue-label">
-                  {next.locked ? "Next lesson · Pro" : next.done === 0 ? "Start" : "Continue"} · {next.course.name}
+                  {next.locked ? t("dashboard.next_lesson_pro") : next.done === 0 ? t("dashboard.start") : t("dashboard.continue")} · {next.course.name}
                 </span>
                 <span className="block font-[Outfit] font-extrabold text-[16px] leading-tight line-clamp-2" data-testid="hero-continue-title">{next.concept.title}</span>
                 <span className="mt-1.5 block h-1.5 rounded-full bg-zinc-100 overflow-hidden">
@@ -128,11 +130,10 @@ export default function Dashboard() {
               <ArrowRight className="w-5 h-5 text-zinc-500 shrink-0" />
             </button>
           ) : (
-            <Link to="/courses" data-testid="hero-browse" className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-extrabold px-4 py-3 shadow-lg">
-              Browse courses <ArrowRight className="w-4 h-4" />
+            <Link to="/courses" data-testid="hero-browse" className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-white text-zinc-900 font-[Outfit] font-extrabold px-4 py-3 shadow-lg">{t("dashboard.browse_courses")} <ArrowRight className="w-4 h-4" />
             </Link>
           )}
-          <p className="text-[12px] text-white/95 mt-3 font-semibold">Level {stats?.level || 1} · {xpToNext} XP to the next level</p>
+          <p className="text-[12px] text-white/95 mt-3 font-semibold">{t("dashboard.level_xp_to_next", { level: stats?.level || 1, xp: xpToNext })}</p>
         </div>
       </section>
 
@@ -145,16 +146,16 @@ export default function Dashboard() {
       <section className="bg-white border border-zinc-200 rounded-3xl p-4 mb-6" data-testid="daily-goal">
         <div className="flex items-center justify-between mb-2.5">
           <div>
-            <p className="uppercase tracking-[0.18em] text-[10.5px] font-bold text-zinc-600">Daily goal</p>
-            <h3 className="font-[Outfit] font-black text-xl tracking-tight">Earn {dailyGoal} XP today</h3>
-            <button onClick={() => setShowGoal(true)} data-testid="change-goal" className="text-xs font-bold text-[#FF6B35] mt-0.5">{goalMinutes} min a day · Change</button>
+            <p className="uppercase tracking-[0.18em] text-[10.5px] font-bold text-zinc-600">{t("dashboard.daily_goal")}</p>
+            <h3 className="font-[Outfit] font-black text-xl tracking-tight">{t("dashboard.earn_dailygoal_xp_today", { dailyGoal })}</h3>
+            <button onClick={() => setShowGoal(true)} data-testid="change-goal" className="text-xs font-bold text-[#FF6B35] mt-0.5">{t("dashboard.goalminutes_min_a_day_change", { goalMinutes })}</button>
           </div>
           <Target className="w-6 h-6 text-[#FF6B35]"/>
         </div>
         <div className="h-3 rounded-full bg-zinc-100 overflow-hidden">
           <div className="h-full bg-gradient-to-r from-[#FF6B35] to-[#EC4899] transition-all duration-700" style={{ width: `${dailyPct}%` }} data-testid="daily-progress-bar"/>
         </div>
-        <p className="text-sm text-zinc-600 mt-2">{Math.min(todayXp, dailyGoal)} / {dailyGoal} XP today</p>
+        <p className="text-sm text-zinc-600 mt-2">{t("dashboard.v0_dailygoal_xp_today", { v0: Math.min(todayXp, dailyGoal), dailyGoal })}</p>
       </section>
 
       <DailyQuests />
@@ -162,9 +163,9 @@ export default function Dashboard() {
       {/* Courses */}
       <section>
         <div className="flex items-end justify-between mb-4">
-          <h2 className="font-[Outfit] font-black text-2xl tracking-tight">Your courses</h2>
+          <h2 className="font-[Outfit] font-black text-2xl tracking-tight">{t("dashboard.your_courses")}</h2>
           <Link to="/courses" data-testid="link-all-courses" className="text-sm font-semibold text-[#FF6B35] hover:underline">
-            All {courses.length || ""} courses →
+            {t("dashboard.all_courses", { n: courses.length || "" })}
           </Link>
         </div>
 
@@ -209,7 +210,7 @@ export default function Dashboard() {
                   data-testid={`btn-enroll-${c.slug}`}
                   className="px-4 py-2.5 rounded-xl text-sm font-bold transition active:scale-95 disabled:opacity-60 shrink-0"
                   style={{ background: `${c.color}20`, color: c.color }}>
-                  {busy[c.id] ? "…" : "Begin"}
+                  {busy[c.id] ? "…" : t("dashboard.begin")}
                 </button>
               </div>
             ))}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Newspaper, Zap, BookOpen, Star, Repeat, LineChart, Wallet, Gift, Lock, CheckCircle2, Target, Coins, ChevronDown } from "lucide-react";
 import { api, formatApiError } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const META = {
   xp: { Icon: Zap, bg: "#FFFBEB", fg: "#F59E0B" },
@@ -17,6 +18,7 @@ const hm = (s) => `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m`;
 
 // Three small goals a day. Collapsed to the next goal so Home stays short; the chest is the reward for all three.
 export default function DailyQuests() {
+  const { t } = useTranslation();
   const { refreshStats } = useAuth();
   const [d, setD] = useState(null);
   const [msg, setMsg] = useState("");
@@ -54,12 +56,12 @@ export default function DailyQuests() {
         <div className="p-4 pb-3 flex items-center gap-3">
           <span className="w-11 h-11 rounded-2xl grid place-items-center bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] text-white shrink-0"><Target className="w-5 h-5" /></span>
           <div className="flex-1 min-w-0">
-            <p className="uppercase tracking-[0.18em] text-[10.5px] font-bold text-zinc-500">Daily quests</p>
+            <p className="uppercase tracking-[0.18em] text-[10.5px] font-bold text-zinc-500">{t("dailyQuests.daily_quests")}</p>
             <h2 className="font-[Outfit] font-black text-[19px] leading-tight" data-testid="quests-headline">
-              {allDone ? "All done. See you tomorrow!" : n === 3 ? "Claim your rewards!" : `${n} of 3 done today`}
+              {allDone ? t("dailyQuests.all_done_see_you_tomorrow") : n === 3 ? t("dailyQuests.claim_your_rewards") : `${n} of 3 done today`}
             </h2>
           </div>
-          <span className="text-[12px] font-bold text-zinc-600 shrink-0">Resets in {hm(d.resets_in_seconds)}</span>
+          <span className="text-[12px] font-bold text-zinc-600 shrink-0">{t("dailyQuests.resets_in_v1", { v1: hm(d.resets_in_seconds) })}</span>
         </div>
         <div className="h-2 mx-4 mb-2 rounded-full bg-zinc-100 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-[#6366F1] to-[#EC4899] transition-all duration-500" style={{ width: `${Math.round((n / 3) * 100)}%` }} /></div>
 
@@ -77,10 +79,10 @@ export default function DailyQuests() {
                   <div className="text-[12px] text-zinc-600 mt-1">{q.progress} / {q.goal}</div>
                 </div>
                 {q.claimed
-                  ? <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" aria-label="Claimed" />
+                  ? <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" aria-label={t("dailyQuests.claimed")} />
                   : q.done
                     ? <button onClick={() => act(() => api.post("/quests/claim", { id: q.id }), (r) => `+${r.coins} coins`)} disabled={busy} data-testid={`claim-${q.id}`}
-                      className="rounded-xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-[13px] px-3.5 py-2 shrink-0 active:scale-95">Claim +{q.reward}</button>
+                      className="rounded-xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-[13px] px-3.5 py-2 shrink-0 active:scale-95">{t("dailyQuests.claim_reward", { reward: q.reward })}</button>
                     : <span className="flex items-center gap-1 rounded-full bg-zinc-100 px-2.5 py-1 text-[12px] font-extrabold font-[Outfit] shrink-0"><Coins className="w-3.5 h-3.5 text-amber-500" />+{q.reward}</span>}
               </div>
             );
@@ -88,18 +90,18 @@ export default function DailyQuests() {
         </div>
         <button onClick={() => setOpen((o) => !o)} data-testid="quests-toggle" aria-expanded={open}
           className="w-full border-t border-zinc-100 py-2.5 text-[13px] font-bold text-[#6366F1] flex items-center justify-center gap-1">
-          {open ? "Show less" : "Show all 3 quests"}<ChevronDown className={`w-4 h-4 transition ${open ? "rotate-180" : ""}`} />
+          {open ? t("dailyQuests.show_less") : t("dailyQuests.show_all_3_quests")}<ChevronDown className={`w-4 h-4 transition ${open ? "rotate-180" : ""}`} />
         </button>
 
         <div className="border-t border-zinc-100 p-4 flex items-center gap-3" data-testid="quest-chest">
           <div className="w-11 h-11 rounded-2xl grid place-items-center shrink-0" style={{ background: d.chest.opened ? "#ECFDF5" : "#FFF7ED", color: d.chest.opened ? "#10B981" : "#FF6B35" }}><Gift className="w-6 h-6" /></div>
           <div className="flex-1">
-            <div className="font-[Outfit] font-extrabold text-[15px]">Daily chest</div>
+            <div className="font-[Outfit] font-extrabold text-[15px]">{t("dailyQuests.daily_chest")}</div>
             <div className="text-[12.5px] text-zinc-600">{d.chest.opened ? `Opened: +${d.chest.reward} coins` : `Claim all 3 quests to open it for +${d.chest.reward} coins`}</div>
           </div>
           {d.chest.ready
-            ? <button onClick={() => act(() => api.post("/quests/chest"), (r) => `Chest opened: +${r.coins} coins`)} disabled={busy} data-testid="open-chest" className="rounded-xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-[13px] px-3.5 py-2 active:scale-95">Open</button>
-            : d.chest.opened ? <CheckCircle2 className="w-6 h-6 text-emerald-500" /> : <Lock className="w-5 h-5 text-zinc-500" aria-label="Locked" />}
+            ? <button onClick={() => act(() => api.post("/quests/chest"), (r) => `Chest opened: +${r.coins} coins`)} disabled={busy} data-testid="open-chest" className="rounded-xl bg-[#FF6B35] text-white font-[Outfit] font-extrabold text-[13px] px-3.5 py-2 active:scale-95">{t("dailyQuests.open")}</button>
+            : d.chest.opened ? <CheckCircle2 className="w-6 h-6 text-emerald-500" /> : <Lock className="w-5 h-5 text-zinc-500" aria-label={t("dailyQuests.locked")} />}
         </div>
       </div>
 
