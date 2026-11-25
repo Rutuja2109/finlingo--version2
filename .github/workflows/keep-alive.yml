@@ -1,0 +1,16 @@
+name: Keep Render backend awake
+
+# Render's free plan sleeps after 15 minutes without traffic.
+# This pings the FinLearn backend every 10 minutes so the app opens fast.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping finlingo-api
+        run: curl -sS --max-time 90 --retry 2 -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" https://finlingo-api.onrender.com/api/health || true
